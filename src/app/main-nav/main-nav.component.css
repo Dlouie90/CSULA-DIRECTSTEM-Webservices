@@ -1,0 +1,4 @@
+/* Used for nav links. When click (active) we want them to be bolder. */
+.bigger {
+    font-weight: bolder;
+}
