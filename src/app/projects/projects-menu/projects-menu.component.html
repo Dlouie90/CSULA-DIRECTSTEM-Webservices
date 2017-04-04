@@ -1,0 +1,17 @@
+<div class="list-group">
+
+  <!-- Add project from link -->
+  <a class="list-group-item list-group-item-success"
+     routerLink="form"
+     routerLinkActive="list-group-item-info">
+    <!-- Plus Sign Icon-->
+    <i class="fa fa-plus-circle fa-2x"
+       aria-hidden="true"></i> Add New Webservice</a>
+
+  <!-- List all the projects -->
+  <a *ngFor="let web of webservices;"
+     class="list-group-item list-group-item-action"
+     [routerLink]="['detail', web.id]"
+     routerLinkActive="active">{{web.title}}</a>
+
+</div>

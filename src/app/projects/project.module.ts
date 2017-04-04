@@ -4,6 +4,10 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProjectRoutingModule} from './project-routing.module';
 import {ProjectsComponent} from './projects.component';
+import {WebserviceService} from './shared/webservice.service';
+import {ProjectsMenuComponent} from './projects-menu/projects-menu.component';
+import {ProjectDetailComponent} from './project-detail/project-detail.component';
+import {ProjectFormComponent} from './project-form/project-form.component';
 
 @NgModule({
   imports: [
@@ -15,8 +19,15 @@ import {ProjectsComponent} from './projects.component';
   ],
 
   declarations: [
-    ProjectsComponent
+    ProjectsComponent,
+    ProjectsMenuComponent,
+    ProjectDetailComponent,
+    ProjectFormComponent
   ],
+
+  providers: [
+    WebserviceService
+  ]
 })
 export class ProjectModule {
 }
