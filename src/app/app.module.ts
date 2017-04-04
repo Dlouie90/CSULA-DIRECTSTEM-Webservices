@@ -9,6 +9,8 @@ import {AppRoutingModule} from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { InstructionsComponent } from './instructions/instructions.component';
+import { CarouselComponent } from './home/carousel/carousel.component';
+import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -17,12 +19,14 @@ import { InstructionsComponent } from './instructions/instructions.component';
     HomeComponent,
     ProjectsComponent,
     InstructionsComponent,
+    CarouselComponent,
   ],
 
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    CommonModule,
     AppRoutingModule,
   ],
 

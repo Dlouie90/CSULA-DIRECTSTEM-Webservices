@@ -1,9 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {Path} from '../shared/path.interface';
 
-interface Path {
-  title: string;
-  url: string;
-}
 @Component({
   selector   : 'app-main-nav',
   templateUrl: './main-nav.component.html',
