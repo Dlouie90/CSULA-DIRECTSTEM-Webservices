@@ -20,6 +20,7 @@
       <li *ngFor="let path of paths">
         <a routerLink="{{path.url}}"
            routerLinkActive="active bigger"
+           [ngClass]="{disabled: path.disable}"
            class="nav-link">{{path.title}}</a> </li>
     </ul>
 

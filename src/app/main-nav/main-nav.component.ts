@@ -17,7 +17,8 @@ export class MainNavComponent implements OnInit {
     this.paths = [
       {title: 'Home', url: 'home'},
       {title: 'Project', url: 'project'},
-      {title: 'Instruction', url: 'instruction'}
+      {title: 'Profile', url: 'profile', disable: true},
+      {title: 'Instruction', url: 'instruction'},
     ];
   }
 

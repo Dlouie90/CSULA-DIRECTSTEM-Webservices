@@ -6,6 +6,6 @@
 /* Add this so the NavBar wouldn't be stack right on top of the next element.
 *  Add some space between the nav and the edge of the screen. */
 nav {
-    margin-bottom: 3em;
-    margin-top: .5em;
+    margin-bottom: 1.5em;
+    margin-top: .75em;
 }

@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {BrowserModule} from '@angular/platform-browser';
 import {ProfileRoutingModule} from './profile-routing.module';
 import {ProfileDetailComponent} from './profile-detail/profile-detail.component';
+import {DefinitionViewComponent} from './definition-view/definition-view.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import {ProfileDetailComponent} from './profile-detail/profile-detail.component'
 
   declarations: [
     ProfileDetailComponent,
+    DefinitionViewComponent
   ]
 })
 export class ProfileModule {
