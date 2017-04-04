@@ -1,3 +1,7 @@
 button#detail-view {
    margin:auto;
 }
+
+label {
+    font-weight: bolder;
+}
