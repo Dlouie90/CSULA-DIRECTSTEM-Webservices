@@ -11,6 +11,7 @@ import {CommonModule} from '@angular/common';
 import {ProjectModule} from './projects-mod/project.module';
 import {ProfileModule} from './profile-mod/profile.module';
 import {InstructionsModule} from './instructions-mod/instructions.module';
+import {FooterComponent} from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import {InstructionsModule} from './instructions-mod/instructions.module';
     MainNavComponent,
     HomeComponent,
     CarouselComponent,
+    FooterComponent,
   ],
 
   imports: [
