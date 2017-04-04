@@ -2,3 +2,8 @@
 .bigger {
     font-weight: bolder;
 }
+
+/* Add this so the NavBar wouldn't be stack right on top of the next element */
+nav {
+    margin-bottom: 3em;
+}
