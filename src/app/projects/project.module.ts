@@ -8,6 +8,8 @@ import {WebserviceService} from './shared/webservice.service';
 import {ProjectsMenuComponent} from './projects-menu/projects-menu.component';
 import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';
+import { DetailComponent } from './detail/detail.component';
+import { ProjectDetailComponent } from './project-detail/project-detail.component';
 
 @NgModule({
   imports: [
@@ -22,7 +24,9 @@ import {ProjectQuickViewComponent} from './project-quickview/project-quickview.c
     ProjectsComponent,
     ProjectsMenuComponent,
     ProjectQuickViewComponent,
-    ProjectFormComponent
+    ProjectFormComponent,
+    DetailComponent,
+    ProjectDetailComponent
   ],
 
   providers: [

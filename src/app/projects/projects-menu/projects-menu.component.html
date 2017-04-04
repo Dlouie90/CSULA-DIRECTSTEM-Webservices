@@ -2,16 +2,17 @@
 
   <!-- Add project from link -->
   <button class="btn btn-lg btn-info"
-     routerLink="form"
-     routerLinkActive="btn-success">
+          routerLink="form"
+          routerLinkActive="btn-success">
     <!-- Plus Sign Icon-->
     <i class="fa fa-plus-circle"
        aria-hidden="true"></i>ADD</button>
 
   <!-- List all the projects -->
-  <a *ngFor="let web of webservices ;"
+  <a *ngFor="let web of webservices;"
      class="list-group-item list-group-item-action"
-     [routerLink]="['quickview', web.id]"
-     routerLinkActive="active">{{web.title}}</a>
+     [routerLink]="['quick', web.id]"
+     routerLinkActive="active">{{web.title}}
+  </a>
 
 </div>

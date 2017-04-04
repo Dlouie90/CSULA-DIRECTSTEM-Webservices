@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ProjectsComponent} from './projects.component';
 import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';
+import {ProjectDetailComponent} from './project-detail/project-detail.component';
 
 const routes: Routes = [
   {
@@ -10,11 +11,15 @@ const routes: Routes = [
     component: ProjectsComponent,
     children : [
       {
-        path     : 'quickview/:id',
+        path     : 'quick/:id',
         component: ProjectQuickViewComponent,
       },
       {
-        path: 'form',
+        path     : 'detail/:id',
+        component: ProjectDetailComponent,
+      },
+      {
+        path     : 'form',
         component: ProjectFormComponent
       }
     ],

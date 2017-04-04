@@ -1,41 +1,77 @@
-<div class="form-group row">
+<form [formGroup]="group"
+      (ngSubmit)="onSubmit(group)">
 
-  <label for="project-id"
-         class="col-2 col-form-label">Text</label>
-  <div class="col-10">
-    <input class="form-control"
-           type="text"
-           value="Artisanal kale"
-           id="project-id">
+  <!-- ID -->
+  <div class="form-group row">
+    <label for="input-id"
+           class="col-2 col-form-label">ID</label>
+    <div class="col-10">
+      <input class="form-control"
+             type="text"
+             readonly
+             value='n/a'
+             id="input-id">
+    </div>
   </div>
-</div>
-<div class="form-group row">
-  <label for="example-search-input"
-         class="col-2 col-form-label">Search</label>
-  <div class="col-10">
-    <input class="form-control"
-           type="search"
-           value="How do I shoot web"
-           id="example-search-input">
+
+  <!-- Title -->
+  <div class="form-group row">
+    <label for="input-title"
+           class="col-2 col-form-label">Title</label>
+    <div class="col-10">
+      <div *ngIf="isInvalid('title')"
+           class="alert-danger text-center">
+        Required Field
+      </div>
+      <input class="form-control"
+             type="text"
+             [formControl]="group.controls['title']"
+             id="input-title">
+    </div>
   </div>
-</div>
-<div class="form-group row">
-  <label for="example-email-input"
-         class="col-2 col-form-label">Email</label>
-  <div class="col-10">
-    <input class="form-control"
-           type="email"
-           value="bootstrap@example.com"
-           id="example-email-input">
+
+  <!-- Type -->
+  <div class="form-group row">
+    <label for="input-type"
+           class="col-2 col-form-label">Type</label>
+    <div class="col-10">
+      <div *ngIf="isInvalid('type')"
+           class="alert-danger text-center">
+        Required Field
+      </div>
+      <input class="form-control"
+             type="text"
+             [formControl]="group.controls['type']"
+             id="input-type">
+    </div>
   </div>
-</div>
-<div class="form-group row">
-  <label for="example-url-input"
-         class="col-2 col-form-label">URL</label>
-  <div class="col-10">
-    <input class="form-control"
-           type="url"
-           value="https://getbootstrap.com"
-           id="example-url-input">
+
+  <!-- Description ¬-->
+  <div class="form-group row">
+    <label for="textarea-description"
+           class="col-2 col-form-label">Description</label>
+    <div class="col-10">
+      <div *ngIf="isInvalid('description')"
+           class="alert-danger text-center">
+        Required Field
+      </div>
+      <textarea class="form-control"
+                rows="8"
+                [formControl]="group.controls['description']"
+                id="textarea-description"></textarea>
+    </div>
   </div>
-</div>
+
+  <!--Submit, Reset, Cancel-->
+  <div class="buttons-containers text-center">
+    <button class="btn btn-primary"
+            type="submit">Submit</button>
+
+    <button class="btn btn-danger"
+            type="button"
+            (click)="reset(group)">Reset</button>
+
+    <a class="btn btn-warning"
+       routerLink="../../project">Cancel</a>
+  </div>
+</form>
