@@ -4,9 +4,12 @@
     box-sizing: border-box;
 }
 
-div.carousel-item > button {
+div.carousel-item > a{
     margin-left: auto;
     margin-right: auto;
+}
 
+i {
+    margin-right: .3em;
 }
 
