@@ -17,7 +17,7 @@ export class WebserviceService implements OnInit {
 
   add(args: any): void {
     const ws = new Webservice(
-        this.nextCount(), args.title, args.type, args.descriptions);
+        this.nextCount(), args.title, args.description, args.type);
     this.webservices.push(ws);
   }
 
