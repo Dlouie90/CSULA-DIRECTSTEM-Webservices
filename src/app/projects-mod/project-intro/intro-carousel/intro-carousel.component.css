@@ -1,0 +1,12 @@
+.block {
+    min-height: 15em;
+    min-width: 55em;
+    box-sizing: border-box;
+}
+
+div.carousel-item > button {
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
