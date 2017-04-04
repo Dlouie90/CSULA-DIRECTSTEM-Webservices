@@ -15,11 +15,7 @@ const routes: Routes = [
     pathMatch : 'full'
   },
   {
-    path     : 'projects',
-    component: ProjectsComponent
-  },
-  {
-    path: 'instructions',
+    path     : 'instructions',
     component: InstructionsComponent
   }
 ];
