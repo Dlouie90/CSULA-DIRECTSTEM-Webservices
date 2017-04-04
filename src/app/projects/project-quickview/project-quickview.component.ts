@@ -11,11 +11,16 @@ import 'rxjs/add/operator/switchMap';
   styleUrls  : ['./project-quickview.component.css']
 })
 export class ProjectQuickViewComponent implements OnInit {
-  @Input() webservice: Webservice;
+  @Input()
+  webservice: Webservice;
+
+  editMode: boolean;
 
   constructor(private service: WebserviceService,
               private route: ActivatedRoute,
               private location: Location) {
+
+    this.editMode = false;
   }
 
   ngOnInit(): void {
