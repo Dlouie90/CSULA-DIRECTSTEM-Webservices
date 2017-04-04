@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Webservice} from '../../projects-mod/shared/webservice.model';
+import {Location} from '@angular/common';
 
 @Component({
   selector   : 'app-definition-view',
@@ -11,9 +12,13 @@ export class DefinitionViewComponent implements OnInit {
   @Input()
   webservice: Webservice;
 
-  constructor(){
+  constructor(private location: Location) {
   }
 
   ngOnInit(): void {
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

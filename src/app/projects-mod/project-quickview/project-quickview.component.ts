@@ -17,8 +17,7 @@ export class ProjectQuickViewComponent implements OnInit {
   editMode: boolean;
 
   constructor(private service: WebserviceService,
-              private route: ActivatedRoute,
-              private location: Location) {
+              private route: ActivatedRoute) {
 
     this.editMode = false;
   }
@@ -32,9 +31,4 @@ export class ProjectQuickViewComponent implements OnInit {
           return this.webservice = ws;
         });
   }
-
-  goBack(): void {
-    this.location.back();
-  }
-
 }

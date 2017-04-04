@@ -1,19 +1,50 @@
-<div *ngIf="webservice"
-     class="card px-0 py-1">
+<div class="">
+  <div id="accordion"
+       role="tablist"
+       *ngIf="webservice"
+       aria-multiselectable="true">
+    <div class="card">
+      <div class="card-header"
+           role="tab"
+           id="headingOne">
+        <h5 class="mb-0 text-center">
+          <a data-toggle="collapse"
+             data-parent="#accordion"
+             href="#collapseOne"
+             aria-expanded="true"
+             aria-controls="collapseOne"
+             class="btn btn-outline-primary">
+            {{webservice.title}}
+          </a>
+          <button class="btn btn-outline-primary ml-5"
+                  (click)="goBack()">
+            <i class="fa fa-backward"
+               aria-hidden="true"></i></button>
+        </h5>
+      </div>
 
-  <dl class="row ">
+      <div id="collapseOne"
+           class="collapse show"
+           role="tabpanel"
+           aria-labelledby="headingOne">
+        <div class="card-block">
 
-    <dt class="col-sm-2 offset-sm-1">ID:</dt>
-    <dd class="col-sm-9">{{webservice.id}}</dd>
+          <dl class="row ">
+            <dt class="col-sm-2 offset-sm-1">ID:</dt>
+            <dd class="col-sm-9">{{webservice.id}}</dd>
 
-    <dt class="col-sm-2 offset-sm-1">Title:</dt>
-    <dd class="col-sm-9">{{webservice.title}}</dd>
+            <dt class="col-sm-2 offset-sm-1">Title:</dt>
+            <dd class="col-sm-9">{{webservice.title}}</dd>
 
-    <dt class="col-sm-2 offset-sm-1">Type:</dt>
-    <dd class="col-sm-9">{{webservice.type}}</dd>
+            <dt class="col-sm-2 offset-sm-1">Type:</dt>
+            <dd class="col-sm-9">{{webservice.type}}</dd>
 
-    <dt class="col-sm-2 offset-sm-1">Description:</dt>
-    <dd class="col-sm-9">{{webservice.description}}</dd>
+            <dt class="col-sm-2 offset-sm-1">Description:</dt>
+            <dd class="col-sm-9">{{webservice.description}}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
 
-  </dl>
+  </div>
 </div>

@@ -1,9 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Location} from '@angular/common';
 import {Webservice} from '../../projects-mod/shared/webservice.model';
 import {WebserviceService} from '../../projects-mod/shared/webservice.service';
 import {ActivatedRoute, Params} from '@angular/router';
-
 @Component({
   selector: 'app-profile-detail',
   templateUrl: './profile-detail.component.html',
@@ -16,8 +14,7 @@ export class ProfileDetailComponent implements OnInit {
   editMode: boolean;
 
   constructor(private service: WebserviceService,
-              private route: ActivatedRoute,
-              private location: Location) {
+              private route: ActivatedRoute){
 
     this.editMode = false;
   }
