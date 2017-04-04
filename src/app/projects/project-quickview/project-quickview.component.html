@@ -1,0 +1,56 @@
+<div *ngIf="webservice">
+
+  <!-- ID -->
+  <div class="form-group row">
+    <label for="webservice-id"
+           class="col-2 col-form-label">ID</label>
+    <div class="col-10">
+      <input class="form-control"
+             type="text"
+             [value]="webservice.id"
+             id="webservice-id"
+             readonly>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="form-group row">
+    <label for="webservice-title"
+           class="col-2 col-form-label">Title</label>
+    <div class="col-10">
+      <input class="form-control"
+             type="text"
+             [value]="webservice.title"
+             id="webservice-title"
+             readonly>
+    </div>
+  </div>
+
+  <!-- Type -->
+  <div class="form-group row">
+    <label for="webservice-type"
+           class="col-2 col-form-label">Type</label>
+    <div class="col-10">
+      <input class="form-control"
+             type="text"
+             [value]="webservice.type"
+             id="webservice-type"
+             readonly>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="form-group row">
+    <label for="webservice-description"
+           class="col-2 col-form-label">Description</label>
+    <div class="col-10">
+      <textarea class="form-control"
+                rows="8"
+                [value]="webservice.description"
+                id="webservice-description"
+                readonly>
+      </textarea>
+    </div>
+  </div>
+
+</div>

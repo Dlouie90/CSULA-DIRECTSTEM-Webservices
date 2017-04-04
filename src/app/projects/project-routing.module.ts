@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ProjectsComponent} from './projects.component';
-import {ProjectDetailComponent} from './project-detail/project-detail.component';
 import {ProjectFormComponent} from './project-form/project-form.component';
+import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';
 
 const routes: Routes = [
   {
@@ -10,8 +10,8 @@ const routes: Routes = [
     component: ProjectsComponent,
     children : [
       {
-        path     : 'detail/:id',
-        component: ProjectDetailComponent,
+        path     : 'quickview/:id',
+        component: ProjectQuickViewComponent,
       },
       {
         path: 'form',

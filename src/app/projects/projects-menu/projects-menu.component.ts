@@ -9,13 +9,19 @@ import {Webservice} from '../shared/webservice.model';
 })
 export class ProjectsMenuComponent implements OnInit {
 
+  webservices: Webservice[];
+
   constructor(private service: WebserviceService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getWebservices();
   }
 
-  get webservices(): Webservice[] {
-    return this.service.webservices;
+  getWebservices(): void {
+    this.service.getWebservices()
+        .then((wss: Webservice[]) => {
+          this.webservices = wss;
+        });
   }
 }
