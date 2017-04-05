@@ -534,7 +534,6 @@ export class Graph {
 
     newGs.append('text')
         .attr('text-anchor', 'middle')
-        .style('font', '14px \'Helvetica Neue\'')
         .text(function (d) {
           if (Node.isRegular(d)) {
             return `name: ${d.id}`;

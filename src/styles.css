@@ -1,30 +1,46 @@
 g.conceptG circle {
-    fill: #F6FBFF;
-    stroke: #333;
-    stroke-width: 2px;
+    fill: rgb(229, 239, 255);
+    stroke: rgb(190, 210, 240);
+    stroke-width: 4px;
+}
+
+text {
+    fill: rgb(34, 34, 35);
+    font-size: 18px !important;
+    font-family: monospace;
+    font-weight: bolder;
 }
 
 g.conceptG:hover circle {
-    fill: rgb(200, 238, 241);
+    fill: rgb(255, 245, 117);
+    stroke: rgb(235, 225, 97) !important;
 }
 
 g.selected circle {
-    fill: rgb(250, 232, 255);
+    fill: rgb(91, 148, 255);
+    stroke: rgb(71, 128, 235) !important;
 }
 
 g.selected:hover circle {
-    fill: rgb(250, 232, 255);
+    fill: rgb(255, 245, 117);
+    stroke: rgb(235, 225, 97) !important;;
 }
 
 path.link {
-    fill: none;
-    stroke: #333;
+    fill: rgb(147, 147, 147);
+    stroke: rgb(147, 147, 147);
     stroke-width: 6px;
     cursor: default;
 }
 
+marker {
+    fill: rgb(147, 147, 147);
+    stroke: rgb(147, 147, 147);
+}
+
 path.link:hover {
-    stroke: rgb(94, 196, 204);
+    fill: rgb(255, 245, 117);
+    stroke: rgb(235, 225, 97) !important;
 }
 
 g.connect-node circle {
@@ -36,5 +52,6 @@ path.link.hidden {
 }
 
 path.link.selected {
-    stroke: rgb(229, 172, 247);
+    fill: rgb(91, 148, 255);
+    stroke: rgb(71, 128, 235) !important;
 }
