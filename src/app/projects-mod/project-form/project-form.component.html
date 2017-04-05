@@ -64,55 +64,8 @@
 
 
   <!-- Webservice REGISTERED inputs -->
-  <app-accordion [title]="'Toggle Inputs Display'">
-    <div *ngFor="let item of inputControls; let i = index">
-      <div class="form-group row">
-        <label for="input-type"
-               class="col-2 col-form-label">Input {{i + 1}}</label>
-        <div class="col-8">
-          <div *ngIf="isInvalidFC(item)"
-               class="alert-danger text-center">
-            Delete the input or enter it's name
-          </div>
-          <input class="form-control"
-                 type="text"
-                 [formControl]="item">
-        </div>
-        <div class="col-2">
-
-          <button class="btn btn-outline-danger"
-                  type="button"
-                  (click)="deRegisterInput(item)">
-            <!-- Delete Icon-->
-            <i class="fa fa-minus-circle"
-               aria-hidden="true"></i></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Register Input Form -->
-    <hr>
-    <div class="form-group row">
-      <label class="col-2 col-form-label"></label>
-      <div class="col-10">
-        <form class="form-inline">
-          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-            <div class="input-group-addon">Input</div>
-            <input type="text"
-                   [formControl]="registerControl"
-                   class="form-control">
-          </div>
-
-          <button class="btn btn-outline-success ml-2"
-                  (click)="registerInput()"
-                  type="button">
-            <!-- Add Icon -->
-            <i class="fa fa-plus-circle mr-1"
-               aria-hidden="true"></i>Register Input</button>
-        </form>
-      </div>
-    </div>
-  </app-accordion>
+  <app-input-register-form
+      [controls]="inputControls"></app-input-register-form>
 
 
   <!--Submit, Reset, Cancel-->

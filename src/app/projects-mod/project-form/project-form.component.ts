@@ -17,36 +17,36 @@ export class ProjectFormComponent implements OnInit {
 
   inputControls: FormControl[];
   inputFormArray: FormArray;
-  registerControl: FormControl;
 
-  constructor(formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private service: WebserviceService) {
-
-    this.failSubmit      = false;
-    this.inputControls   = [];
-    this.inputFormArray  = new FormArray(this.inputControls);
-    this.registerControl = new FormControl(null, Validators.required);
-
-    this.group = formBuilder.group({
-      title      : [null, Validators.required],
-      description: [null, Validators.required],
-      type       : [null, Validators.required],
-      inputs     : formBuilder.array(this.inputControls)
-    });
-
   }
 
   ngOnInit() {
+
+    this.failSubmit     = false;
+    this.inputControls  = [];
+    this.inputFormArray = new FormArray(this.inputControls);
+
+    this.group = this.formBuilder.group({
+      title      : [null, Validators.required],
+      description: [null, Validators.required],
+      type       : [null, Validators.required],
+      inputs     : this.formBuilder.array([])
+    });
   }
 
   onSubmit(form: FormGroup): void {
+    this.inputFormArray = new FormArray(this.inputControls);
+
     if (form.valid && this.inputFormArray.valid) {
+
       this.group.setControl('inputs', this.inputFormArray);
       this.service.add(form.value);
-      form.reset();
       this.failSubmit = false;
 
       this.resetInputControls();
+      form.reset();
     } else {
       this.failSubmit = true;
     }
@@ -65,23 +65,6 @@ export class ProjectFormComponent implements OnInit {
   isInvalid(controlName: string): boolean {
     return !this.group.controls[controlName].valid
         && (this.failSubmit || this.group.controls[controlName].touched);
-  }
-
-  isInvalidFC(control: FormControl): boolean {
-    return !control.valid && control.touched;
-  }
-
-  registerInput(): void {
-    if (this.registerControl.valid) {
-      this.inputFormArray.push(new FormControl(
-          this.registerControl.value, Validators.required));
-    }
-    this.registerControl.reset();
-  }
-
-  deRegisterInput(control: FormControl): void {
-    const index = this.inputControls.indexOf(control);
-    this.inputControls.splice(index, 1);
   }
 }
 

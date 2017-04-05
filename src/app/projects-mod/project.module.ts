@@ -11,6 +11,7 @@ import {ProjectQuickViewComponent} from './project-quickview/project-quickview.c
 import { ProjectIntroComponent } from './project-intro/project-intro.component';
 import { IntroCarouselComponent } from './project-intro/intro-carousel/intro-carousel.component';
 import { AccordionComponent } from './accordion/accordion.component';
+import { InputRegisterFormComponent } from './input-register-form/input-register-form.component';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { AccordionComponent } from './accordion/accordion.component';
     ProjectIntroComponent,
     IntroCarouselComponent,
     AccordionComponent,
+    InputRegisterFormComponent,
   ],
 
   providers: [
