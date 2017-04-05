@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Webservice} from '../shared/webservice.model';
-import {WebserviceService} from '../shared/webservice.service';
+import {Webservice} from '../../shared/webservice.model';
+import {WebserviceService} from '../../shared/webservice.service';
 import {ActivatedRoute, Params} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 

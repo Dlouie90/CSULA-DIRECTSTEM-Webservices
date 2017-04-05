@@ -4,7 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProjectRoutingModule} from './project-routing.module';
 import {ProjectsComponent} from './projects.component';
-import {WebserviceService} from './shared/webservice.service';
+import {WebserviceService} from '../shared/webservice.service';
 import {ProjectsMenuComponent} from './projects-menu/projects-menu.component';
 import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';

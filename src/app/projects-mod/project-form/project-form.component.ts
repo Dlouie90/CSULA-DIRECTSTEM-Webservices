@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {WebserviceService} from '../shared/webservice.service';
+import {WebserviceService} from '../../shared/webservice.service';
 
 @Component({
   selector   : 'app-form',

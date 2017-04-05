@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {WebserviceService} from '../shared/webservice.service';
-import {Webservice} from '../shared/webservice.model';
+import {WebserviceService} from '../../shared/webservice.service';
+import {Webservice} from '../../shared/webservice.model';
 
 @Component({
   selector   : 'app-projects-menu',

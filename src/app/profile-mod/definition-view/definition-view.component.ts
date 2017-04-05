@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Webservice} from '../../projects-mod/shared/webservice.model';
+import {Webservice} from '../../shared/webservice.model';
 import {Location} from '@angular/common';
 
 @Component({

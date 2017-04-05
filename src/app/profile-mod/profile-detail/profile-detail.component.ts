@@ -1,11 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Webservice} from '../../projects-mod/shared/webservice.model';
-import {WebserviceService} from '../../projects-mod/shared/webservice.service';
+import {Webservice} from '../../shared/webservice.model';
+import {WebserviceService} from '../../shared/webservice.service';
 import {ActivatedRoute, Params} from '@angular/router';
+import * as d3 from 'd3';
+
 @Component({
-  selector: 'app-profile-detail',
+  selector   : 'app-profile-detail',
   templateUrl: './profile-detail.component.html',
-  styleUrls: ['./profile-detail.component.css']
+  styleUrls  : ['./profile-detail.component.css']
 })
 export class ProfileDetailComponent implements OnInit {
   @Input()
@@ -14,12 +16,17 @@ export class ProfileDetailComponent implements OnInit {
   editMode: boolean;
 
   constructor(private service: WebserviceService,
-              private route: ActivatedRoute){
+              private route: ActivatedRoute) {
 
     this.editMode = false;
   }
 
   ngOnInit(): void {
+    this.getWebservice();
+    this.graph();
+  }
+
+  getWebservice(): void {
     this.route.params
         .switchMap((params: Params) => {
           return this.service.getWebservice(+params['id']);
@@ -29,4 +36,11 @@ export class ProfileDetailComponent implements OnInit {
         });
   }
 
+  graph(): void {
+    d3.select('div#d3-graph')
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '35em')
+        .style('border', 'black solid');
+  }
 }
