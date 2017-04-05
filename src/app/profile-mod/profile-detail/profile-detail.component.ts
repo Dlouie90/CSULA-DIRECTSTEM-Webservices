@@ -3,6 +3,8 @@ import {Webservice} from '../../shared/webservice.model';
 import {WebserviceService} from '../../shared/webservice.service';
 import {ActivatedRoute, Params} from '@angular/router';
 import * as d3 from 'd3';
+import {Graph} from '../../shared/graph.model';
+import {Node} from '../../shared/node.model';
 
 @Component({
   selector   : 'app-profile-detail',
@@ -37,10 +39,15 @@ export class ProfileDetailComponent implements OnInit {
   }
 
   graph(): void {
-    d3.select('div#d3-graph')
+    const svg = d3.select('div#d3-graph')
         .append('svg')
         .attr('width', '100%')
-        .attr('height', '35em')
-        .style('border', 'black solid');
+        .attr('height', '650px')
+        .style('border', 'thin lightgrey solid');
+
+    const nodes: Node[] = Graph.defaultState.nodes;
+    const g             = new Graph(svg, nodes);
+    g.updateGraph();
   }
 }
+
