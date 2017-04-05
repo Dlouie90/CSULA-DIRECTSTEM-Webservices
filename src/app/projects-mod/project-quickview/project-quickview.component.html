@@ -72,6 +72,23 @@
     </div>
   </div>
 
+  <!-- Webservice REGISTERED inputs -->
+  <app-accordion title="Toggle Inputs Display">
+    <div *ngFor="let item of webservice.inputs; let i = index">
+      <div class="form-group row">
+
+        <label class="col-2 col-form-label">Input {{i + 1}}</label>
+
+        <div class="col-10">
+          <input class="form-control"
+                 type="text"
+                 [value]="item"
+                 readonly>
+        </div>
+      </div>
+    </div>
+  </app-accordion>
+
   <!-- Detail/Profile View Button -->
   <div class="row">
     <button class="btn btn-outline-primary btn-lg"

@@ -9,7 +9,7 @@ export class WebserviceService implements OnInit {
 
   constructor() {
     this.webservices = [].concat(DATA);
-    this.counter     = 2;
+    this.counter     = DATA.length;
   }
 
   ngOnInit(): void {
@@ -17,7 +17,14 @@ export class WebserviceService implements OnInit {
 
   add(args: any): void {
     const ws = new Webservice(
-        this.nextCount(), args.title, args.description, args.type);
+        this.nextCount(),
+        args.title,
+        args.description,
+        args.type,
+        args.inputs,
+        args.output
+    );
+
     this.webservices.push(ws);
   }
 

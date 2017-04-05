@@ -19,7 +19,7 @@
           <button class="btn btn-outline-primary ml-5"
                   (click)="goBack()">
             <i class="fa fa-backward"
-               aria-hidden="true"></i></button>
+               aria-hidden="true"></i>&nbsp;Back</button>
         </h5>
       </div>
 
@@ -41,6 +41,9 @@
 
             <dt class="col-sm-2 offset-sm-1">Description:</dt>
             <dd class="col-sm-9">{{webservice.description}}</dd>
+
+            <dt class="col-sm-2 offset-sm-1">Inputs:</dt>
+            <dd class="col-sm-9"><pre>{{webservice.inputs | json}}</pre></dd>
           </dl>
         </div>
       </div>

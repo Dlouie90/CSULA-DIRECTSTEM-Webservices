@@ -10,6 +10,7 @@ import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';
 import { ProjectIntroComponent } from './project-intro/project-intro.component';
 import { IntroCarouselComponent } from './project-intro/intro-carousel/intro-carousel.component';
+import { AccordionComponent } from './accordion/accordion.component';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { IntroCarouselComponent } from './project-intro/intro-carousel/intro-car
     ProjectFormComponent,
     ProjectIntroComponent,
     IntroCarouselComponent,
+    AccordionComponent,
   ],
 
   providers: [
