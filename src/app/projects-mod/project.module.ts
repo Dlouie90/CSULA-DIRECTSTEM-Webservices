@@ -8,10 +8,11 @@ import {WebserviceService} from '../shared/webservice.service';
 import {ProjectsMenuComponent} from './projects-menu/projects-menu.component';
 import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectQuickViewComponent} from './project-quickview/project-quickview.component';
-import { ProjectIntroComponent } from './project-intro/project-intro.component';
-import { IntroCarouselComponent } from './project-intro/intro-carousel/intro-carousel.component';
-import { AccordionComponent } from './accordion/accordion.component';
-import { InputRegisterFormComponent } from './input-register-form/input-register-form.component';
+import {ProjectIntroComponent} from './project-intro/project-intro.component';
+import {IntroCarouselComponent} from './project-intro/intro-carousel/intro-carousel.component';
+import {AccordionComponent} from './accordion/accordion.component';
+import {InputRegisterFormComponent} from './input-register-form/input-register-form.component';
+import {OutputRegisterFormComponent} from './output-register-form/output-register-form.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { InputRegisterFormComponent } from './input-register-form/input-register
     IntroCarouselComponent,
     AccordionComponent,
     InputRegisterFormComponent,
+    OutputRegisterFormComponent,
   ],
 
   providers: [
