@@ -38,8 +38,11 @@ export class ProjectFormComponent implements OnInit {
   onSubmit(form: FormGroup): void {
     if (form.valid) {
       const args = form.value;
-      Object.assign(args, form.value, {parameters: this.parameters});
-      console.log(args);
+
+      console.log(this.parameters, this.properties);
+      Object.assign(args, {parameters: this.parameters});
+      Object.assign(args, {properties: this.properties});
+
       this.service.add(args);
       this.failSubmit = false;
 
@@ -56,7 +59,7 @@ export class ProjectFormComponent implements OnInit {
   }
 
   resetToggleInputs(): void {
-    // this.properties     = [];
+    this.properties = [];
     this.parameters = [];
   }
 

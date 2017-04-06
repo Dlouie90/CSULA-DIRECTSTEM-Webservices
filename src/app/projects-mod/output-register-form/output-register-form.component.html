@@ -1,15 +1,15 @@
-<app-accordion title="Toggle Parameter Display"
-               id="input-register"
-               *ngIf="parameters">
+<app-accordion title="Toggle Property Display"
+               id="output-register"
+               *ngIf="properties">
 
   <!-- List the registered Parameters -->
-  <div *ngFor="let item of parameters;">
+  <div *ngFor="let item of properties;">
 
     <div class="form-group row">
       <form class="form-inline">
 
-        <!-- Parameter Name Value -->
-        <div class="input-group col-5">
+        <!-- Property Name Value -->
+        <div class="input-group col-6">
           <div class="input-group-addon bg-success text-white">Name</div>
           <input type="text"
                  [value]="item[0]"
@@ -17,20 +17,20 @@
                  class="form-control">
         </div>
 
-        <!-- Parameter Description Value -->
-        <div class="input-group col-6">
-          <div class="input-group-addon bg-success text-white">Description</div>
+        <!-- Property Description Value -->
+        <div class="input-group col-5">
+          <div class="input-group-addon bg-success text-white">Data Type</div>
           <input type="text"
                  [value]="item[1]"
                  readonly
                  class="form-control">
         </div>
 
-        <!-- Delete Parameter Button-->
+        <!-- Delete Property Button-->
         <div class="input-group col-1">
           <button class="btn btn-outline-danger"
                   type="button"
-                  (click)="deRegisterInput(item)">
+                  (click)="removeProperty(item)">
             <i class="fa fa-minus-circle"
                aria-hidden="true"></i></button>
         </div>
@@ -38,14 +38,15 @@
     </div>
   </div>
 
-  <!-- Register Parameter Form -->
-  <hr *ngIf="parameters.length > 0">
+
+  <!-- Register Property Form -->
+  <hr *ngIf="properties.length > 0">
   <div class="form-group row">
     <form class="form-inline"
-          (ngSubmit)="registerParameter()">
+          (ngSubmit)="registerProperty()">
 
-      <!-- Parameter Name Input -->
-      <div class="input-group col-5"
+      <!-- Property Name Input -->
+      <div class="input-group col-6"
            [ngClass]="{'has-danger': isInvalid(nameControl)}">
         <div class="input-group-addon bg-primary text-white">Name</div>
         <input type="text"
@@ -53,16 +54,23 @@
                class="form-control col-form-label">
       </div>
 
-      <!-- Parameter Description Input -->
-      <div class="input-group col-6"
-           [ngClass]="{'has-danger': isInvalid(descriptionControl)}">
-        <div class="input-group-addon bg-primary text-white">Description </div>
-        <input type="text"
-               [formControl]="descriptionControl"
-               class="form-control col-form-label">
+      <!-- Property Data Type Input -->
+      <div class="input-group col-5"
+           [ngClass]="{'has-danger': isInvalid(typeControl)}">
+        <div class="input-group-addon bg-primary text-white">Data Type</div>
+        <select class="custom-select form-control col-form-label"
+                [formControl]="typeControl">
+          <option selected
+                  value=""> Choose...
+          </option>
+          <option *ngFor="let option of options"
+                  [value]="option"> {{option}}
+          </option>
+        </select>
+
       </div>
 
-      <!-- Register Parameter Button -->
+      <!-- Register Property Button -->
       <div class="input-group col-1">
         <button class="btn btn-outline-success"
                 type="submit">
