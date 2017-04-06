@@ -17,6 +17,7 @@
       </div>
     </div>
 
+
     <!-- ID -->
     <div class="form-group row">
       <label for="webservice-id"
@@ -44,15 +45,28 @@
       </div>
     </div>
 
-    <!-- URL-->
+    <!-- DOMAIN-->
     <div class="form-group row">
-      <label for="input-url"
-             class="col-2 col-form-label">URL</label>
+      <label for="input-domain"
+             class="col-2 col-form-label">Domain</label>
       <div class="col-10">
         <input class="form-control col-form-label"
                type="text"
-               [value]="webservice.url"
-               id="input-url"
+               [value]="webservice.domain"
+               id="input-domain"
+               readonly>
+      </div>
+    </div>
+
+    <!-- DOMAIN-->
+    <div class="form-group row">
+      <label for="input-path"
+             class="col-2 col-form-label">Path</label>
+      <div class="col-10">
+        <input class="form-control col-form-label"
+               type="text"
+               [value]="webservice.path"
+               id="input-path"
                readonly>
       </div>
     </div>
@@ -90,64 +104,47 @@
 
   <!-- Webservice REGISTERED inputs -->
   <app-accordion title="Parameters Fields"
-                 id="provw-{{webservice.id}}">
-    <div *ngFor="let item of webservice.parameters;">
+                 id="pravw-{{webservice.id}}">
+    <table class="table">
+      <thead class="thead-inverse">
+        <tr>
+          <th>Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
 
-      <div class="form-group row">
-        <form class="form-inline">
-
-          <!-- Parameter Name Value -->
-          <div class="input-group col-4">
-            <div class="input-group-addon bg-success text-white">Name</div>
-            <input type="text"
-                   [value]="item[0]"
-                   readonly
-                   class="form-control">
-          </div>
-
-          <!-- Parameter Description Value -->
-          <div class="input-group col-8">
-            <div class="input-group-addon bg-success text-white">Description
-            </div>
-            <textarea type="text"
-                      [value]="item[1]"
-                      readonly
-                      class="form-control"></textarea>
-          </div>
-        </form>
-      </div>
-    </div>
+      <tbody>
+        <tr *ngFor="let item of webservice.parameters;">
+          <td>{{item[0]}}</td>
+          <td>string</td>
+          <td>{{item[1]}}</td>
+        </tr>
+      </tbody>
+    </table>
   </app-accordion>
 
   <!-- List the registered Parameters -->
   <app-accordion title="Properties Fields"
                  id="properties-quickview">
-    <div *ngFor="let item of webservice.properties;">
 
-      <div class="form-group row">
-        <form class="form-inline">
+    <table class="table">
+      <thead class="thead-inverse">
+        <tr>
+          <th>Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
 
-          <!-- Property Name Value -->
-          <div class="input-group offset-2 col-5">
-            <div class="input-group-addon bg-success text-white">Name</div>
-            <input type="text"
-                   [value]="item[0]"
-                   readonly
-                   class="form-control">
-          </div>
-
-          <!-- Property Description Value -->
-          <div class="input-group offset-1 col-4">
-            <div class="input-group-addon bg-success text-white">Data Type</div>
-            <input type="text"
-                   [value]="item[1]"
-                   readonly
-                   class="form-control">
-          </div>
-
-        </form>
-      </div>
-    </div>
+      <tbody>
+        <tr *ngFor="let item of webservice.properties;">
+          <td>{{item[0]}}</td>
+          <td>{{item[1]}}</td>
+          <td>{{item[2]}}</td>
+        </tr>
+      </tbody>
+    </table>
   </app-accordion>
 
   <!-- Detail/Profile View Button -->

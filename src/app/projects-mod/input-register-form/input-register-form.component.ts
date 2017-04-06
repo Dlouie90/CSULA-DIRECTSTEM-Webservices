@@ -26,7 +26,7 @@ export class InputRegisterFormComponent implements OnInit {
     return this.failedSubmit || (!control.valid && control.touched);
   }
 
-  deRegisterInput(parameter: [string, string]): void {
+  unregisterParameter(parameter: [string, string]): void {
     const index = this.parameters.indexOf(parameter);
     this.parameters.splice(index, 1);
   }

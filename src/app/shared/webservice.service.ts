@@ -21,7 +21,8 @@ export class WebserviceService implements OnInit {
         args.title,
         args.description,
         args.type,
-        args.url,
+        args.domain,
+        args.path,
         args.parameters,
         args.properties
     );

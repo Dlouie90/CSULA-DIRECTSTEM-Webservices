@@ -13,7 +13,7 @@ export class ProjectFormComponent implements OnInit {
   failSubmit: boolean;
 
   parameters: Array<[string, string]>;
-  properties: Array<[string, string]>;
+  properties: Array<[string, string, string]>;
 
 
   constructor(private formBuilder: FormBuilder,
@@ -29,7 +29,8 @@ export class ProjectFormComponent implements OnInit {
       title      : [null, Validators.required],
       description: [null, Validators.required],
       type       : [null, Validators.required],
-      url        : [null, Validators.required],
+      domain     : [null, Validators.required],
+      path       : [null, Validators.required],
     });
   }
 

@@ -3,73 +3,103 @@
                *ngIf="parameters">
 
   <!-- List the registered Parameters -->
-  <div *ngFor="let item of parameters;">
+  <table class="table" *ngIf="parameters.length > 0">
+    <thead>
+      <tr class="bg-success text-white">
+        <th>Name</th>
+        <th>Data Type</th>
+        <th>Description</th>
+        <th>Un-Register</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of parameters">
+        <!-- Parameter Name Value-->
+        <td>
+          <div>
+            <input class="form-control"
+                   readonly
+                   [value]="item[0]">
+          </div>
+        </td>
 
-    <div class="form-group row">
-      <form class="form-inline">
+        <!-- Parameter TYPE Value -->
+        <td>
+          <div>
+            <select class="custom-select form-control col-form-label">
+              <option selected disabled>string</option>
+            </select>
+          </div>
+        </td>
 
-        <!-- Parameter Name Value -->
-        <div class="input-group col-5">
-          <div class="input-group-addon bg-success text-white">Name</div>
-          <input type="text"
-                 [value]="item[0]"
-                 readonly
-                 class="form-control">
-        </div>
+        <!-- Parameter DESCRIPTION Value -->
+        <td>
+          <div>
+            <input class="form-control"
+                   readonly
+                   [value]="item[1]">
+          </div>
+        </td>
 
-        <!-- Parameter Description Value -->
-        <div class="input-group col-6">
-          <div class="input-group-addon bg-success text-white">Description</div>
-          <input type="text"
-                 [value]="item[1]"
-                 readonly
-                 class="form-control">
-        </div>
-
-        <!-- Delete Parameter Button-->
-        <div class="input-group col-1">
+        <!-- Parameter REMOVE Button -->
+        <td>
           <button class="btn btn-outline-danger"
                   type="button"
-                  (click)="deRegisterInput(item)">
+                  (click)="unregisterParameter(item)">
             <i class="fa fa-minus-circle"
                aria-hidden="true"></i></button>
-        </div>
-      </form>
-    </div>
-  </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <!-- Register Parameter Form -->
   <hr *ngIf="parameters.length > 0">
-  <div class="form-group row">
-    <form class="form-inline"
-          (ngSubmit)="registerParameter()">
+  <table class="table">
+    <thead class="bg-primary text-white">
+      <tr>
+        <th>Name</th>
+        <th>Data Type</th>
+        <th>Description</th>
+        <th>Register</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- Parameter Name Input-->
+        <td>
+          <div [ngClass]="{'has-danger': isInvalid(nameControl)}">
+            <input type="text"
+                   [formControl]="nameControl"
+                   class="form-control col-form-label">
+          </div>
+        </td>
 
-      <!-- Parameter Name Input -->
-      <div class="input-group col-5"
-           [ngClass]="{'has-danger': isInvalid(nameControl)}">
-        <div class="input-group-addon bg-primary text-white">Name</div>
-        <input type="text"
-               [formControl]="nameControl"
-               class="form-control col-form-label">
-      </div>
+        <!-- Parameter Data Type Input-->
+        <td>
+          <div>
+            <select class="custom-select form-control col-form-label">
+            <option selected>string</option>
+            </select>
+          </div>
+        </td>
 
-      <!-- Parameter Description Input -->
-      <div class="input-group col-6"
-           [ngClass]="{'has-danger': isInvalid(descriptionControl)}">
-        <div class="input-group-addon bg-primary text-white">Description </div>
-        <input type="text"
-               [formControl]="descriptionControl"
-               class="form-control col-form-label">
-      </div>
+        <!-- DESCRIPTION INPUT -->
+        <td>
+          <div [ngClass]="{'has-danger': isInvalid(descriptionControl)}">
+            <input type="text"
+                   [formControl]="descriptionControl"
+                   class="form-control col-form-label">
+          </div>
+        </td>
 
-      <!-- Register Parameter Button -->
-      <div class="input-group col-1">
-        <button class="btn btn-outline-success"
-                type="submit">
+        <!-- REGISTER BUTTON -->
+        <td><button class="btn btn-outline-success"
+                    type="button"
+                    (click)="registerParameter()">
           <i class="fa fa-plus-circle"
-             aria-hidden="true"></i></button>
-      </div>
-
-    </form>
-  </div>
+             aria-hidden="true"></i></button></td>
+      </tr>
+    </tbody>
+  </table>
 </app-accordion>

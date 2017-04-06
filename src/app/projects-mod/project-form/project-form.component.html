@@ -33,20 +33,37 @@
       </div>
     </div>
 
-    <!-- URL-->
+    <!-- Domain -->
     <div class="form-group row"
-      [ngClass]="{'has-danger': isInvalid('url')}">
-      <label for="input-url"
-             class="col-2 col-form-label">URL</label>
+      [ngClass]="{'has-danger': isInvalid('domain')}">
+      <label for="input-domain"
+             class="col-2 col-form-label">Domain</label>
       <div class="col-10">
-        <div *ngIf="isInvalid('url')"
+        <div *ngIf="isInvalid('domain')"
              class="alert-danger text-center">
           Required Field
         </div>
         <input class="form-control col-form-label"
                type="text"
-               [formControl]="group.controls['url']"
-               id="input-url">
+               [formControl]="group.controls['domain']"
+               id="input-domain">
+      </div>
+    </div>
+
+    <!-- Path -->
+    <div class="form-group row"
+         [ngClass]="{'has-danger': isInvalid('path')}">
+      <label for="input-path"
+             class="col-2 col-form-label">Path</label>
+      <div class="col-10">
+        <div *ngIf="isInvalid('path')"
+             class="alert-danger text-center">
+          Required Field
+        </div>
+        <input class="form-control col-form-label"
+               type="text"
+               [formControl]="group.controls['path']"
+               id="input-path">
       </div>
     </div>
 

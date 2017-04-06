@@ -21,4 +21,16 @@ export class DefinitionViewComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  get parametersNames(): Array<string> {
+    return this.webservice.parameters.map((p: [string, string]) => {
+      return p[0];
+    });
+  }
+
+  get propertyNames(): Array<string> {
+    return this.webservice.properties.map((p: [string, string, string]) => {
+      return p[0];
+    });
+  }
 }
