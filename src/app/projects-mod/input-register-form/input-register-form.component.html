@@ -1,53 +1,76 @@
-<app-accordion title="Toggle Input Display"
-               *ngIf="controls">
-  <div *ngFor="let item of controls; let i = index">
+<app-accordion title="Toggle Parameter Display"
+               id="input-register"
+               *ngIf="parameters">
+
+  <!-- List the registered Parameters -->
+  <div *ngFor="let item of parameters;">
+
     <div class="form-group row">
-      <label for="input-type-{{i}}"
-             class="col-2 col-form-label">Input {{i + 1}}</label>
-      <div class="col-8">
-        <div *ngIf="isInvalid(item)"
-             class="alert-danger text-center">
-          Delete the input or enter it's name
-        </div>
-        <input class="form-control"
-               type="text"
-               id="input-type-{{i}}"
-               [formControl]="item">
-      </div>
-      <div class="col-2">
-        <button class="btn btn-outline-danger"
-                type="button"
-                (click)="deRegisterInput(item)">
-          <!-- Delete Icon-->
-          <i class="fa fa-minus-circle"
-             aria-hidden="true"></i></button>
-      </div>
-    </div>
-  </div>
+      <form class="form-inline">
 
-  <!-- Register Input Form -->
-  <hr>
-  <div class="form-group row">
-    <label class="col-2 col-form-label"></label>
-    <div class="col-10">
-      <form class="form-inline"
-            (ngSubmit)="registerInput()">
-
-        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-          <div class="input-group-addon">Input</div>
+        <!-- Parameter Name Value -->
+        <div class="input-group col-5">
+          <div class="input-group-addon bg-success text-white">Name</div>
           <input type="text"
-                 [formControl]="registerControl"
+                 [value]="item[0]"
+                 readonly
                  class="form-control">
         </div>
 
-        <button class="btn btn-outline-success ml-2"
-                type="submit">
-          <!-- Add Icon -->
-          <i class="fa fa-plus-circle mr-1"
-             aria-hidden="true"></i>Register Input
-        </button>
+        <!-- Parameter Description Value -->
+        <div class="input-group col-6">
+          <div class="input-group-addon bg-success text-white">Description</div>
+          <input type="text"
+                 [value]="item[1]"
+                 readonly
+                 class="form-control">
+        </div>
 
+        <!-- Delete Parameter Button-->
+        <div class="input-group col-1">
+          <button class="btn btn-outline-danger"
+                  type="button"
+                  (click)="deRegisterInput(item)">
+            <i class="fa fa-minus-circle"
+               aria-hidden="true"></i></button>
+        </div>
       </form>
     </div>
+  </div>
+
+  <!-- Register Parameter Form -->
+  <hr *ngIf="parameters.length > 0">
+  <div class="form-group row">
+    <form class="form-inline"
+          (ngSubmit)="registerParameter()">
+
+      <!-- Parameter Name Input -->
+      <div class="input-group col-5"
+           [ngClass]="{'has-danger': isInvalid(nameControl)}">
+        <div class="input-group-addon bg-primary text-white">Name</div>
+        <input type="text"
+               [formControl]="nameControl"
+               class="form-control col-form-label">
+      </div>
+
+      <!-- Parameter Description Input -->
+      <div class="input-group col-6"
+           [ngClass]="{'has-danger': isInvalid(descriptionControl)}">
+        <div class="input-group-addon bg-primary text-white">Description
+        </div>
+        <input type="text"
+               [formControl]="descriptionControl"
+               class="form-control col-form-label">
+      </div>
+
+      <!-- Register Parameter Button -->
+      <div class="input-group col-1">
+        <button class="btn btn-outline-success"
+                type="submit">
+          <i class="fa fa-plus-circle"
+             aria-hidden="true"></i></button>
+      </div>
+
+    </form>
   </div>
 </app-accordion>

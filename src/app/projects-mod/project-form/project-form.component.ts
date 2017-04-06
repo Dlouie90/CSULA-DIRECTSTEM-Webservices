@@ -15,37 +15,35 @@ export class ProjectFormComponent implements OnInit {
   group: FormGroup;
   failSubmit: boolean;
 
-  inputControls: FormControl[];
-  inputFormArray: FormArray;
+  parameters: Array<[string, string]>;
+  properties: Array<[string, string]>;
+
 
   constructor(private formBuilder: FormBuilder,
               private service: WebserviceService) {
   }
 
   ngOnInit() {
-
-    this.failSubmit     = false;
-    this.inputControls  = [];
-    this.inputFormArray = new FormArray(this.inputControls);
+    this.parameters = [];
+    this.properties = [];
+    this.failSubmit = false;
 
     this.group = this.formBuilder.group({
       title      : [null, Validators.required],
       description: [null, Validators.required],
       type       : [null, Validators.required],
-      inputs     : this.formBuilder.array([])
     });
   }
 
   onSubmit(form: FormGroup): void {
-    this.inputFormArray = new FormArray(this.inputControls);
-
-    if (form.valid && this.inputFormArray.valid) {
-
-      this.group.setControl('inputs', this.inputFormArray);
-      this.service.add(form.value);
+    if (form.valid) {
+      const args = form.value;
+      Object.assign(args, form.value, {parameters: this.parameters});
+      console.log(args);
+      this.service.add(args);
       this.failSubmit = false;
 
-      this.resetInputControls();
+      this.resetToggleInputs();
       form.reset();
     } else {
       this.failSubmit = true;
@@ -54,12 +52,12 @@ export class ProjectFormComponent implements OnInit {
 
   reset(): void {
     this.group.reset();
-    this.resetInputControls();
+    this.resetToggleInputs();
   }
 
-  resetInputControls(): void {
-    this.inputControls  = [];
-    this.inputFormArray = new FormArray(this.inputControls);
+  resetToggleInputs(): void {
+    // this.properties     = [];
+    this.parameters = [];
   }
 
   isInvalid(controlName: string): boolean {

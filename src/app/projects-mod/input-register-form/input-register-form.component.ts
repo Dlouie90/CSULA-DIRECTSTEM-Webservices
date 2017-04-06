@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormArray, FormControl, Validators} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector   : 'app-input-register-form',
@@ -8,32 +8,38 @@ import {FormArray, FormControl, Validators} from '@angular/forms';
 })
 export class InputRegisterFormComponent implements OnInit {
   @Input()
-  controls: FormControl[];
-  controlsFormArray: FormArray;
-  registerControl: FormControl;
+  parameters: Array<[string, string]>;
+  nameControl: FormControl;
+  descriptionControl: FormControl;
+  failedSubmit: boolean;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.registerControl   = new FormControl(null, Validators.required);
-    this.controlsFormArray = new FormArray(this.controls);
+    this.nameControl        = new FormControl(null, Validators.required);
+    this.descriptionControl = new FormControl(null, Validators.required);
+    this.failedSubmit       = false;
   }
 
   isInvalid(control: FormControl): boolean {
-    return !control.valid && control.touched;
+    return this.failedSubmit || (!control.valid && control.touched);
   }
 
-  deRegisterInput(control: FormControl): void {
-    const index = this.controls.indexOf(control);
-    this.controls.splice(index, 1);
+  deRegisterInput(parameter: [string, string]): void {
+    const index = this.parameters.indexOf(parameter);
+    this.parameters.splice(index, 1);
   }
 
-  registerInput(): void {
-    if (this.registerControl.valid) {
-      this.controlsFormArray.push(new FormControl(
-          this.registerControl.value, Validators.required));
+  registerParameter(): void {
+    if (this.nameControl.valid && this.descriptionControl.valid) {
+      this.parameters.push([this.nameControl.value, this.descriptionControl.value]);
+
+      this.nameControl.reset();
+      this.descriptionControl.reset();
+      this.failedSubmit = false;
+    } else {
+      this.failedSubmit = true;
     }
-    this.registerControl.reset();
   }
 }
