@@ -1,67 +1,69 @@
 <form [formGroup]="group"
       (ngSubmit)="onSubmit(group)">
 
-  <!-- ID -->
-  <div class="form-group row">
-    <label for="input-id"
-           class="col-2 col-form-label">ID</label>
-    <div class="col-10">
-      <input class="form-control"
-             type="text"
-             readonly
-             value='n/a'
-             id="input-id">
-    </div>
-  </div>
-
-  <!-- Title -->
-  <div class="form-group row">
-    <label for="input-title"
-           class="col-2 col-form-label">Title</label>
-    <div class="col-10">
-      <div *ngIf="isInvalid('title')"
-           class="alert-danger text-center">
-        Required Field
+  <app-accordion title="Primary Fields"
+                 id="primary">
+    <!-- ID -->
+    <div class="form-group row">
+      <label for="input-id"
+             class="col-2 col-form-label">ID</label>
+      <div class="col-10">
+        <input class="form-control"
+               type="text"
+               readonly
+               value='n/a'
+               id="input-id">
       </div>
-      <input class="form-control"
-             type="text"
-             [formControl]="group.controls['title']"
-             id="input-title">
     </div>
-  </div>
 
-  <!-- Type -->
-  <div class="form-group row">
-    <label for="input-type"
-           class="col-2 col-form-label">Type</label>
-    <div class="col-10">
-      <div *ngIf="isInvalid('type')"
-           class="alert-danger text-center">
-        Required Field
+    <!-- Title -->
+    <div class="form-group row">
+      <label for="input-title"
+             class="col-2 col-form-label">Title</label>
+      <div class="col-10">
+        <div *ngIf="isInvalid('title')"
+             class="alert-danger text-center">
+          Required Field
+        </div>
+        <input class="form-control"
+               type="text"
+               [formControl]="group.controls['title']"
+               id="input-title">
       </div>
-      <input class="form-control"
-             type="text"
-             [formControl]="group.controls['type']"
-             id="input-type">
     </div>
-  </div>
 
-  <!-- Description ¬-->
-  <div class="form-group row">
-    <label for="textarea-description"
-           class="col-2 col-form-label">Description</label>
-    <div class="col-10">
-      <div *ngIf="isInvalid('description')"
-           class="alert-danger text-center">
-        Required Field
+    <!-- Type -->
+    <div class="form-group row">
+      <label for="input-type"
+             class="col-2 col-form-label">Type</label>
+      <div class="col-10">
+        <div *ngIf="isInvalid('type')"
+             class="alert-danger text-center">
+          Required Field
+        </div>
+        <input class="form-control"
+               type="text"
+               [formControl]="group.controls['type']"
+               id="input-type">
       </div>
-      <textarea class="form-control"
-                rows="8"
-                [formControl]="group.controls['description']"
-                id="textarea-description"></textarea>
     </div>
-  </div>
 
+    <!-- Description ¬-->
+    <div class="form-group row">
+      <label for="textarea-description"
+             class="col-2 col-form-label">Description</label>
+      <div class="col-10">
+        <div *ngIf="isInvalid('description')"
+             class="alert-danger text-center">
+          Required Field
+        </div>
+        <textarea class="form-control"
+                  rows="8"
+                  [formControl]="group.controls['description']"
+                  id="textarea-description"></textarea>
+      </div>
+    </div>
+  </app-accordion>
 
   <!-- Webservice REGISTERED inputs -->
   <app-input-register-form

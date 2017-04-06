@@ -39,7 +39,6 @@ export class OutputRegisterFormComponent implements OnInit {
   }
 
   registerProperty(): void {
-    console.log(this.nameControl.value, this.typeControl.value);
     if (this.nameControl.valid && this.typeControl.valid) {
       this.properties.push([this.nameControl.value, this.typeControl.value]);
 

@@ -39,10 +39,10 @@ export class ProjectFormComponent implements OnInit {
     if (form.valid) {
       const args = form.value;
 
-      console.log(this.parameters, this.properties);
       Object.assign(args, {parameters: this.parameters});
       Object.assign(args, {properties: this.properties});
 
+      console.log(args);
       this.service.add(args);
       this.failSubmit = false;
 
