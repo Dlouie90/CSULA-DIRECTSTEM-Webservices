@@ -6,7 +6,7 @@
     <!-- ID -->
     <div class="form-group row">
       <label for="input-id"
-             class="col-2 col-form-label">ID</label>
+             class="col-2">ID</label>
       <div class="col-10">
         <input class="form-control"
                type="text"
@@ -17,7 +17,8 @@
     </div>
 
     <!-- Title -->
-    <div class="form-group row">
+    <div class="form-group row"
+      [ngClass]="{'has-danger': isInvalid('title')}">
       <label for="input-title"
              class="col-2 col-form-label">Title</label>
       <div class="col-10">
@@ -25,15 +26,33 @@
              class="alert-danger text-center">
           Required Field
         </div>
-        <input class="form-control"
+        <input class="form-control col-form-label"
                type="text"
                [formControl]="group.controls['title']"
                id="input-title">
       </div>
     </div>
 
+    <!-- URL-->
+    <div class="form-group row"
+      [ngClass]="{'has-danger': isInvalid('url')}">
+      <label for="input-url"
+             class="col-2 col-form-label">URL</label>
+      <div class="col-10">
+        <div *ngIf="isInvalid('url')"
+             class="alert-danger text-center">
+          Required Field
+        </div>
+        <input class="form-control col-form-label"
+               type="text"
+               [formControl]="group.controls['url']"
+               id="input-url">
+      </div>
+    </div>
+
     <!-- Type -->
-    <div class="form-group row">
+    <div class="form-group row"
+      [ngClass]="{'has-danger': isInvalid('type')}">
       <label for="input-type"
              class="col-2 col-form-label">Type</label>
       <div class="col-10">
@@ -41,7 +60,7 @@
              class="alert-danger text-center">
           Required Field
         </div>
-        <input class="form-control"
+        <input class="form-control col-form-label"
                type="text"
                [formControl]="group.controls['type']"
                id="input-type">
@@ -49,15 +68,16 @@
     </div>
 
     <!-- Description ¬-->
-    <div class="form-group row">
+    <div class="form-group row"
+      [ngClass]="{'has-danger': isInvalid('description')}">
       <label for="textarea-description"
-             class="col-2 col-form-label">Description</label>
+             class="col-2 col-form-label ">Description</label>
       <div class="col-10">
         <div *ngIf="isInvalid('description')"
              class="alert-danger text-center">
           Required Field
         </div>
-        <textarea class="form-control"
+        <textarea class="form-control col-form-label"
                   rows="8"
                   [formControl]="group.controls['description']"
                   id="textarea-description"></textarea>
@@ -75,7 +95,7 @@
 
   <!--Submit, Reset, Cancel-->
   <div class="buttons-containers text-center">
-    <button class="btn btn-primary"
+    <button class="btn btn-success"
             type="submit">Submit</button>
 
     <button class="btn btn-danger"

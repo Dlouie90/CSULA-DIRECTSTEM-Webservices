@@ -7,6 +7,7 @@ export const DATA: Webservice[] = [
       'Provide weather data, including current weather data, forecast, and historical data',
       'Geographic Coordinates',
       ['Zip Code', 'Date'],
+      'http://www.goodweather.com/',
       {
         coord  : 'object',
         id     : 'number',
@@ -23,6 +24,7 @@ export const DATA: Webservice[] = [
       'Provide traffic conditions in real time on major roads and highway',
       'Geographic Coordinates',
       ['Starting Address', 'Destination Address', 'Departure Time'],
+      'http://www.traffic.iservice/',
       {
 
         id       : 'number',

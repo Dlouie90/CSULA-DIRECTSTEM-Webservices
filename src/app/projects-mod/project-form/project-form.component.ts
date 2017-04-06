@@ -21,6 +21,10 @@ export class ProjectFormComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private service: WebserviceService) {
+    const fc = new FormControl({name: 0}, Validators.required);
+    console.log(fc);
+    console.log(fc.value);
+    console.log(fc.valid);
   }
 
   ngOnInit() {
@@ -32,6 +36,7 @@ export class ProjectFormComponent implements OnInit {
       title      : [null, Validators.required],
       description: [null, Validators.required],
       type       : [null, Validators.required],
+      url        : [null, Validators.required],
     });
   }
 
@@ -67,5 +72,6 @@ export class ProjectFormComponent implements OnInit {
     return !this.group.controls[controlName].valid
         && (this.failSubmit || this.group.controls[controlName].touched);
   }
+
 }
 

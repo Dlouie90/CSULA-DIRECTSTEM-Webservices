@@ -4,6 +4,7 @@ export class Webservice {
   description: string;
   type: string;
   inputs: string[];
+  url: string;
   output: object;
 
   constructor(id: number,
@@ -11,6 +12,7 @@ export class Webservice {
               description: string,
               type: string,
               inputs: string[],
+              url?: string,
               output?: object) {
 
     this.id          = id;
@@ -18,6 +20,7 @@ export class Webservice {
     this.description = description;
     this.type        = type;
     this.inputs      = inputs;
+    this.url         = url;
     this.output      = output;
   }
 
