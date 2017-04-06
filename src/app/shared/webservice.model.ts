@@ -3,28 +3,24 @@ export class Webservice {
   title: string;
   description: string;
   type: string;
-  inputs: string[];
   url: string;
-  output: object;
+  parameters: Array<[string, string]>;
+  properties: Array<[string, string]>;
 
   constructor(id: number,
               title: string,
               description: string,
               type: string,
-              inputs: string[],
-              url?: string,
-              output?: object) {
+              url: string,
+              parameters: Array<[string, string]>,
+              properties: Array<[string, string]>) {
 
     this.id          = id;
     this.title       = title;
     this.description = description;
     this.type        = type;
-    this.inputs      = inputs;
     this.url         = url;
-    this.output      = output;
-  }
-
-  addInput(input: string) {
-    this.inputs.push(input);
+    this.parameters  = parameters;
+    this.properties  = properties;
   }
 }

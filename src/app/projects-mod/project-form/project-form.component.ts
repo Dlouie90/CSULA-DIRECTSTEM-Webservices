@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  FormArray, FormBuilder, FormControl, FormGroup,
-  Validators
-} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {WebserviceService} from '../../shared/webservice.service';
 
 @Component({
@@ -21,10 +18,6 @@ export class ProjectFormComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private service: WebserviceService) {
-    const fc = new FormControl({name: 0}, Validators.required);
-    console.log(fc);
-    console.log(fc.value);
-    console.log(fc.valid);
   }
 
   ngOnInit() {

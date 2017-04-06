@@ -21,8 +21,9 @@ export class WebserviceService implements OnInit {
         args.title,
         args.description,
         args.type,
-        args.inputs,
-        args.output
+        args.url,
+        args.parameters,
+        args.properties
     );
 
     this.webservices.push(ws);

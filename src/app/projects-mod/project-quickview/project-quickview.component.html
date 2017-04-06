@@ -1,67 +1,81 @@
 <div *ngIf="webservice">
-
-  <!-- Enable form editing checkbox -->
-  <div class="form-group row">
-    <label for="checkbox-edit-mode"
-           class="col-2 col-form-label"></label>
-    <div class="col-10">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input"
-                 type="checkbox"
-                 id="checkbox-edit-mode"
-                 [(ngModel)]="editMode"> Edit Mode
-        </label>
+  <app-accordion title="Primary Fields"
+                 id="privw--{{webservice.id}}">
+    <!-- Enable form editing checkbox -->
+    <div class="form-group row">
+      <label for="checkbox-edit-mode"
+             class="col-2 col-form-label"></label>
+      <div class="col-10">
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <input class="form-check-input"
+                   type="checkbox"
+                   id="checkbox-edit-mode"
+                   [(ngModel)]="editMode"> Edit Mode
+          </label>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ID -->
-  <div class="form-group row">
-    <label for="webservice-id"
-           class="col-2 col-form-label">ID</label>
-    <div class="col-10">
-      <input class="form-control"
-             type="text"
-             [value]="webservice.id"
-             id="webservice-id"
-             readonly>
+    <!-- ID -->
+    <div class="form-group row">
+      <label for="webservice-id"
+             class="col-2 col-form-label">ID</label>
+      <div class="col-10">
+        <input class="form-control"
+               type="text"
+               [value]="webservice.id"
+               id="webservice-id"
+               readonly>
+      </div>
     </div>
-  </div>
 
-  <!-- Title -->
-  <div class="form-group row">
-    <label for="webservice-title"
-           class="col-2 col-form-label">Title</label>
-    <div class="col-10">
-      <input class="form-control"
-             type="text"
-             [(ngModel)]="webservice.title"
-             [value]="webservice.title"
-             id="webservice-title"
-             [readonly]="!editMode">
+    <!-- Title -->
+    <div class="form-group row">
+      <label for="webservice-title"
+             class="col-2 col-form-label">Title</label>
+      <div class="col-10">
+        <input class="form-control"
+               type="text"
+               [(ngModel)]="webservice.title"
+               [value]="webservice.title"
+               id="webservice-title"
+               [readonly]="!editMode">
+      </div>
     </div>
-  </div>
 
-  <!-- Type -->
-  <div class="form-group row">
-    <label for="webservice-type"
-           class="col-2 col-form-label">Type</label>
-    <div class="col-10">
-      <input class="form-control"
-             type="text"
-             [(ngModel)]="webservice.type"
-             [value]="webservice.type"
-             id="webservice-type"
-             [readonly]="!editMode">
+    <!-- URL-->
+    <div class="form-group row">
+      <label for="input-url"
+             class="col-2 col-form-label">URL</label>
+      <div class="col-10">
+        <input class="form-control col-form-label"
+               type="text"
+               [value]="webservice.url"
+               id="input-url"
+               readonly>
+      </div>
     </div>
-  </div>
 
-  <!-- Description -->
-  <div class="form-group row">
-    <label for="webservice-description"
-           class="col-2 col-form-label">Description</label>
-    <div class="col-10">
+    <!-- Type -->
+    <div class="form-group row">
+      <label for="webservice-type"
+             class="col-2 col-form-label">Type</label>
+      <div class="col-10">
+        <input class="form-control"
+               type="text"
+               [(ngModel)]="webservice.type"
+               [value]="webservice.type"
+               id="webservice-type"
+               [readonly]="!editMode">
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group row">
+      <label for="webservice-description"
+             class="col-2 col-form-label">Description</label>
+      <div class="col-10">
       <textarea class="form-control"
                 rows="8"
                 [(ngModel)]="webservice.description"
@@ -69,22 +83,69 @@
                 id="webservice-description"
                 [readonly]="!editMode">
       </textarea>
+      </div>
     </div>
-  </div>
+  </app-accordion>
+
 
   <!-- Webservice REGISTERED inputs -->
-  <app-accordion title="Toggle Inputs Display">
-    <div *ngFor="let item of webservice.inputs; let i = index">
+  <app-accordion title="Parameters Fields"
+                 id="provw-{{webservice.id}}">
+    <div *ngFor="let item of webservice.parameters;">
+
       <div class="form-group row">
+        <form class="form-inline">
 
-        <label class="col-2 col-form-label">Input {{i + 1}}</label>
+          <!-- Parameter Name Value -->
+          <div class="input-group col-4">
+            <div class="input-group-addon bg-success text-white">Name</div>
+            <input type="text"
+                   [value]="item[0]"
+                   readonly
+                   class="form-control">
+          </div>
 
-        <div class="col-10">
-          <input class="form-control"
-                 type="text"
-                 [value]="item"
-                 readonly>
-        </div>
+          <!-- Parameter Description Value -->
+          <div class="input-group col-8">
+            <div class="input-group-addon bg-success text-white">Description
+            </div>
+            <textarea type="text"
+                      [value]="item[1]"
+                      readonly
+                      class="form-control"></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+  </app-accordion>
+
+  <!-- List the registered Parameters -->
+  <app-accordion title="Properties Fields"
+                 id="properties-quickview">
+    <div *ngFor="let item of webservice.properties;">
+
+      <div class="form-group row">
+        <form class="form-inline">
+
+          <!-- Property Name Value -->
+          <div class="input-group offset-2 col-5">
+            <div class="input-group-addon bg-success text-white">Name</div>
+            <input type="text"
+                   [value]="item[0]"
+                   readonly
+                   class="form-control">
+          </div>
+
+          <!-- Property Description Value -->
+          <div class="input-group offset-1 col-4">
+            <div class="input-group-addon bg-success text-white">Data Type</div>
+            <input type="text"
+                   [value]="item[1]"
+                   readonly
+                   class="form-control">
+          </div>
+
+        </form>
       </div>
     </div>
   </app-accordion>

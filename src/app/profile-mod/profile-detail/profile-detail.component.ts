@@ -26,6 +26,8 @@ export class ProfileDetailComponent implements OnInit {
   ngOnInit(): void {
     this.getWebservice();
     this.graph();
+    /* Scroll to the top after switching view*/
+    window.scroll(0, 0);
   }
 
   getWebservice(): void {
