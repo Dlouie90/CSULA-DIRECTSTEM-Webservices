@@ -12,6 +12,8 @@ import {ProjectModule} from './projects-mod/project.module';
 import {ProfileModule} from './profile-mod/profile.module';
 import {InstructionsModule} from './instructions-mod/instructions.module';
 import {FooterComponent} from './footer/footer.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import { LoremIpsumModalComponent } from './shared/lorem-ipsum-modal/lorem-ipsum-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import {FooterComponent} from './footer/footer.component';
     HomeComponent,
     CarouselComponent,
     FooterComponent,
+    DashboardComponent,
+    LoremIpsumModalComponent,
   ],
 
   imports: [
