@@ -8,6 +8,8 @@ export class Webservice {
   parameters: Array<[string, string]>;
   properties: Array<[string, string, string]>;
 
+  compositions: number;
+
   constructor(id: number,
               title: string,
               description: string,
@@ -25,5 +27,8 @@ export class Webservice {
     this.path        = path;
     this.parameters  = parameters;
     this.properties  = properties;
+
+
+    this.compositions = 0;
   }
 }
