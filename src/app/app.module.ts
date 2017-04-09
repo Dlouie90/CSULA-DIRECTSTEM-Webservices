@@ -8,12 +8,9 @@ import {AppRoutingModule} from './app-routing.module';
 import {HomeComponent} from './home/home.component';
 import {CarouselComponent} from './home/carousel/carousel.component';
 import {CommonModule} from '@angular/common';
-import {ProjectModule} from './projects-mod/project.module';
-import {ProfileModule} from './profile-mod/profile.module';
-import {InstructionsModule} from './instructions-mod/instructions.module';
 import {FooterComponent} from './footer/footer.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import { LoremIpsumModalComponent } from './shared/lorem-ipsum-modal/lorem-ipsum-modal.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 @NgModule({
   declarations: [
@@ -23,16 +20,13 @@ import { LoremIpsumModalComponent } from './shared/lorem-ipsum-modal/lorem-ipsum
     CarouselComponent,
     FooterComponent,
     DashboardComponent,
-    LoremIpsumModalComponent,
+    ProjectsComponent,
   ],
 
   imports: [
     BrowserModule,
     FormsModule,
     CommonModule,
-    ProjectModule,
-    ProfileModule,
-    InstructionsModule,
     AppRoutingModule,
   ],
 

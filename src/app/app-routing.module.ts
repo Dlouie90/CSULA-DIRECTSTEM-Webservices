@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from './home/home.component';
-import {InstructionsComponent} from './instructions-mod/instructions.component';
-import {DashboardComponent} from './dashboard/dashboard.component';
+import {ProjectsComponent} from './projects/projects.component';
 
 const routes: Routes = [
   {
@@ -15,12 +14,8 @@ const routes: Routes = [
     pathMatch : 'full'
   },
   {
-    path     : 'instructions',
-    component: InstructionsComponent
-  },
-  {
-    path     : 'dashboard',
-    component: DashboardComponent
+    path: 'projects',
+    component: ProjectsComponent
   }
 ];
 
