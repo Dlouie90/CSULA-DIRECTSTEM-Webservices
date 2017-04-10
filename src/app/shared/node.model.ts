@@ -1,8 +1,13 @@
+import {Property} from './property.model';
 /**
- * An object that represent is used to represent a webservice visually.
+ * This class is used to represent a webservice. It has two primary set
+ * of properties, graph and profile. The graph properties are the
+ * properties used to help visualize the webservice on a graph and
+ * the profile properties are used to describe what the webservice does.
  */
 export class Node {
 
+  /* Graph Properties */
   id: number;
   x: number;
   y: number;
@@ -12,12 +17,26 @@ export class Node {
   isOutput: boolean;
   name: string;
 
+  /* Webservice Profile Properties */
+  title: string;
+  description: string;
+  type: string;
+  domain: string;
+  path: string;
+  parameters: Array<Property>;
+  returnValues: Array<Property>;
+
   /** Return true if the node is neither a input or output node. */
   static isRegular(node) {
     return !(node.isInput || node.isOutput);
   }
 
-  constructor(id: number, x: number, y: number) {
+  static create(id: number) {
+    return new Node(id, 100, 100);
+  }
+
+  constructor(id: number, x: number, y: number, profile?: Profile) {
+    /* Graph Properties */
     this.id        = id;
     this.x         = x;
     this.y         = y;
@@ -26,5 +45,24 @@ export class Node {
     this.isInput   = false;
     this.isOutput  = false;
     this.name      = 'webservice-' + id;
+
+    /* Webservice Profile Properties */
+    this.title        = profile.title || null;
+    this.description  = profile.description || null;
+    this.type         = profile.type || null;
+    this.domain       = profile.domain || null;
+    this.path         = profile.path || null;
+    this.parameters   = profile.parameters || [];
+    this.returnValues = profile.returnValues || [];
   }
+}
+
+interface Profile {
+  title?: string;
+  description?: string;
+  type?: string;
+  domain?: string;
+  path?: string;
+  parameters?: Array<Property>;
+  returnValues?: Array<Property>;
 }

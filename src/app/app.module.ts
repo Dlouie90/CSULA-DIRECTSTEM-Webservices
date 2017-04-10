@@ -10,7 +10,9 @@ import {CarouselComponent} from './home/carousel/carousel.component';
 import {CommonModule} from '@angular/common';
 import {FooterComponent} from './footer/footer.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import { ProjectsComponent } from './projects/projects.component';
+import {ProjectsComponent} from './projects/projects.component';
+import {DetailComponent} from './projects/detail/detail.component';
+import {NodeService} from './shared/node.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { ProjectsComponent } from './projects/projects.component';
     FooterComponent,
     DashboardComponent,
     ProjectsComponent,
+    DetailComponent,
   ],
 
   imports: [
@@ -30,7 +33,7 @@ import { ProjectsComponent } from './projects/projects.component';
     AppRoutingModule,
   ],
 
-  providers: [],
+  providers: [NodeService],
 
   bootstrap: [AppComponent]
 })
