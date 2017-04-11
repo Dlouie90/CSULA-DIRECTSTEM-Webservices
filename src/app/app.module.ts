@@ -13,6 +13,9 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {ProjectsComponent} from './projects/projects.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {NodeService} from './shared/node.service';
+import { AccordionComponent } from './projects/detail/accordion/accordion.component';
+import { PropertyTableComponent } from './projects/detail/property-table/property-table.component';
+import { PrimaryFieldsComponent } from './projects/detail/primary-fields/primary-fields.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,9 @@ import {NodeService} from './shared/node.service';
     DashboardComponent,
     ProjectsComponent,
     DetailComponent,
+    AccordionComponent,
+    PropertyTableComponent,
+    PrimaryFieldsComponent,
   ],
 
   imports: [

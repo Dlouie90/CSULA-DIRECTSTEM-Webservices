@@ -1,0 +1,29 @@
+<div id="accordion-{{id}}"
+     class="mb-3"
+     role="tablist"
+     aria-multiselectable="true">
+  <div class="card">
+    <div class="card-header text-center"
+         role="tab"
+         id="headingOne">
+      <h5 class="mb-0">
+        <a data-toggle="collapse"
+           data-parent="#accordion"
+           href="#collapseOne-{{id}}"
+           aria-expanded="true"
+           aria-controls="collapseOne">
+          {{title}}
+        </a>
+      </h5>
+    </div>
+
+    <div id="collapseOne-{{id}}"
+         class="collapse show"
+         role="tabpanel"
+         aria-labelledby="headingOne">
+      <div class="card-block">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>

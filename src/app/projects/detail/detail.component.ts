@@ -12,11 +12,14 @@ import 'rxjs/add/operator/switchMap';
 })
 export class DetailComponent implements OnInit {
 
-  @Input() node: Node;
+  @Input()
+  node: Node;
+  editMode: boolean;
 
   constructor(private nodeService: NodeService,
               private route: ActivatedRoute,
               private location: Location) {
+
   }
 
   ngOnInit(): void {
@@ -27,6 +30,8 @@ export class DetailComponent implements OnInit {
         .subscribe((node: Node) => {
           return this.node = node;
         });
+
+    this.editMode = false;
   }
 
 }
