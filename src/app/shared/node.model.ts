@@ -57,6 +57,11 @@ export class Node {
       this.returnValues = profile.returnValues || [];
     }
   }
+
+
+  addCompositionNode(node: Node): void {
+    this.children.push(node);
+  }
 }
 
 interface Profile {

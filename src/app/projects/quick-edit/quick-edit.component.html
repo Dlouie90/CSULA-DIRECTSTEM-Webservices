@@ -1,4 +1,5 @@
-<div *ngIf="node" class="p-3">
+<div *ngIf="node"
+     class="p-3">
   <h2 class="text-center">Quick Edit</h2>
   <hr>
   <!-- ID -->
@@ -78,4 +79,13 @@
     </div>
   </div>
 
+
+  <!-- View Composition Nodes -->
+  <p><strong>Composition</strong> Nodes: {{node.children.length}}</p>
+  <div>
+    <ul class="list-inline">
+      <li class="list-inline-item"
+          *ngFor="let n of node.children">NODE-ID-{{n.id}}</li>
+    </ul>
+  </div>
 </div>
