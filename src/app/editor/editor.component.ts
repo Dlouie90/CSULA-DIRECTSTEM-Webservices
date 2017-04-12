@@ -4,6 +4,7 @@ import {Graph} from '../shared/graph.model';
 import {NodeService} from '../shared/node.service';
 import {ActivatedRoute, Params} from '@angular/router';
 import {Node} from '../shared/node.model';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector   : 'app-editor',
@@ -18,8 +19,11 @@ export class EditorComponent implements OnInit {
   graph: Graph;
   selectedNode;
 
+  closeResult: string;
+
   constructor(private nodeService: NodeService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -72,8 +76,35 @@ export class EditorComponent implements OnInit {
     this.selectedNode = this.graph.state.selectedNode;
   }
 
-  delete(): void {
-    this.graph.delete();
+  remove(): void {
+    this.graph.remove();
     this.closeContextMenu();
+  }
+
+  edit(content): void {
+
+    if (this.graph.state.selectedNode) {
+      this.open(content);
+    }
+    this.closeContextMenu();
+  }
+
+  open(content) {
+    this.modalService.open(content).result.then((result) => {
+      this.graph.updateGraph();
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 }

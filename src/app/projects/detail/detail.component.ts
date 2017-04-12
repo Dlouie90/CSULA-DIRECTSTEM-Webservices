@@ -21,14 +21,15 @@ export class DetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params
-        .switchMap((params: Params) => {
-          return this.nodeService.getNode(+params['id']);
-        })
-        .subscribe((node: Node) => {
-          return this.node = node;
-        });
-
+    if (!this.node) {
+      this.route.params
+          .switchMap((params: Params) => {
+            return this.nodeService.getNode(+params['id']);
+          })
+          .subscribe((node: Node) => {
+            return this.node = node;
+          });
+    }
     this.editMode = false;
   }
 

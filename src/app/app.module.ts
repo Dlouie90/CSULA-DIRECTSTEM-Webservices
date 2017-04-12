@@ -17,6 +17,7 @@ import {AccordionComponent} from './projects/detail/accordion/accordion.componen
 import {PropertyTableComponent} from './projects/detail/property-table/property-table.component';
 import {EditorComponent} from './editor/editor.component';
 import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.c
     BrowserModule,
     FormsModule,
     CommonModule,
+    NgbModule.forRoot(),
     AppRoutingModule,
   ],
 

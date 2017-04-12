@@ -1,20 +1,46 @@
+<div id="hello"></div>
 <div id="d3-editor"
      (click)="closeContextMenu(); updateSelected()"
      (mouseup)="detectRightMouseClick($event)"
      oncontextmenu="return false">
 </div>
 
+
+<template #content
+          let-c="close"
+          let-d="dismiss">
+
+  <div class="modal-header">
+    <button type="button"
+            class="btn btn-secondary btn-block"
+            (click)="c('Close click')">Close</button>
+  </div>
+  <app-detail [node]="graph.state.selectedNode"></app-detail>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary btn-block"
+            (click)="c('Close click')">Close</button>
+  </div>
+</template>
+
+<button class="btn btn-lg btn-outline-primary"
+        (click)="open(content)">Launch demo modal</button>
+
+<hr>
 <div class="rightClickPanel"
      [ngStyle]="rightPanelStyle">
 
   <div class="dropdown show">
     <div class="dropdown-menu">
-      <a class="dropdown-item" (click)="insert($event)">Insert</a>
-      <a class="dropdown-item" (click)="delete()">Delete</a>
-      <a class="dropdown-item disabled">Composition</a>
-      <a class="dropdown-item disabled">Delete</a>
+      <a class="dropdown-item"
+         (click)="insert($event)">Insert</a>
+      <a class="dropdown-item"
+         (click)="remove()">Delete</a>
+      <a class="dropdown-item"
+         (click)="edit(content)">Edit</a>
       <a class="dropdown-item disabled">Composition</a>
     </div>
   </div>
 
 </div>
+<pre>{{closeResult}}</pre>

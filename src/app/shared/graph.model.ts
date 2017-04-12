@@ -126,12 +126,6 @@ export class Graph {
           thisGraph.dragmove.call(thisGraph, args);
         });
 
-    // handle deletion of nodes/edges
-    d3.select(window)
-        .on('keydown', function () {
-          thisGraph.svgKeyDown.call(thisGraph);
-        });
-
     // insert a new node based on the cursor's location
     svgIn.on('mousedown', function (d) {
       thisGraph.svgMouseDown.call(thisGraph, d);
@@ -160,6 +154,10 @@ export class Graph {
    *  all the other edges and highlight the current click one
    */
   pathMouseDown(d3path, link) {
+    /* Don't toggle highlight if it is a right click */
+    if ((d3.event as any).which === 3) {
+      return;
+    }
     const thisGraph = this;
     const state     = thisGraph.state;
     const prevEdge  = state.selectedEdge;
@@ -337,48 +335,8 @@ export class Graph {
   /* =============== PROTOTYPE SVG FUNCTIONS =============== */
 
 
-  /** Delete the selected node or edge when the user press the delete key or
-   *  back space key. When deleting a node, all the associated edge with be
-   *  deleted as well.
-   */
-  svgKeyDown() {
-    const thisGraph = this;
-    const state     = thisGraph.state;
-
-    state.lastKeyDown  = (d3.event as any).keyCode;
-    const selectedNode = state.selectedNode;
-    const selectedEdge = state.selectedEdge;
-
-    switch ((d3.event as any).keyCode) {
-      case final.BACK_SPACE_KEY:
-      case final.DELETE_KEY:
-
-        /* Can only delete selected node that are not an input/output node. */
-        if (selectedNode && Node.isRegular(selectedNode)) {
-          /* Remove the node form the list. */
-          thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
-          /* Remove all edges originating from this node. */
-          thisGraph.spliceLinksFormNode(selectedNode);
-          /* Remove the node from all neighbors field */
-          this.removeFromNeighbor(this.nodes, selectedNode);
-
-          state.selectedNode = null;
-          thisGraph.updateGraph();
-        } else if (selectedEdge) {
-          /* Remove the edge from the edge list */
-          thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
-
-          /* Remove the edge from the node list too. */
-          this.removeEdge(thisGraph.nodes, selectedEdge);
-
-          state.selectedEdge = null;
-          thisGraph.updateGraph();
-        }
-    }
-  }
-
   /** A way for angular 2 to delete an edge or node. */
-  delete() {
+  remove() {
     const thisGraph = this;
     const state     = thisGraph.state;
 
@@ -446,13 +404,7 @@ export class Graph {
     const thisGraph = this;
     const state     = thisGraph.state;
 
-    if (state.graphMouseDown && (d3.event as any).shiftKey) {
-      const xyCord = d3.mouse(thisGraph.svgG.node());
-      const node   = new Node(idCounter(), xyCord[0], xyCord[1]);
-
-      thisGraph.nodes.push(node);
-      thisGraph.updateGraph();
-    } else if (state.shiftNodeDrag) {
+    if (state.shiftNodeDrag) {
       // hide the "drag line": the line that display when you are trying
       // to connect an edge to a node
       state.shiftNodeDrag = false;
@@ -540,9 +492,22 @@ export class Graph {
         });
 
     // update all current circles on the graph
-    thisGraph.circles.attr('transform', function (d) {
-      return 'translate(' + d.x + ',' + d.y + ')';
-    });
+    thisGraph.circles
+        .attr('transform', function (d) {
+          return 'translate(' + d.x + ',' + d.y + ')';
+        })
+        .select('text')
+        .text(function (d) {
+          if (Node.isRegular(d)) {
+            if (d.title) {
+              return d.title;
+            } else {
+              return `${d.id}`;
+            }
+          } else {
+            return d.isInput ? 'Input' : 'Output';
+          }
+        });
 
     // add new circles to the graph(they are wrapped in <g>)
     const newGs = thisGraph.circles.enter()
