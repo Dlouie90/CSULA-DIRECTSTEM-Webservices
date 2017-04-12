@@ -1,9 +1,9 @@
 <div *ngIf="node">
-  <a [routerLink]="['../../../editor', node.id]"
-     id="btn-new-project"
-     class="btn btn-outline-success btn-lg btn-block mx-auto">
+  <button id="btn-new-project"
+          (click)="select()"
+          class="btn btn-outline-success btn-lg btn-block mx-auto">
     Graph Editor
-  </a>
+  </button>
   <app-accordion title="Primary Fields"
                  id="privw--{{node.id}}">
 

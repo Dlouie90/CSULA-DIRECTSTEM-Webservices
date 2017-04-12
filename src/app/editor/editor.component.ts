@@ -33,6 +33,7 @@ export class EditorComponent implements OnInit {
         })
         .subscribe((node: Node) => {
           this.initGraph(node);
+          this.nodeService.select = node;
           return this.node = node;
         });
   }

@@ -16,6 +16,7 @@ import {NodeService} from './shared/node.service';
 import {AccordionComponent} from './projects/detail/accordion/accordion.component';
 import {PropertyTableComponent} from './projects/detail/property-table/property-table.component';
 import {EditorComponent} from './editor/editor.component';
+import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {EditorComponent} from './editor/editor.component';
     AccordionComponent,
     PropertyTableComponent,
     EditorComponent,
+    NodeQuickviewComponent,
   ],
 
   imports: [

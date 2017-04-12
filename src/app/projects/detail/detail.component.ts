@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {NodeService} from '../../shared/node.service';
 import {Node} from '../../shared/node.model';
 import 'rxjs/add/operator/switchMap';
@@ -16,7 +16,8 @@ export class DetailComponent implements OnInit {
   editMode: boolean;
 
   constructor(private nodeService: NodeService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -29,6 +30,10 @@ export class DetailComponent implements OnInit {
         });
 
     this.editMode = false;
+  }
+
+  select(): void {
+    this.router.navigate(['../../../editor', this.node.id]);
   }
 
 }
