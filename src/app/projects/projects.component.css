@@ -1,7 +1,7 @@
 a > span {
-    float: right;
+  float: right;
 }
 
 button#btn-new-project {
-    width: 50%;
+  width: 50%;
 }

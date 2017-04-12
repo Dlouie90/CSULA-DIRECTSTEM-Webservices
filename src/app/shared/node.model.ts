@@ -47,13 +47,15 @@ export class Node {
     this.name      = 'webservice-' + id;
 
     /* Webservice Profile Properties */
-    this.title        = profile.title || null;
-    this.description  = profile.description || null;
-    this.type         = profile.type || null;
-    this.domain       = profile.domain || null;
-    this.path         = profile.path || null;
-    this.parameters   = profile.parameters || [];
-    this.returnValues = profile.returnValues || [];
+    if (profile) {
+      this.title        = profile.title || null;
+      this.description  = profile.description || null;
+      this.type         = profile.type || null;
+      this.domain       = profile.domain || null;
+      this.path         = profile.path || null;
+      this.parameters   = profile.parameters || [];
+      this.returnValues = profile.returnValues || [];
+    }
   }
 }
 

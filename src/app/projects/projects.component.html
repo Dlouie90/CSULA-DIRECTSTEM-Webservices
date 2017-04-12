@@ -1,29 +1,32 @@
-<div class="row mb-5">
-  <div class="offset-sm-3 col-sm-9">
-    <button type="button"
-            class="btn btn-outline-success btn-lg btn-block">
-      Create New Project
-    </button>
-  </div>
-</div>
-
-<div class="row">
-
-  <div class="col-sm-3">
-    <div class="list-group">
-      <a *ngFor="let node of nodes"
-         class="list-group-item list-group-item-action"
-         [routerLink]="['detail', node.id]"
-         routerLinkActive="active">
-        <span *ngIf="node.title">{{node.title}}</span>
-        <span *ngIf="!node.title"
-              class="badge-info">{{node.id}}</span>
-      </a>
+<div class="container">
+  <div class="row">
+    <div class="offset-sm-3 col-sm-9">
+      <button type="button"
+              id="btn-new-project"
+              class="btn btn-outline-success btn-lg btn-block mx-auto">
+        Create New Project
+      </button>
     </div>
   </div>
 
-  <div class="col-sm-9">
-    <router-outlet></router-outlet>
-  </div>
+  <div class="row">
 
+    <div class="col-sm-3">
+      <div class="list-group">
+        <a *ngFor="let node of nodes"
+           class="list-group-item list-group-item-action"
+           [routerLink]="['detail', node.id]"
+           routerLinkActive="active">
+          <span *ngIf="node.title">{{node.title}}</span>
+          <span *ngIf="!node.title"
+                class="badge-info">{{node.id}}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-sm-9">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
 </div>

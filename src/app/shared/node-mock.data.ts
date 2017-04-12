@@ -4,7 +4,7 @@ import {Property} from './property.model';
 export const DATA: Array<Node> = [
   new Node(
       0,
-      100,
+      300,
       100,
       {
         title       : 'SUMMONER-V1.4',
@@ -30,8 +30,8 @@ export const DATA: Array<Node> = [
 
   new Node(
       1,
+      300,
       100,
-      200,
       {
         title       : 'CURRENT-GAME-V1.0',
         description : 'Get current game information for the given summoner ID. (REST)',

@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
 import {NodeService} from '../../shared/node.service';
 import {Node} from '../../shared/node.model';
-import {Location} from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -17,9 +16,7 @@ export class DetailComponent implements OnInit {
   editMode: boolean;
 
   constructor(private nodeService: NodeService,
-              private route: ActivatedRoute,
-              private location: Location) {
-
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {

@@ -4,7 +4,7 @@ import {State} from './state.model';
 
 const idCounter = incrementer();
 function incrementer() {
-  let counter = 0;
+  let counter = 10;
 
   return function () {
     return counter++;
@@ -237,6 +237,11 @@ export class Graph {
    * Insert an edge into a graph if it "connects" to a node
    */
   circleMouseUp(d3node, d) {
+    /* ignore right click events */
+    if ((d3.event as any).which === 3) {
+      return;
+    }
+
     const thisGraph = this;
     const state     = thisGraph.state;
 
@@ -347,7 +352,6 @@ export class Graph {
     switch ((d3.event as any).keyCode) {
       case final.BACK_SPACE_KEY:
       case final.DELETE_KEY:
-        // (d3.event as any).preventDefault();
 
         /* Can only delete selected node that are not an input/output node. */
         if (selectedNode && Node.isRegular(selectedNode)) {
@@ -370,6 +374,37 @@ export class Graph {
           state.selectedEdge = null;
           thisGraph.updateGraph();
         }
+    }
+  }
+
+  /** A way for angular 2 to delete an edge or node. */
+  delete() {
+    const thisGraph = this;
+    const state     = thisGraph.state;
+
+    const selectedNode = state.selectedNode;
+    const selectedEdge = state.selectedEdge;
+
+    /* Can only delete selected node that are not an input/output node. */
+    if (selectedNode && Node.isRegular(selectedNode)) {
+      /* Remove the node form the list. */
+      thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
+      /* Remove all edges originating from this node. */
+      thisGraph.spliceLinksFormNode(selectedNode);
+      /* Remove the node from all neighbors field */
+      this.removeFromNeighbor(this.nodes, selectedNode);
+
+      state.selectedNode = null;
+      thisGraph.updateGraph();
+    } else if (selectedEdge) {
+      /* Remove the edge from the edge list */
+      thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
+
+      /* Remove the edge from the node list too. */
+      this.removeEdge(thisGraph.nodes, selectedEdge);
+
+      state.selectedEdge = null;
+      thisGraph.updateGraph();
     }
   }
 
@@ -424,6 +459,13 @@ export class Graph {
       thisGraph.dragLine.classed('hidden', true);
     }
     state.graphMouseDown = false;
+  }
+
+  /** Used for angular 2 to insert a node*/
+  insertNode(x, y) {
+    const node = new Node(idCounter(), x, y);
+    this.nodes.push(node);
+    this.updateGraph();
   }
 
 
@@ -536,7 +578,11 @@ export class Graph {
         .attr('text-anchor', 'middle')
         .text(function (d) {
           if (Node.isRegular(d)) {
-            return `name: ${d.id}`;
+            if (d.title) {
+              return d.title;
+            } else {
+              return `${d.id}`;
+            }
           } else {
             return d.isInput ? 'Input' : 'Output';
           }

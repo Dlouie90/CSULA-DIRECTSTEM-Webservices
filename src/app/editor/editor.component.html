@@ -1,0 +1,20 @@
+<div id="d3-editor"
+     (click)="closeContextMenu(); updateSelected()"
+     (mouseup)="detectRightMouseClick($event)"
+     oncontextmenu="return false">
+</div>
+
+<div class="rightClickPanel"
+     [ngStyle]="rightPanelStyle">
+
+  <div class="dropdown show">
+    <div class="dropdown-menu">
+      <a class="dropdown-item" (click)="insert($event)">Insert</a>
+      <a class="dropdown-item" (click)="delete()">Delete</a>
+      <a class="dropdown-item disabled">Composition</a>
+      <a class="dropdown-item disabled">Delete</a>
+      <a class="dropdown-item disabled">Composition</a>
+    </div>
+  </div>
+
+</div>
