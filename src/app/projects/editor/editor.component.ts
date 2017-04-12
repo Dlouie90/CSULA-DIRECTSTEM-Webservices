@@ -78,6 +78,7 @@ export class EditorComponent implements OnInit {
 
   remove(): void {
     this.graph.remove();
+    this.removeNodeFromService();
     this.closeContextMenu();
   }
 
@@ -116,5 +117,9 @@ export class EditorComponent implements OnInit {
     } else {
       console.error('select a node to save first');
     }
+  }
+
+  removeNodeFromService(): void {
+    this.nodeService.remove(this.selectedNode);
   }
 }

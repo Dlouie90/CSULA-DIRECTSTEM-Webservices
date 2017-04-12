@@ -62,4 +62,13 @@ export class NodeService implements OnInit {
     }
     return false;
   }
+
+  remove(node: Node): boolean {
+    const indexNodeToRemove = this.nodes.findIndex((n: Node) => n.id === node.id);
+    if (indexNodeToRemove !== -1) {
+      this.nodes.splice(indexNodeToRemove, 1);
+      return true;
+    }
+    return false;
+  }
 }
