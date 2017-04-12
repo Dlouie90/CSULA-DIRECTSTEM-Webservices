@@ -5,7 +5,6 @@ import {Node} from '../../shared/node.model';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
-  selector   : 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls  : ['./detail.component.css']
 })
@@ -21,15 +20,13 @@ export class DetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.node) {
-      this.route.params
-          .switchMap((params: Params) => {
-            return this.nodeService.getNode(+params['id']);
-          })
-          .subscribe((node: Node) => {
-            return this.node = node;
-          });
-    }
+    this.route.params
+        .switchMap((params: Params) => {
+          return this.nodeService.getNode(+params['id']);
+        })
+        .subscribe((node: Node) => {
+          return this.node = node;
+        });
     this.editMode = false;
   }
 

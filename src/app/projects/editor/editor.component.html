@@ -11,12 +11,7 @@
           let-c="close"
           let-d="dismiss">
 
-  <div class="modal-header">
-    <button type="button"
-            class="btn btn-secondary btn-block"
-            (click)="c('Close click')">Close</button>
-  </div>
-  <app-detail [node]="graph.state.selectedNode"></app-detail>
+  <app-quick-edit [node]="graph.state.selectedNode"></app-quick-edit>
   <div class="modal-footer">
     <button type="button"
             class="btn btn-secondary btn-block"
