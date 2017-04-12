@@ -32,7 +32,7 @@ export class ProjectsComponent implements OnInit {
 
   createProject(): void {
     const node = this.nodeService.createNew();
-    this.router.navigate(['../editor', node.id]);
+    this.router.navigate(['../projects', node.id], 'editor');
   }
 
 }

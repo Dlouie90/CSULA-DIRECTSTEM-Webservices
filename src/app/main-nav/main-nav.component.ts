@@ -26,7 +26,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.paths = [
       {title: 'Home', url: 'home'},
       {title: 'Projects', url: 'projects'},
-      {title: 'Editor', url: 'editor/0'},
       {title: 'Dashboard', url: 'dashboard', disable: true},
       {title: 'Profile', url: 'profile', disable: true},
     ];

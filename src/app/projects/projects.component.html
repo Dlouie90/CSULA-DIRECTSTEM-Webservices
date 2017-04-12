@@ -16,7 +16,7 @@
       <div class="list-group">
         <a *ngFor="let node of nodes"
            class="list-group-item list-group-item-action"
-           [routerLink]="['detail', node.id]"
+           [routerLink]="[node.id, 'detail']"
            routerLinkActive="active">
           <span *ngIf="node.title">{{node.title}}</span>
           <span *ngIf="!node.title">{{'node-id-'+node.id | uppercase}}</span>

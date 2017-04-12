@@ -5,6 +5,7 @@
      oncontextmenu="return false">
 </div>
 
+<!------------------ HIDDEN CONTENT ------------------>
 
 <template #content
           let-c="close"
@@ -22,9 +23,6 @@
             (click)="c('Close click')">Close</button>
   </div>
 </template>
-
-<button class="btn btn-lg btn-outline-primary"
-        (click)="open(content)">Launch demo modal</button>
 
 <hr>
 <div class="rightClickPanel"

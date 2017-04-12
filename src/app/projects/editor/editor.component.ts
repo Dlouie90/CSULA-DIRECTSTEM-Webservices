@@ -1,9 +1,9 @@
 import * as d3 from 'd3';
 import {Component, Input, OnInit} from '@angular/core';
-import {Graph} from '../shared/graph.model';
-import {NodeService} from '../shared/node.service';
+import {Graph} from '../../shared/graph.model';
+import {NodeService} from '../../shared/node.service';
 import {ActivatedRoute, Params} from '@angular/router';
-import {Node} from '../shared/node.model';
+import {Node} from '../../shared/node.model';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({

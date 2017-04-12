@@ -34,7 +34,7 @@ export class DetailComponent implements OnInit {
   }
 
   select(): void {
-    this.router.navigate(['../../../editor', this.node.id]);
+    this.router.navigate(['../../../projects', this.node.id, 'editor']);
   }
 
 }
