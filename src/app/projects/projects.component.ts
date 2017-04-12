@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NodeService} from '../shared/node.service';
 import {Node} from '../shared/node.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector   : 'app-projects',
@@ -10,7 +11,8 @@ import {Node} from '../shared/node.model';
 export class ProjectsComponent implements OnInit {
   nodes: Array<Node>;
 
-  constructor(private nodeService: NodeService) {
+  constructor(private nodeService: NodeService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -26,6 +28,11 @@ export class ProjectsComponent implements OnInit {
           console.log(error);
           this.nodes = [];
         });
+  }
+
+  createProject(): void {
+    const node = this.nodeService.createNew();
+    this.router.navigate(['../editor', node.id]);
   }
 
 }

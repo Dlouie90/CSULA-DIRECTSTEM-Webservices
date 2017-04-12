@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {Node} from './node.model';
 import {DATA} from './node-mock.data';
-import {Subject} from 'rxjs/subject';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class NodeService implements OnInit {
@@ -12,8 +12,8 @@ export class NodeService implements OnInit {
           selectedChanged: Subject<Node> = new Subject<Node>();
 
   constructor() {
-    this.nodes        = [].concat(DATA);
-    this.counter      = DATA.length;
+    this.nodes   = [].concat(DATA);
+    this.counter = DATA.length;
   }
 
   ngOnInit(): void {
@@ -29,9 +29,16 @@ export class NodeService implements OnInit {
     return this.selectedNode;
   }
 
-  add(args: any): void {
-    const node = Node.create(this.nextCount());
-    this.nodes.push(node);
+  createNew(pos?: { x: number, y: number }): Node {
+    if (pos) {
+      const node = new Node(this.nextCount(), pos.x, pos.y);
+      this.nodes.push(node);
+      return node;
+    } else {
+      const node = Node.create(this.nextCount());
+      this.nodes.push(node);
+      return node;
+    }
   }
 
   nextCount(): number {

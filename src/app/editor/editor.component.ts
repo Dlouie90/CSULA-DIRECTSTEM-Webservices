@@ -60,7 +60,11 @@ export class EditorComponent implements OnInit {
   }
 
   insert($event): void {
-    this.graph.insertNode($event.clientX, $event.clientY - 80);
+    const node = this.nodeService.createNew({
+      x: $event.clientX,
+      y: $event.clientY - 80
+    });
+    this.graph.insertNode(node);
     this.closeContextMenu();
   }
 

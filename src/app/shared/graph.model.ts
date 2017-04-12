@@ -462,8 +462,7 @@ export class Graph {
   }
 
   /** Used for angular 2 to insert a node*/
-  insertNode(x, y) {
-    const node = new Node(idCounter(), x, y);
+  insertNode(node: Node) {
     this.nodes.push(node);
     this.updateGraph();
   }

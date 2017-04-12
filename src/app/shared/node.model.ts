@@ -32,7 +32,7 @@ export class Node {
   }
 
   static create(id: number) {
-    return new Node(id, 100, 100);
+    return new Node(id, 300, 100);
   }
 
   constructor(id: number, x: number, y: number, profile?: Profile) {
