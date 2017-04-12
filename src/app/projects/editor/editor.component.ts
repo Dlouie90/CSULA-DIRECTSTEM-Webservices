@@ -90,12 +90,14 @@ export class EditorComponent implements OnInit {
   }
 
   open(content) {
-    this.modalService.open(content).result.then((result) => {
-      this.graph.updateGraph();
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content).result
+        .then((result) => {
+          this.graph.updateGraph();
+          this.saveToService();
+          this.closeResult = `Closed with: ${result}`;
+        }, (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        });
   }
 
   getDismissReason(reason: any): string {
@@ -105,6 +107,14 @@ export class EditorComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       return `with: ${reason}`;
+    }
+  }
+
+  saveToService(): void {
+    if (this.selectedNode) {
+      this.nodeService.update(this.selectedNode);
+    } else {
+      console.error('select a node to save first');
     }
   }
 }

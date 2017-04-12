@@ -1,4 +1,4 @@
-<div id="hello"></div>
+<pre *ngIf="selectedNode">{{selectedNode.title}}, {{selectedNode.id}}</pre>
 <div id="d3-editor"
      (click)="closeContextMenu(); updateSelected()"
      (mouseup)="detectRightMouseClick($event)"

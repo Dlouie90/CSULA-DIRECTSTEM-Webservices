@@ -53,4 +53,13 @@ export class NodeService implements OnInit {
     return this.getNodes()
         .then((nodes: Node[]) => nodes.find((node: Node) => node.id === id));
   }
+
+  update(node: Node): boolean {
+    const nodeToUpdate = this.nodes.find((n: Node) => n.id === node.id);
+    if (nodeToUpdate) {
+      Object.assign(nodeToUpdate, node);
+      return true;
+    }
+    return false;
+  }
 }
