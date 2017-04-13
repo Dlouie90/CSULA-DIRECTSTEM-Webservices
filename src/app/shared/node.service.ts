@@ -71,4 +71,10 @@ export class NodeService implements OnInit {
     }
     return false;
   }
+
+  /** Update the nodes with the latest changes.*/
+  refreshNode(node: Node) {
+    const freshNode = this.nodes.find((n: Node) => n.id === node.id);
+    Object.assign(node, freshNode);
+  }
 }

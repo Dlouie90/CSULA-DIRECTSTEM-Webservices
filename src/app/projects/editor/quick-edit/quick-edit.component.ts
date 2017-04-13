@@ -28,6 +28,9 @@ export class QuickEditComponent implements OnInit {
   }
 
   ngOnInit() {
+    /* Ensure the node is the latest */
+    this.nodeService.refreshNode(this.node);
+
     this.fGroup = new FormGroup({
       id         : new FormControl(this.node.id),
       title      : new FormControl(this.node.title),

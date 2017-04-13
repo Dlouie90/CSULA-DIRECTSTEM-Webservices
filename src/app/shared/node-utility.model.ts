@@ -7,6 +7,6 @@ import {Node} from './node.model';
  */
 export class NodeUtility {
   static title(node: Node): string {
-    return node.title || `NODE-ID-${node.id}`;
+    return node.title ? node.title.toUpperCase() : `NODE-ID-${node.id}`;
   }
 }

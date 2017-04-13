@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import * as _ from 'lodash';
 import {Component, Input, OnInit} from '@angular/core';
 import {Graph} from '../../shared/graph.model';
 import {NodeService} from '../../shared/node.service';
@@ -68,11 +69,23 @@ export class EditorComponent implements OnInit {
     this.rightPanelStyle = {'display': 'none'};
   }
 
+  /** Insert a node onto the graph and update nodeService.
+   * Also add the node into its parent.children array. */
   insert($event): void {
-    const node = this.nodeService.createNew({
+    const OFFSET = -120;
+    const node   = this.nodeService.createNew({
       x: $event.clientX,
-      y: $event.clientY - 80
+      y: $event.clientY + OFFSET
     });
+
+    /* Update the view to include the new node. */
+    const recentView = _.last(this.views);
+    if (recentView.parentNode) {
+      recentView.parentNode.children.push(node);
+      recentView.nodes.push(node);
+      this.nodeService.update(recentView.parentNode);
+    }
+
     this.graph.insertNode(node);
     this.closeContextMenu();
   }
@@ -125,6 +138,7 @@ export class EditorComponent implements OnInit {
 
   viewComposition(content): void {
     if (this.selectedNode) {
+
       /* Alert the users with a modal that this view has no composition nodes */
       if (this.selectedNode.children.length === 0) {
         this.openNoCompositionModal(content);
@@ -139,22 +153,24 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
+
   goBackOneLevel() {
     /* Don't undo if the user only have history state on the
      * stack because it is the main graph view. */
     if (this.views.length <= 1) {
+      this.closeContextMenu();
       return;
     }
 
-    /* Remove the current state from history. */
+    /* Remove the previous view and draw the current one. */
     this.views.pop();
-
-    /* Draw a graph of the state on top of the history stack */
+    this.updateNodes(_.last(this.views).nodes);
     this.drawCurrentView();
+    this.closeContextMenu();
   }
 
   drawCurrentView() {
-    const recentView = this.views[this.views.length - 1];
+    const recentView = _.last(this.views);
 
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
@@ -166,6 +182,16 @@ export class EditorComponent implements OnInit {
   onViewSelect($event: number): void {
     this.views.splice($event + 1);
     this.drawCurrentView();
+  }
+
+  /**
+   * Update the  nodes with the latest changes. This should be called
+   * after navigating to composition view because the user could insert,
+   * add children, to a node and thus it would needs to be updated. .*/
+  updateNodes(nodes: Array<Node>): void {
+    nodes.forEach((n: Node) => {
+      this.nodeService.refreshNode(n);
+    });
   }
 
 }
