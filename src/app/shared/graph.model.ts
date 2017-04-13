@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import {Node} from './node.model';
-import {State} from './state.model';
+import {View} from './view.model';
+import {NodeUtility} from './node-utility.model';
 
 const idCounter = incrementer();
 function incrementer() {
@@ -37,7 +38,7 @@ export class Graph {
   state;
 
   /** Returns a default state that could be used to initialize a graph*/
-  static get defaultState(): State {
+  static get defaultState(): View {
     /* Create 3 default nodes: regular, input, output node. */
     const input     = new Node(idCounter(), 100, 100);    // default neighbors,
     const output    = new Node(idCounter(), 750, 100);    // composition = []
@@ -49,7 +50,7 @@ export class Graph {
     input.neighbors.push(output);
 
     /* Default state with no parentNode. */
-    return new State([input, output]);
+    return new View([input, output]);
   };
 
   constructor(svgIn: any, nodesIn: Node[], parentNode?: Node) {
@@ -65,7 +66,7 @@ export class Graph {
     this.stack      = [];
     this.parentNode = parentNode;
 
-    // State of the graph (selected nodes, links, etc..)
+    // View of the graph (selected nodes, links, etc..)
     this.state = {
       selectedNode  : null,
       selectedEdge  : null,
@@ -425,12 +426,12 @@ export class Graph {
    * Return a copy of the state of the graph. Can be used to repopulate the
    * the state of the graph.
    */
-  currentState() {
+  get currentView() {
     const nodes = this.nodes.map(node => {
       return this.copyObject(node);
     });
 
-    return new State(nodes, this.parentNode);
+    return new View(nodes, this.parentNode);
   }
 
 
@@ -499,11 +500,7 @@ export class Graph {
         .select('text')
         .text(function (d) {
           if (Node.isRegular(d)) {
-            if (d.title) {
-              return d.title;
-            } else {
-              return `${d.id}`;
-            }
+            return NodeUtility.title(d);
           } else {
             return d.isInput ? 'Input' : 'Output';
           }
@@ -542,11 +539,7 @@ export class Graph {
         .attr('text-anchor', 'middle')
         .text(function (d) {
           if (Node.isRegular(d)) {
-            if (d.title) {
-              return d.title;
-            } else {
-              return `${d.id}`;
-            }
+            return NodeUtility.title(d);
           } else {
             return d.isInput ? 'Input' : 'Output';
           }

@@ -3,7 +3,7 @@ import {Node} from './node.model';
 /**
  * Represent the current visual state of the graphs.
  */
-export class State {
+export class View {
   nodes: Node[];
   parentNode: Node;
 

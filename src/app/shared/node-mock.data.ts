@@ -28,8 +28,8 @@ const node1 = new Node(
 
 const node2 = new Node(
     1,
-    300,
-    100,
+    500,
+    200,
     {
       title       : 'CURRENT-GAME-V1.0',
       description : 'Get current game information for the given summoner ID. (REST)',

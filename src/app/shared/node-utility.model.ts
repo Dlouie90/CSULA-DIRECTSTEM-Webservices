@@ -1,0 +1,12 @@
+import {Node} from './node.model';
+
+/** Provides utility methods for Node class.
+ *
+ * Parsing/stringifying a javascript class will
+ * return an object,thus losing
+ */
+export class NodeUtility {
+  static title(node: Node): string {
+    return node.title || `NODE-ID-${node.id}`;
+  }
+}

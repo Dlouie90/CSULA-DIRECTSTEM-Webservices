@@ -1,4 +1,8 @@
-<pre *ngIf="selectedNode">{{selectedNode.title}}, {{selectedNode.id}}</pre>
+<!-- Navigate through composition levels -->
+<app-breadcrumb [views]="views"
+                (emitViewSelectIndex)="onViewSelect($event)">
+</app-breadcrumb>
+
 <div id="d3-editor"
      (click)="closeContextMenu(); updateSelected()"
      (mouseup)="detectRightMouseClick($event)"
@@ -31,7 +35,11 @@
          (click)="remove()">Delete</a>
       <a class="dropdown-item"
          (click)="edit(content)">Edit</a>
-      <a class="dropdown-item disabled">Composition</a>
+      <a class="dropdown-item"
+         (click)="viewComposition()">View</a>
+      <a class="dropdown-item"
+         (click)="goBackOneLevel()">Go Back One Level</a>
+      <a class="dropdown-item disabled">Composite</a>
     </div>
   </div>
 

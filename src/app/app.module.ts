@@ -18,7 +18,8 @@ import {PropertyTableComponent} from './projects/detail/property-table/property-
 import {EditorComponent} from './projects/editor/editor.component';
 import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { QuickEditComponent } from './projects/quick-edit/quick-edit.component';
+import {QuickEditComponent} from './projects/quick-edit/quick-edit.component';
+import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { QuickEditComponent } from './projects/quick-edit/quick-edit.component';
     EditorComponent,
     NodeQuickviewComponent,
     QuickEditComponent,
+    BreadcrumbComponent,
   ],
 
   imports: [
