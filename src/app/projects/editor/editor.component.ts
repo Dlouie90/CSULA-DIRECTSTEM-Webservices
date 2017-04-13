@@ -153,10 +153,12 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
-
-  goBackOneLevel() {
-    /* Don't undo if the user only have history state on the
-     * stack because it is the main graph view. */
+  /**
+   * Navigate back to the parent node. Use to traverse back from
+   * a composition view by one level. */
+  returnToParent() {
+    /* Don't undo if the user only have 1 view left
+     * because it is the main graph view. */
     if (this.views.length <= 1) {
       this.closeContextMenu();
       return;
@@ -177,11 +179,6 @@ export class EditorComponent implements OnInit {
     this.graph = new Graph(
         this.mainSvg, recentView.nodes, recentView.parentNode);
     this.graph.updateGraph();
-  }
-
-  onViewSelect($event: number): void {
-    this.views.splice($event + 1);
-    this.drawCurrentView();
   }
 
   /**

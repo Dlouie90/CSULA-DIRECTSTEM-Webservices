@@ -544,18 +544,26 @@ export class Graph {
             return d.isInput ? 'Input' : 'Output';
           }
         });
-
-    /* Attach an html element onto the circle that display the number
-     * of composition nodes (children) that the current node contains. */
-    newGs.append('foreignObject')
-        .append('xhtml:body')
-        .html(function (d) {
-          if (Node.isRegular(d) && d.children.length - 2 > 0) {
-            /* Minus 2 because we don't want to include the input/output
-             * nodes that every list of nodes contains */
-            return `<p style="float:none">${d.children.length - 2}</p>`;
+    newGs.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('y', 30)
+        .text(d => {
+          if (d.children.length > 0) {
+            return `#:${d.children.length}`;
           }
         });
+
+    ///* Attach an html element onto the circle that display the number
+    // * of composition nodes (children) that the current node contains. */
+    //newGs.append('foreignObject')
+    //    .append('xhtml:body')
+    //    .html(function (d) {
+    //      if (Node.isRegular(d) && d.children.length - 2 > 0) {
+    //        /* Minus 2 because we don't want to include the input/output
+    //         * nodes that every list of nodes contains */
+    //        return `<p style="float:none">${d.children.length - 2}</p>`;
+    //      }
+    //    });
 
     // remove old nodes;
     thisGraph.circles.exit().remove();

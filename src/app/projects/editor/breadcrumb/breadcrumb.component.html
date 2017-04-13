@@ -1,8 +1,7 @@
 <div class="container">
   <nav class="breadcrumb">
     <button class="btn btn-outline-primary"
-            *ngFor="let view of views; let i = index"
-            (click)="emitViewIndex(i)">
+            *ngFor="let view of views">
       {{getViewTitle(view) | uppercase}}
     </button>
   </nav>

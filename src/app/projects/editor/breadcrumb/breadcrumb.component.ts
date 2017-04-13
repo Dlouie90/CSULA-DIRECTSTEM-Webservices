@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit } from '@angular/core';
 import {View} from '../../../shared/view.model';
 import {NodeUtility} from '../../../shared/node-utility.model';
 
@@ -11,9 +11,6 @@ export class BreadcrumbComponent implements OnInit {
   @Input()
   views: Array<View>;
 
-  @Output()
-  emitViewSelectIndex = new EventEmitter<number>();
-
   constructor() {
   }
 
@@ -24,10 +21,5 @@ export class BreadcrumbComponent implements OnInit {
    * it is a root view, return "root view" instead. */
   getViewTitle(view: View): string {
     return view.parentNode ? NodeUtility.title(view.parentNode) : 'root-view';
-  }
-
-  /** Emit the index */
-  emitViewIndex(index: number): void {
-    this.emitViewSelectIndex.emit(index);
   }
 }

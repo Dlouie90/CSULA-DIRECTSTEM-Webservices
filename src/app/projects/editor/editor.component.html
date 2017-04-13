@@ -1,7 +1,5 @@
 <!-- Navigate through composition levels -->
-<app-breadcrumb [views]="views"
-                (emitViewSelectIndex)="onViewSelect($event)">
-</app-breadcrumb>
+<app-breadcrumb [views]="views"></app-breadcrumb>
 
 <!-- The Visual Graph -->
 <div id="d3-editor"
@@ -68,7 +66,7 @@
       <a class="dropdown-item"
          (click)="viewComposition(noComposition)">View</a>
       <a class="dropdown-item"
-         (click)="goBackOneLevel()">Go Back One Level</a>
+         (click)="returnToParent()">Return to Parent</a>
       <a class="dropdown-item disabled">Composite</a>
     </div>
   </div>
