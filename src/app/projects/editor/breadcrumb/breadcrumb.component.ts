@@ -20,9 +20,9 @@ export class BreadcrumbComponent implements OnInit {
   }
 
   /** Return the parentNode title. If the parentNode is null then
-   * it is a root node, return "root node" instead. */
+   * it is a root view, return "root view" instead. */
   getViewTitle(view: View): string {
-    return view.parentNode ? view.parentNode.title : 'root-node';
+    return view.parentNode ? view.parentNode.title : 'root-view';
   }
 
   /** Emit the index */

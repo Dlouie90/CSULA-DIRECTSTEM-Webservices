@@ -119,8 +119,17 @@ export class EditorComponent implements OnInit {
     this.nodeService.remove(this.selectedNode);
   }
 
-  viewComposition(): void {
-    if (this.selectedNode && this.selectedNode.children.length > 0) {
+  openNoCompositionModal(content) {
+    this.modalService.open(content);
+  }
+
+  viewComposition(content): void {
+    if (this.selectedNode) {
+      /* Alert the users with a modal that this view has no composition nodes */
+      if (this.selectedNode.children.length === 0) {
+        this.openNoCompositionModal(content);
+      }
+
       this.mainSvg.selectAll('*').remove();
       this.graph = new Graph(this.mainSvg, this.selectedNode.children, this.selectedNode);
       this.views.push(this.graph.currentView);

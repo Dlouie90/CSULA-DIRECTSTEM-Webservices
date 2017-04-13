@@ -3,14 +3,18 @@
                 (emitViewSelectIndex)="onViewSelect($event)">
 </app-breadcrumb>
 
+<!-- The Visual Graph -->
 <div id="d3-editor"
      (click)="closeContextMenu(); updateSelected()"
      (mouseup)="detectRightMouseClick($event)"
      oncontextmenu="return false">
 </div>
 
-<!------------------ HIDDEN CONTENT ------------------>
+<!---------------------------------------------------->
+<!------------------ Modals -------------------------->
+<!---------------------------------------------------->
 
+<!-- Quick Edit Modal -->
 <template #content
           let-close="close"
           let-dismiss="dismiss">
@@ -21,7 +25,35 @@
   </div>
 </template>
 
-<hr>
+<!-- No composition nodes warning modal -->
+<template #noComposition
+          let-c="close"
+          let-d="dismiss">
+
+  <div class="modal-header text-center">
+    <h4>Warning</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body text-center">
+    <p> There are no composition nodes here. </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary"
+            (click)="c('Close click')">Close</button>
+  </div>
+</template>
+
+<!------------------------------------------------------>
+<!-------------------- CONTENT MENU -------------------->
+<!------------------------------------------------------>
 <div class="rightClickPanel"
      [ngStyle]="rightPanelStyle">
 
@@ -34,12 +66,10 @@
       <a class="dropdown-item"
          (click)="edit(content)">Edit</a>
       <a class="dropdown-item"
-         (click)="viewComposition()">View</a>
+         (click)="viewComposition(noComposition)">View</a>
       <a class="dropdown-item"
          (click)="goBackOneLevel()">Go Back One Level</a>
       <a class="dropdown-item disabled">Composite</a>
     </div>
   </div>
-
 </div>
-<pre>{{closeResult}}</pre>
