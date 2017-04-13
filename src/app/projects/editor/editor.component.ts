@@ -6,6 +6,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {Node} from '../../shared/node.model';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {View} from '../../shared/view.model';
+
 @Component({
   selector   : 'app-editor',
   templateUrl: './editor.component.html',
@@ -89,16 +90,15 @@ export class EditorComponent implements OnInit {
   edit(content): void {
 
     if (this.graph.state.selectedNode) {
-      this.open(content);
+      this.openQuickEditModal(content);
     }
     this.closeContextMenu();
   }
 
-  open(content) {
+  openQuickEditModal(content) {
     this.modalService.open(content).result
         .then((result) => {
           this.graph.updateGraph();
-          this.saveToService();
           this.closeResult = `Closed with: ${result}`;
         }, (reason) => {
           this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -112,14 +112,6 @@ export class EditorComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       return `with: ${reason}`;
-    }
-  }
-
-  saveToService(): void {
-    if (this.selectedNode) {
-      this.nodeService.update(this.selectedNode);
-    } else {
-      console.error('select a node to save first');
     }
   }
 

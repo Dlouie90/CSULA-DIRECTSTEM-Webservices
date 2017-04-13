@@ -12,14 +12,12 @@
 <!------------------ HIDDEN CONTENT ------------------>
 
 <template #content
-          let-c="close"
-          let-d="dismiss">
+          let-close="close"
+          let-dismiss="dismiss">
 
-  <app-quick-edit [node]="graph.state.selectedNode"></app-quick-edit>
+  <app-quick-edit [node]="graph.state.selectedNode"
+                  [closeFunction]="close"></app-quick-edit>
   <div class="modal-footer">
-    <button type="button"
-            class="btn btn-secondary btn-block"
-            (click)="c('Close click')">Close</button>
   </div>
 </template>
 

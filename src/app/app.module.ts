@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {AppComponent} from './app.component';
 import {MainNavComponent} from './main-nav/main-nav.component';
@@ -18,7 +18,7 @@ import {PropertyTableComponent} from './projects/detail/property-table/property-
 import {EditorComponent} from './projects/editor/editor.component';
 import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {QuickEditComponent} from './projects/quick-edit/quick-edit.component';
+import {QuickEditComponent} from './projects/editor/quick-edit/quick-edit.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
 
 @NgModule({
@@ -42,6 +42,7 @@ import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.compo
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     NgbModule.forRoot(),
     AppRoutingModule,
