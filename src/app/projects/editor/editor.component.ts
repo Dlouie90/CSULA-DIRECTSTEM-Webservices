@@ -35,6 +35,25 @@ export class EditorComponent implements OnInit {
     this.checkRouteParams();
   }
 
+  /* *********************************************************************** */
+  /* *********************************************************************** */
+  /* *********************************************************************** */
+
+  addEdge($event): void {
+    if ($event.shiftKey && $event.which === 1) {
+      console.log('SHIFT LEFT-MOUSE UP');
+
+      const currentGraphView = this.graph.currentView;
+      this.replaceRecentView(currentGraphView);
+      this.updateViewToService(this.lastView());
+      this.nodeService.getNodes()
+          .then((ns: Node[]) => {
+            console.log('add edge');
+            console.log(ns);
+          });
+    }
+  }
+
   checkRouteParams(): void {
     this.route.params
         .switchMap((params: Params) => {
@@ -47,11 +66,15 @@ export class EditorComponent implements OnInit {
         });
   }
 
-  initGraph(node): void {
-    this.mainSvg = d3.select('div#d3-editor').append('svg');
-    this.graph   = new Graph(this.mainSvg, [node], null);
-    this.views.push(this.graph.currentView);
-    this.graph.updateGraph();
+  closeContextMenu() {
+    this.rightPanelStyle = {'display': 'none'};
+  }
+
+  debugNode(content): void {
+    if (this.selectedNode) {
+      this.modalService.open(content);
+    }
+    this.closeContextMenu();
   }
 
   detectRightMouseClick($event) {
@@ -65,57 +88,23 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  closeContextMenu() {
-    this.rightPanelStyle = {'display': 'none'};
-  }
+  drawCurrentView() {
+    console.log('DRAW CURRENT VIEW');
 
-  /** Insert a node onto the graph and update nodeService.
-   * Also add the node into its parent.children array. */
-  insert($event): void {
-    const OFFSET = -120;
-    const node   = this.nodeService.createNew({
-      x: $event.clientX,
-      y: $event.clientY + OFFSET
-    });
-
-    /* Update the view to include the new node. */
     const recentView = _.last(this.views);
-    if (recentView.parentNode) {
-      recentView.parentNode.children.push(node);
-      recentView.nodes.push(node);
-      this.nodeService.update(recentView.parentNode);
-    }
 
-    this.graph.insertNode(node);
-    this.closeContextMenu();
-  }
-
-  updateSelected(): void {
-    this.selectedNode = this.graph.state.selectedNode;
-  }
-
-  remove(): void {
-    this.graph.remove();
-    this.removeNodeFromService();
-    this.closeContextMenu();
+    /* Reset the svg and load up the previous state */
+    this.mainSvg.selectAll('*').remove();
+    this.graph = new Graph(
+        this.mainSvg, recentView.nodes, recentView.parentNode);
+    this.graph.updateGraph();
   }
 
   edit(content): void {
-
     if (this.graph.state.selectedNode) {
       this.openQuickEditModal(content);
     }
     this.closeContextMenu();
-  }
-
-  openQuickEditModal(content) {
-    this.modalService.open(content).result
-        .then((result) => {
-          this.graph.updateGraph();
-          this.closeResult = `Closed with: ${result}`;
-        }, (reason) => {
-          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        });
   }
 
   getDismissReason(reason: any): string {
@@ -128,29 +117,69 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  removeNodeFromService(): void {
-    this.nodeService.remove(this.selectedNode);
+  initGraph(node): void {
+    this.mainSvg = d3.select('div#d3-editor').append('svg');
+    this.graph   = new Graph(this.mainSvg, [node], null);
+    this.views.push(this.graph.currentView);
+    this.graph.updateGraph();
+  }
+
+  /** Insert a node onto the graph and updateToService nodeService.
+   * Also add the node into its parent.children array. */
+  insertNode($event): void {
+    const OFFSET = -120;
+    const node   = this.nodeService.createNew({
+      x: $event.clientX,
+      y: $event.clientY + OFFSET
+    });
+
+    /* Update the view to include the new node. */
+    const recentView = _.last(this.views);
+    if (recentView.parentNode) {
+      recentView.parentNode.children.push(node);
+      this.nodeService.updateNodeToService(recentView.parentNode);
+    }
+    recentView.nodes.push(node);
+    this.nodeService.add(node);
+    this.graph.insertNode(node);
+
+    this.closeContextMenu();
+  }
+
+  lastView(): View {
+    return _.last(this.views);
+  }
+
+  openQuickEditModal(content) {
+    this.modalService.open(content).result
+        .then((result) => {
+          this.graph.updateGraph();
+          this.closeResult = `Closed with: ${result}`;
+        }, (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        });
   }
 
   openNoCompositionModal(content) {
     this.modalService.open(content);
   }
 
-  viewComposition(content): void {
+  removeNodeFromService(node: Node): void {
+    return this.nodeService.removeNode(node);
+  }
+
+  removeSelected(): void {
+    console.log('REMOVING SELECTED');
+    this.graph.removeSelected();
     if (this.selectedNode) {
-
-      /* Alert the users with a modal that this view has no composition nodes */
-      if (this.selectedNode.children.length === 0) {
-        this.openNoCompositionModal(content);
-      }
-
-      this.mainSvg.selectAll('*').remove();
-      this.graph = new Graph(this.mainSvg, this.selectedNode.children, this.selectedNode);
-      this.views.push(this.graph.currentView);
-      this.graph.updateGraph();
+      this.removeNodeFromService(this.selectedNode);
     }
-
     this.closeContextMenu();
+  }
+
+  replaceRecentView(newView: View): void {
+    this.views.pop();
+    this.views.push(newView);
   }
 
   /**
@@ -163,33 +192,76 @@ export class EditorComponent implements OnInit {
       this.closeContextMenu();
       return;
     }
+    console.log('RETURNING TO PARENT NODE');
+    this.nodeService.getNodes()
+        .then((ns: Node[]) => {
+          console.log('#1');
+          console.log(ns);
+        });
 
-    /* Remove the previous view and draw the current one. */
-    this.views.pop();
-    this.updateNodes(_.last(this.views).nodes);
+    /* Remove the current view and return to the previous view*/
+    const poppedView  = this.views.pop();
+    const currentView = _.last(this.views);
+    this.updateViewFromService(currentView);
+
     this.drawCurrentView();
     this.closeContextMenu();
-  }
-
-  drawCurrentView() {
-    const recentView = _.last(this.views);
-
-    /* Reset the svg and load up the previous state */
-    this.mainSvg.selectAll('*').remove();
-    this.graph = new Graph(
-        this.mainSvg, recentView.nodes, recentView.parentNode);
-    this.graph.updateGraph();
   }
 
   /**
    * Update the  nodes with the latest changes. This should be called
    * after navigating to composition view because the user could insert,
    * add children, to a node and thus it would needs to be updated. .*/
-  updateNodes(nodes: Array<Node>): void {
+  updateNodesFromService(nodes: Array<Node>): void {
+    this.nodeService.updateNodesFromService(nodes);
+  }
+
+  updateNodeFromService(node: Node): void {
+    this.nodeService.updateNodeFromService(node);
+  }
+
+  updateViewFromService(view: View): void {
+    this.updateNodesFromService(view.nodes);
+    this.updateNodeFromService(view.parentNode);
+  }
+
+  updateViewToService(view: View): void {
+    this.updateNodesToService(view.nodes);
+    this.updateNodeToService(view.parentNode);
+  }
+
+  updateNodeToService(node: Node): void {
+    this.nodeService.updateNodeToService(node);
+  }
+
+  updateNodesToService(nodes: Array<Node>): void {
     nodes.forEach((n: Node) => {
-      this.nodeService.refreshNode(n);
+      this.nodeService.updateNodeToService(n);
     });
   }
 
+  updateSelected(): void {
+    this.selectedNode = this.graph.state.selectedNode;
+  }
+
+  viewComposition(content): void {
+    if (this.selectedNode) {
+      console.log('VIEWING COMPOSITION');
+
+      /* Alert the users with a modal that this view has no composition nodes */
+      if (this.selectedNode.children.length === 0) {
+        this.openNoCompositionModal(content);
+      }
+
+      this.updateNodeFromService(this.selectedNode);
+      console.log(this.selectedNode);
+
+      this.mainSvg.selectAll('*').remove();
+      this.graph = new Graph(this.mainSvg, this.selectedNode.children, this.selectedNode);
+      this.views.push(this.graph.currentView);
+      this.graph.updateGraph();
+    }
+    this.closeContextMenu();
+  }
 }
 

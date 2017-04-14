@@ -171,7 +171,7 @@ export class Graph {
       thisGraph.removeSelectFromNode();
     }
 
-    // update the state: this is the selected link
+    // updateToService the state: this is the selected link
     state.mouseDownLink = link;
 
     if (!prevEdge || prevEdge !== link) {
@@ -237,7 +237,7 @@ export class Graph {
    */
   circleMouseUp(d3node, d) {
     /* ignore right click events */
-    if ((d3.event as any).which === 3) {
+    if ((d3.event as any).which === 3 ) {
       return;
     }
 
@@ -337,7 +337,7 @@ export class Graph {
 
 
   /** A way for angular 2 to delete an edge or node. */
-  remove() {
+  removeSelected() {
     const thisGraph = this;
     const state     = thisGraph.state;
 
@@ -426,7 +426,7 @@ export class Graph {
    * Return a copy of the state of the graph. Can be used to repopulate the
    * the state of the graph.
    */
-  get currentView() {
+  get currentView(): View {
     const nodes = this.nodes.map(node => {
       return this.copyObject(node);
     });
@@ -452,13 +452,13 @@ export class Graph {
     const state     = this.state;
 
 
-    // update the paths : paths = ...selectAll("g")
+    // updateToService the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
         .data(thisGraph.edges, function (d) {
           return d.source.id + '+' + d.target.id;
         });
 
-    // For convinces: the update selection
+    // For convinces: the updateToService selection
     const paths = thisGraph.paths;
 
     // Update existing paths (notice no enter() or exit())
@@ -486,13 +486,13 @@ export class Graph {
     // remove old links: the exit selection
     paths.exit().remove();
 
-    // update the circle selection
+    // updateToService the circle selection
     thisGraph.circles = thisGraph.circles
         .data(thisGraph.nodes, function (d) {
           return String(d.id);
         });
 
-    // update all current circles on the graph
+    // updateToService all current circles on the graph
     thisGraph.circles
         .attr('transform', function (d) {
           return 'translate(' + d.x + ',' + d.y + ')';
@@ -549,7 +549,7 @@ export class Graph {
         .attr('y', 30)
         .text(d => {
           if (d.children.length > 0) {
-            return `#:${d.children.length}`;
+            return `:${d.children.length}`;
           }
         });
 

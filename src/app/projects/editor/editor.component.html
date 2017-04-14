@@ -4,7 +4,7 @@
 <!-- The Visual Graph -->
 <div id="d3-editor"
      (click)="closeContextMenu(); updateSelected()"
-     (mouseup)="detectRightMouseClick($event)"
+     (mouseup)="detectRightMouseClick($event); addEdge($event);"
      oncontextmenu="return false">
 </div>
 
@@ -24,7 +24,7 @@
 </template>
 
 <!-- No composition nodes warning modal -->
-<template #noComposition
+<template #emptyCompositionModal
           let-c="close"
           let-d="dismiss">
 
@@ -49,6 +49,24 @@
   </div>
 </template>
 
+
+<!-- view selected node in json -->
+<template #debugModal
+          let-c="close"
+          let-d="dismiss">
+
+  <div class="modal-body text-center">
+    <pre>{{selectedNode.neighbors.length | json}}</pre>
+    <pre>{{selectedNode.neighbors | json}}</pre>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary"
+            (click)="c('Close click')">Close</button>
+  </div>
+</template>
+
 <!------------------------------------------------------>
 <!-------------------- CONTENT MENU -------------------->
 <!------------------------------------------------------>
@@ -58,16 +76,18 @@
   <div class="dropdown show">
     <div class="dropdown-menu">
       <a class="dropdown-item"
-         (click)="insert($event)">Insert</a>
+         (click)="insertNode($event)">Insert</a>
       <a class="dropdown-item"
-         (click)="remove()">Delete</a>
+         (click)="removeSelected()">Delete</a>
       <a class="dropdown-item"
          (click)="edit(content)">Edit</a>
       <a class="dropdown-item"
-         (click)="viewComposition(noComposition)">View</a>
+         (click)="viewComposition(emptyCompositionModal)">View Composition</a>
       <a class="dropdown-item"
          (click)="returnToParent()">Return to Parent</a>
       <a class="dropdown-item disabled">Composite</a>
+      <a class="dropdown-item"
+         (click)="debugNode(debugModal)">Debug Selected Node</a>
     </div>
   </div>
 </div>

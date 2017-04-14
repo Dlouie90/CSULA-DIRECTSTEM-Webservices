@@ -54,27 +54,60 @@ export class NodeService implements OnInit {
         .then((nodes: Node[]) => nodes.find((node: Node) => node.id === id));
   }
 
-  update(node: Node): boolean {
-    const nodeToUpdate = this.nodes.find((n: Node) => n.id === node.id);
-    if (nodeToUpdate) {
-      Object.assign(nodeToUpdate, node);
+  /** Insert a new node if it is unique (by id) */
+  add(node: Node): boolean {
+    if (this.nodes.findIndex((n: Node) => n.id === node.id)) {
+      return false;  // not unique
+    } else {
+      this.nodes.push(node);
+      return true;
+    }
+  }
+
+  /** Update the nodes with the latest changes. */
+  updateNodeFromService(node: Node) {
+    if (node) {
+      const freshNode = this.nodes.find((n: Node) => n.id === node.id);
+      Object.assign(node, freshNode);
+    } else {
+      console.error('you tried to update this node:', node);
+    }
+  }
+
+  updateNodesFromService(nodes: Array<Node>): void {
+    nodes.forEach((n: Node) => {
+      this.updateNodeFromService(n);
+    });
+  }
+
+  /** Update the node onto the service. */
+  updateNodeToService(node: Node): boolean {
+    const serviceNode = this.nodes.find((n: Node) => n.id === node.id);
+    if (serviceNode) {
+      Object.assign(serviceNode, node);
       return true;
     }
     return false;
   }
 
-  remove(node: Node): boolean {
-    const indexNodeToRemove = this.nodes.findIndex((n: Node) => n.id === node.id);
-    if (indexNodeToRemove !== -1) {
-      this.nodes.splice(indexNodeToRemove, 1);
-      return true;
-    }
-    return false;
+  /**
+   * Remove the node from the services and remove it from all the arrays
+   * e.g.(children, neighbors, etc...)
+   */
+  removeNode(node: Node): void {
+    this.removeNodeFromArray(node, this.nodes);
+    this.nodes.forEach((n: Node) => {
+      this.removeNodeFromArray(node, n.neighbors);
+      this.removeNodeFromArray(node, n.children);
+      this.removeNodeFromArray(node, n.inputNodes);
+      this.removeNodeFromArray(node, n.outputNodes);
+    });
   }
 
-  /** Update the nodes with the latest changes.*/
-  refreshNode(node: Node) {
-    const freshNode = this.nodes.find((n: Node) => n.id === node.id);
-    Object.assign(node, freshNode);
+
+  private removeNodeFromArray(node: Node, array: Array<Node>): void {
+    const index = array.findIndex((n: Node) => n.id === node.id);
+    array.splice(index, 1);
   }
+
 }

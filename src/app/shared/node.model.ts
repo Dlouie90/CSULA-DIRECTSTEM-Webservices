@@ -11,11 +11,12 @@ export class Node {
   id: number;
   x: number;
   y: number;
-  neighbors: Node[];
-  children: Node[];
+  neighbors: Array<Node>;
+  children: Array<Node>;
+  inputNodes: Array<Node>;
+  outputNodes: Array<Node>;
   isInput: boolean;
   isOutput: boolean;
-  name: string;
 
   /* Webservice Profile Properties */
   title: string;
@@ -37,14 +38,15 @@ export class Node {
 
   constructor(id: number, x: number, y: number, profile?: Profile) {
     /* Graph Properties */
-    this.id        = id;
-    this.x         = x;
-    this.y         = y;
-    this.neighbors = [];
-    this.children  = [];
-    this.isInput   = false;
-    this.isOutput  = false;
-    this.name      = 'webservice-' + id;
+    this.id          = id;
+    this.x           = x;
+    this.y           = y;
+    this.neighbors   = [];
+    this.children    = [];
+    this.inputNodes  = [];
+    this.outputNodes = [];
+    this.isInput     = false;
+    this.isOutput    = false;
 
     /* Webservice Profile Properties */
     if (profile) {

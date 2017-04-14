@@ -18,7 +18,7 @@ const node1 = new Node(
       returnValues: [
         Property.create('profileIconId', 'int', 'ID of the summoner icon associated with the summoner.'),
         Property.create('revisionDate', 'long', 'Date summoner was last modified specified as' +
-            ' epoch milliseconds. The following events will update this' +
+            ' epoch milliseconds. The following events will updateToService this' +
             ' timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change'),
         Property.create('id', 'long', 'Summoner ID'),
         Property.create('name', 'string', 'Summoner name'),
@@ -54,5 +54,35 @@ const node2 = new Node(
       ]
     });
 
+
+const node3 = new Node(
+    2,
+    500,
+    400,
+    {
+      title       : 'SPOTIFY-GET-TRACK',
+      description : 'Get Spotify catalog information for a single track identified by its unique Spotify ID.',
+      type        : 'TrackObject',
+      domain      : 'https://api.spotify.com',
+      path        : 'v1/tracks/{id}',
+      parameters  : [
+        Property.create('id', 'string', 'The Spotify ID for the track.'),
+      ],
+      returnValues: [
+        Property.create('album ', 'object', 'The album on which the track appears.'),
+        Property.create('artists ', '[object]', 'The artists who performed the track.'),
+        Property.create('duration_ms  ', 'integer', 'The track length in milliseconds'),
+        Property.create('id', 'string', '	The Spotify ID for the track.'),
+        Property.create('name', 'string', 'The name of the track.'),
+        Property.create('popularity', 'integer', 'The popularity of the track. ' +
+            'The value will be between 0 and 100, with 100 being the most popular.'),
+        Property.create('track_number ', 'integer', 'The number of the track.'),
+        Property.create('bannedChampions', '[object]', 'Banned champion information'),
+      ]
+    });
+
 node2.addCompositionNode(node1);
-export const DATA: Array<Node> = [node1, node2];
+node2.addCompositionNode(node3);
+node1.neighbors.push(node3);
+
+export const DATA: Array<Node> = [node1, node2, node3];

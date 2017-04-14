@@ -4,7 +4,7 @@ import {NodeService} from '../../../shared/node.service';
 import {FormControl, FormGroup} from '@angular/forms';
 
 /**
- * A form to update a Node object. Used with a modal. This component
+ * A form to updateToService a Node object. Used with a modal. This component
  * is tightly coupled with the editor component
  */
 @Component({
@@ -29,7 +29,7 @@ export class QuickEditComponent implements OnInit {
 
   ngOnInit() {
     /* Ensure the node is the latest */
-    this.nodeService.refreshNode(this.node);
+    this.nodeService.updateNodeFromService(this.node);
 
     this.fGroup = new FormGroup({
       id         : new FormControl(this.node.id),
@@ -45,7 +45,7 @@ export class QuickEditComponent implements OnInit {
    * closeFunction to close the modal. */
   saveUpdate(): void {
     Object.assign(this.node, this.fGroup.value);
-    this.nodeService.update(this.fGroup.value);
+    this.nodeService.updateNodeToService(this.fGroup.value);
     this.closeFunction('close, saved');
   }
 }
