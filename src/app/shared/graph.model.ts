@@ -237,7 +237,7 @@ export class Graph {
    */
   circleMouseUp(d3node, d) {
     /* ignore right click events */
-    if ((d3.event as any).which === 3 ) {
+    if ((d3.event as any).which === 3) {
       return;
     }
 
@@ -336,13 +336,11 @@ export class Graph {
   /* =============== PROTOTYPE SVG FUNCTIONS =============== */
 
 
-  /** A way for angular 2 to delete an edge or node. */
-  removeSelected() {
+  removeSelectedNode(): void {
     const thisGraph = this;
     const state     = thisGraph.state;
 
     const selectedNode = state.selectedNode;
-    const selectedEdge = state.selectedEdge;
 
     /* Can only delete selected node that are not an input/output node. */
     if (selectedNode && Node.isRegular(selectedNode)) {
@@ -352,10 +350,18 @@ export class Graph {
       thisGraph.spliceLinksFormNode(selectedNode);
       /* Remove the node from all neighbors field */
       this.removeFromNeighbor(this.nodes, selectedNode);
-
       state.selectedNode = null;
       thisGraph.updateGraph();
-    } else if (selectedEdge) {
+    }
+  }
+
+  removeSelectedEdge(): void {
+    const thisGraph = this;
+    const state     = thisGraph.state;
+
+    const selectedEdge = state.selectedEdge;
+
+    if (selectedEdge) {
       /* Remove the edge from the edge list */
       thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
 

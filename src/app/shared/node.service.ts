@@ -2,6 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {Node} from './node.model';
 import {DATA} from './node-mock.data';
 import {Subject} from 'rxjs/Subject';
+import {View} from './view.model';
 
 @Injectable()
 export class NodeService implements OnInit {
@@ -90,11 +91,27 @@ export class NodeService implements OnInit {
     return false;
   }
 
+  updateNodesToService(nodes: Array<Node>): void {
+    nodes.forEach((n: Node) => {
+      this.updateNodeToService(n);
+    });
+  }
+
+  updateViewToService(view: View): void {
+    this.updateNodesToService(view.nodes);
+    this.updateNodeToService(view.parentNode);
+  }
+
   /**
    * Remove the node from the services and remove it from all the arrays
    * e.g.(children, neighbors, etc...)
    */
   removeNode(node: Node): void {
+    if (!node) {
+      console.error('You just tried to removed a undefined or null Node');
+      return;
+    }
+
     this.removeNodeFromArray(node, this.nodes);
     this.nodes.forEach((n: Node) => {
       this.removeNodeFromArray(node, n.neighbors);
@@ -107,7 +124,9 @@ export class NodeService implements OnInit {
 
   private removeNodeFromArray(node: Node, array: Array<Node>): void {
     const index = array.findIndex((n: Node) => n.id === node.id);
-    array.splice(index, 1);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
   }
 
 }

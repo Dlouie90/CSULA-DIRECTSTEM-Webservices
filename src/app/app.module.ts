@@ -20,6 +20,7 @@ import {NodeQuickviewComponent} from './main-nav/node-quickview/node-quickview.c
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {QuickEditComponent} from './projects/editor/quick-edit/quick-edit.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
+import {DebugComponent} from './debug/debug.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.compo
     NodeQuickviewComponent,
     QuickEditComponent,
     BreadcrumbComponent,
+    DebugComponent,
   ],
 
   imports: [

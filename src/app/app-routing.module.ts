@@ -4,6 +4,7 @@ import {HomeComponent} from './home/home.component';
 import {ProjectsComponent} from './projects/projects.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {EditorComponent} from './projects/editor/editor.component';
+import {DebugComponent} from './debug/debug.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
     path     : 'projects/:id/editor',
     component: EditorComponent,
     children : []
+  },
+  {
+    path     : 'debug',
+    component: DebugComponent
   }
 ];
 

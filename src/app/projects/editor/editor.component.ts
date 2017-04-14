@@ -20,7 +20,6 @@ export class EditorComponent implements OnInit {
   rightPanelStyle: Object = {};
   mainSvg;
   graph: Graph;
-  selectedNode: Node;
   closeResult: string;
 
   views: Array<View>;
@@ -44,13 +43,8 @@ export class EditorComponent implements OnInit {
       console.log('SHIFT LEFT-MOUSE UP');
 
       const currentGraphView = this.graph.currentView;
+      this.updateViewToService(currentGraphView);
       this.replaceRecentView(currentGraphView);
-      this.updateViewToService(this.lastView());
-      this.nodeService.getNodes()
-          .then((ns: Node[]) => {
-            console.log('add edge');
-            console.log(ns);
-          });
     }
   }
 
@@ -168,13 +162,28 @@ export class EditorComponent implements OnInit {
     return this.nodeService.removeNode(node);
   }
 
-  removeSelected(): void {
-    console.log('REMOVING SELECTED');
-    this.graph.removeSelected();
-    if (this.selectedNode) {
-      this.removeNodeFromService(this.selectedNode);
-    }
+  removeNode(): void {
+    console.log('REMOVING NODE');
+    this.removeNodeFromService(this.selectedNode);
+    this.graph.removeSelectedNode();
     this.closeContextMenu();
+  }
+
+  removeEdge(): void {
+    console.log('REMOVING EDGE');
+    this.graph.removeSelectedEdge();
+    this.updateViewToService(this.graph.currentView);
+    this.closeContextMenu();
+  }
+
+  removeSelected(): void {
+    if (this.graph.state.selectedNode) {
+      this.removeNode();
+    } else if (this.graph.state.selectedEdge) {
+      this.removeEdge();
+    } else {
+      this.closeContextMenu();
+    }
   }
 
   replaceRecentView(newView: View): void {
@@ -193,12 +202,6 @@ export class EditorComponent implements OnInit {
       return;
     }
     console.log('RETURNING TO PARENT NODE');
-    this.nodeService.getNodes()
-        .then((ns: Node[]) => {
-          console.log('#1');
-          console.log(ns);
-        });
-
     /* Remove the current view and return to the previous view*/
     const poppedView  = this.views.pop();
     const currentView = _.last(this.views);
@@ -206,6 +209,10 @@ export class EditorComponent implements OnInit {
 
     this.drawCurrentView();
     this.closeContextMenu();
+  }
+
+  get selectedNode(): Node {
+    return this.graph.state.selectedNode;
   }
 
   /**
@@ -226,8 +233,7 @@ export class EditorComponent implements OnInit {
   }
 
   updateViewToService(view: View): void {
-    this.updateNodesToService(view.nodes);
-    this.updateNodeToService(view.parentNode);
+    this.nodeService.updateViewToService(view);
   }
 
   updateNodeToService(node: Node): void {
@@ -240,10 +246,6 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  updateSelected(): void {
-    this.selectedNode = this.graph.state.selectedNode;
-  }
-
   viewComposition(content): void {
     if (this.selectedNode) {
       console.log('VIEWING COMPOSITION');
@@ -254,7 +256,6 @@ export class EditorComponent implements OnInit {
       }
 
       this.updateNodeFromService(this.selectedNode);
-      console.log(this.selectedNode);
 
       this.mainSvg.selectAll('*').remove();
       this.graph = new Graph(this.mainSvg, this.selectedNode.children, this.selectedNode);

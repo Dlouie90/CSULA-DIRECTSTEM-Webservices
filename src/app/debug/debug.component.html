@@ -1,0 +1,7 @@
+<div class="container" *ngIf="nodes">
+
+  <div class="card card-outline-primary "
+       *ngFor="let node of nodes">
+    <pre>{{ node | json}}</pre>
+  </div>
+</div>
