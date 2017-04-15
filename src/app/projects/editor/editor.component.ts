@@ -39,6 +39,36 @@ export class EditorComponent implements OnInit {
   /* *********************************************************************** */
   /* *********************************************************************** */
 
+  /** Create a composite node of the clicked nodes */
+  compositeClickNodes($event): void {
+    console.log('COMPOSITE CLICKED NODES');
+
+    const OFFSET = -120;
+    const node   = this.nodeService.createNew({
+      x: $event.clientX,
+      y: $event.clientY + OFFSET
+    });
+
+    // Add the clickedNodes as children of this node.
+    this.graph.compositeClickNodes(node);
+
+    const oldView     = _.last(this.views);  // the view before composition
+    const currentView = this.currentView;    // the view after composition;
+
+    // Add the new node as a child of parentNode.
+    if (oldView.parentNode) {
+      oldView.parentNode.children = currentView.nodes;
+      this.nodeService.updateNodeToService(oldView.parentNode);
+    }
+
+    // Update the current view nodes and inform nodeService of the new node
+    this.replaceRecentView(currentView);
+    this.nodeService.add(node);
+    this.updateNodesToService(currentView.nodes);
+
+    this.closeContextMenu();
+  }
+
   /** Return the graph's current view, this.graph.currentView */
   get currentView(): View {
     return this.graph.currentView;
@@ -60,8 +90,18 @@ export class EditorComponent implements OnInit {
     if ($event.shiftKey && $event.which === 1) {
       console.log('SHIFT LEFT-MOUSE UP');
 
-      this.updateViewToService(this.currentView);
-      this.replaceRecentView(this.currentView);
+      const currentView = _.last(this.views);  // the view before edge;
+      const updatedView = this.currentView;    // the view after edge;
+
+      // Add the new node as a child of parentNode.
+      if (currentView.parentNode) {
+        currentView.parentNode.children = updatedView.nodes;
+        this.nodeService.updateNodeToService(currentView.parentNode);
+      }
+
+      // Update the current view nodes and inform nodeService of the new node
+      currentView.nodes = updatedView.nodes;
+      this.updateNodesToService(currentView.nodes);
     }
   }
 
@@ -281,11 +321,11 @@ export class EditorComponent implements OnInit {
       this.updateNodeFromService(this.selectedNode);
 
       this.mainSvg.selectAll('*').remove();
-      this.graph = new Graph(this.mainSvg, this.selectedNode.children, this.selectedNode);
-      this.views.push(this.graph.currentView);
+      this.graph = new Graph(
+          this.mainSvg, this.selectedNode.children, this.selectedNode);
       this.graph.updateGraph();
+      this.views.push(this.graph.currentView);
     }
     this.closeContextMenu();
   }
 }
-

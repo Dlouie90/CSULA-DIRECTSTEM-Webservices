@@ -3,15 +3,6 @@ import {Node} from './node.model';
 import {View} from './view.model';
 import {NodeUtility} from './node-utility.model';
 
-const idCounter = incrementer();
-function incrementer() {
-  let counter = 10;
-
-  return function () {
-    return counter++;
-  };
-}
-
 const final = {
   /* --------------- NODE CONSTANTS --------------- */
   NODE_RADIUS: 60,
@@ -21,7 +12,8 @@ const final = {
 
   /* ---------------  CSS CLASS --------------- */
   SELECTED_CLASS: 'selected', CONNECTED_NODE_CLASS: 'connect-node',
-  CIRCLE_G_CLASS: 'conceptG', GRAPH_CLASS: 'graph'
+  CIRCLE_G_CLASS: 'conceptG', GRAPH_CLASS: 'graph',
+  CLICKED_NODE  : 'clicked-node'
 };
 
 export class Graph {
@@ -36,22 +28,6 @@ export class Graph {
   stack;
   parentNode;
   state;
-
-  /** Returns a default state that could be used to initialize a graph*/
-  static get defaultState(): View {
-    /* Create 3 default nodes: regular, input, output node. */
-    const input     = new Node(idCounter(), 100, 100);    // default neighbors,
-    const output    = new Node(idCounter(), 750, 100);    // composition = []
-    input.isInput   = true;
-    output.isOutput = true;
-
-    /* There should be an edge between the input and a regular node, and
-     * another between the regular and the output.*/
-    input.neighbors.push(output);
-
-    /* Default state with no parentNode. */
-    return new View([input, output]);
-  };
 
   constructor(svgIn: any, nodesIn: Node[], parentNode?: Node) {
     // for clarity: typing this over and over can be confusing
@@ -74,6 +50,7 @@ export class Graph {
     // View of the graph (selected nodes, links, etc..)
     this.state = {
       selectedNode  : null,
+      clickNodes    : [],
       selectedEdge  : null,
       mouseDownNode : null,
       shiftNodeDrag : false,
@@ -154,6 +131,45 @@ export class Graph {
       thisGraph.updateGraph();
     }
   };
+
+  get clickNodes(): Array<Node> {
+    return this.state.clickNodes;
+  }
+
+  set clickNodes(nodes: Array<Node>) {
+    this.state.clickNodes = nodes;
+  }
+
+  /** Register a node as a "clicked node", if the node is already
+   * registered, then un-register it (remove click). */
+  toggleClickNodes(node: Node): void {
+    const index = this.clickNodes.findIndex((n: Node) => n.id === node.id);
+    if (index === -1) {
+      this.clickNodes.push(node);
+    } else {
+      this.clickNodes.splice(index, 1);
+    }
+    this.updateGraph();
+  }
+
+  /** Add the clickNodes as children to the input node.*/
+  compositeClickNodes(node: Node): void {
+    // Removes the clickNodes from the graph nodes
+    this.clickNodes.forEach((n: Node) => {
+      this.nodes.splice(this.nodes.indexOf(n), 1);
+      // Remove all edges originating from this node from this graph view.
+      this.spliceLinksFormNode(n);
+      // Remove the node from all neighbors field
+      // but not if its is associated with a clickNodes
+      this.removeNeighborsToClickNodes();
+      this.removeNonClickNeighbors();
+    });
+
+    // Add the clickNodes as children to the input node.
+    node.children   = this.clickNodes;
+    this.clickNodes = [];
+    this.insertNode(node);
+  }
 
   /** Toggle the path/link/edge selected css.
    *  If edge is highlighted, then un-highlight it, if it is not, un-highlight
@@ -354,7 +370,7 @@ export class Graph {
       /* Remove all edges originating from this node. */
       thisGraph.spliceLinksFormNode(selectedNode);
       /* Remove the node from all neighbors field */
-      this.removeFromNeighbor(this.nodes, selectedNode);
+      this.removeFromNeighbor(selectedNode);
       state.selectedNode = null;
       thisGraph.updateGraph();
     }
@@ -393,8 +409,8 @@ export class Graph {
   }
 
   /** Remove the nodeToRemove from all nodes.neighbor field */
-  removeFromNeighbor(nodes, nodeToRemove) {
-    nodes.forEach(node => {
+  removeFromNeighbor(nodeToRemove) {
+    this.nodes.forEach(node => {
       node.neighbors.forEach((neighbor, index) => {
         if (neighbor.id === nodeToRemove.id) {
           node.neighbors.splice(index, 1);
@@ -403,7 +419,31 @@ export class Graph {
     });
   }
 
-// mousedown on main svg
+  removeNonClickNeighbors(): void {
+    this.clickNodes.forEach((n: Node) => {
+      n.neighbors.forEach((neighbor, index) => {
+        if (!this.isClickNode(neighbor)) {
+          n.neighbors.splice(index, 1);
+        }
+      });
+    });
+  }
+
+  removeNeighborsToClickNodes(): void {
+    this.nodes.forEach((n: Node) => {
+      n.neighbors.forEach((neighbor, index) => {
+        if (!this.isClickNode(n) && this.isClickNode(neighbor)) {
+          n.neighbors.splice(index, 1);
+        }
+      });
+    });
+  }
+
+  isClickNode(node: Node): boolean {
+    return this.clickNodes.findIndex((n: Node) => n.id === node.id) !== -1;
+  }
+
+  // mousedown on main svg
   svgMouseDown = function () {
     this.state.graphMouseDown = true;
   };
@@ -463,7 +503,7 @@ export class Graph {
     const state     = this.state;
 
 
-    // updateToService the paths : paths = ...selectAll("g")
+    // update the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
         .data(thisGraph.edges, function (d) {
           return d.source.id + '+' + d.target.id;
@@ -497,16 +537,20 @@ export class Graph {
     // remove old links: the exit selection
     paths.exit().remove();
 
-    // updateToService the circle selection
+    // update the circle selection
     thisGraph.circles = thisGraph.circles
         .data(thisGraph.nodes, function (d) {
           return String(d.id);
         });
 
-    // updateToService all current circles on the graph
+    // update all current circles on the graph
     thisGraph.circles
         .attr('transform', function (d) {
           return 'translate(' + d.x + ',' + d.y + ')';
+        })
+        // Enable/disable clickNodes css
+        .classed(final.CLICKED_NODE, function (d) {
+          return thisGraph.clickNodes.findIndex((n: Node) => n.id === d.id) !== -1;
         })
         .select('text')
         .text(function (d) {
@@ -524,6 +568,9 @@ export class Graph {
     newGs.classed(final.CIRCLE_G_CLASS, true)
         .attr('transform', function (d) {
           return 'translate(' + d.x + ',' + d.y + ')';
+        })
+        .on('click', function (d: Node) {
+          thisGraph.toggleClickNodes(d);
         })
         .on('mouseover', function (d) {
           if (state.shiftNodeDrag) {
@@ -559,22 +606,8 @@ export class Graph {
         .attr('text-anchor', 'middle')
         .attr('y', 30)
         .text(d => {
-          if (d.children.length > 0) {
-            return `:${d.children.length}`;
-          }
+          return `#${d.children.length}`;
         });
-
-    ///* Attach an html element onto the circle that display the number
-    // * of composition nodes (children) that the current node contains. */
-    //newGs.append('foreignObject')
-    //    .append('xhtml:body')
-    //    .html(function (d) {
-    //      if (Node.isRegular(d) && d.children.length - 2 > 0) {
-    //        /* Minus 2 because we don't want to include the input/output
-    //         * nodes that every list of nodes contains */
-    //        return `<p style="float:none">${d.children.length - 2}</p>`;
-    //      }
-    //    });
 
     // remove old nodes;
     thisGraph.circles.exit().remove();

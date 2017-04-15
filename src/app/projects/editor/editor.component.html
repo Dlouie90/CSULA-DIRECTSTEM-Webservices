@@ -70,8 +70,9 @@
 <!------------------------------------------------------>
 <!-------------------- CONTENT MENU -------------------->
 <!------------------------------------------------------>
-<div class="rightClickPanel"
-     [ngStyle]="rightPanelStyle">
+<div class="rightClickPanel noselect"
+     [ngStyle]="rightPanelStyle"
+     oncontextmenu="return false">
 
   <div class="dropdown show">
     <div class="dropdown-menu">
@@ -85,9 +86,10 @@
          (click)="viewComposition(emptyCompositionModal)">View Composition</a>
       <a class="dropdown-item"
          (click)="returnToParent()">Return to Parent</a>
-      <a class="dropdown-item disabled">Composite</a>
       <a class="dropdown-item"
-         (click)="debugNode(debugModal)">Debug Selected Node</a>
+         (click)="compositeClickNodes($event)">Composite</a>
+      <!--<a class="dropdown-item"-->
+      <!--(click)="debugNode(debugModal)">Debug Selected Node</a>-->
     </div>
   </div>
 </div>
