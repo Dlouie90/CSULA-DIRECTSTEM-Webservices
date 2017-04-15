@@ -39,14 +39,9 @@ export class EditorComponent implements OnInit {
   /* *********************************************************************** */
   /* *********************************************************************** */
 
-  addEdge($event): void {
-    if ($event.shiftKey && $event.which === 1) {
-      console.log('SHIFT LEFT-MOUSE UP');
-
-      const currentGraphView = this.graph.currentView;
-      this.updateViewToService(currentGraphView);
-      this.replaceRecentView(currentGraphView);
-    }
+  /** Return the graph's current view, this.graph.currentView */
+  get currentView(): View {
+    return this.graph.currentView;
   }
 
   closeContextMenu() {
@@ -58,6 +53,16 @@ export class EditorComponent implements OnInit {
       this.modalService.open(content);
     }
     this.closeContextMenu();
+  }
+
+  /** Used to keep track of adding an edge */
+  detectShiftLMouseUp($event): void {
+    if ($event.shiftKey && $event.which === 1) {
+      console.log('SHIFT LEFT-MOUSE UP');
+
+      this.updateViewToService(this.currentView);
+      this.replaceRecentView(this.currentView);
+    }
   }
 
   detectRightMouseClick($event) {

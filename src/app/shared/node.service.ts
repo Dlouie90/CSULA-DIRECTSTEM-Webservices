@@ -83,6 +83,10 @@ export class NodeService implements OnInit {
 
   /** Update the node onto the service. */
   updateNodeToService(node: Node): boolean {
+    if (!node) {
+      return false;
+    }
+
     const serviceNode = this.nodes.find((n: Node) => n.id === node.id);
     if (serviceNode) {
       Object.assign(serviceNode, node);

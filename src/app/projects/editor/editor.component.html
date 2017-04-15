@@ -4,7 +4,7 @@
 <!-- The Visual Graph -->
 <div id="d3-editor"
      (click)="closeContextMenu()"
-     (mouseup)="detectRightMouseClick($event); addEdge($event);"
+     (mouseup)="detectRightMouseClick($event); detectShiftLMouseUp($event);"
      oncontextmenu="return false">
 </div>
 
