@@ -57,7 +57,12 @@ export class Graph {
     // for clarity: typing this over and over can be confusing
     const thisGraph = this;
 
-    const nodeEdgeData = parseData(nodesIn);
+    // Display edges only if it is a "composition view", if parentNode exist.
+    // If no parentNode exist, we only want to display the node as a independent
+    // node. nodesIn should only contain 1 element if no parentNode exist.
+    const nodeEdgeData = parentNode
+        ? parseData(nodesIn)
+        : {edges: [], nodes: nodesIn};
 
     /* *** Graph variables *** */
     this.svg        = svgIn;

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {Component, Input, OnInit} from '@angular/core';
 import {Graph} from '../../shared/graph.model';
 import {NodeService} from '../../shared/node.service';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Node} from '../../shared/node.model';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {View} from '../../shared/view.model';
@@ -26,12 +26,13 @@ export class EditorComponent implements OnInit {
 
   constructor(private nodeService: NodeService,
               private route: ActivatedRoute,
-              private modalService: NgbModal) {
+              private modalService: NgbModal,
+              private router: Router) {
   }
 
   ngOnInit() {
     this.views = [];
-    this.checkRouteParams();
+    this.initPage();
   }
 
   /* *********************************************************************** */
@@ -46,18 +47,6 @@ export class EditorComponent implements OnInit {
       this.updateViewToService(currentGraphView);
       this.replaceRecentView(currentGraphView);
     }
-  }
-
-  checkRouteParams(): void {
-    this.route.params
-        .switchMap((params: Params) => {
-          return this.nodeService.getNode(+params['id']);
-        })
-        .subscribe((node: Node) => {
-          this.initGraph(node);
-          this.nodeService.select = node;
-          return this.node = node;
-        });
   }
 
   closeContextMenu() {
@@ -111,11 +100,40 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  /**
+   * Initialize the graph view with the corresponding node (single).
+   * Thus parentNode will be NULL and NO edge will be shown.
+   */
   initGraph(node): void {
     this.mainSvg = d3.select('div#d3-editor').append('svg');
     this.graph   = new Graph(this.mainSvg, [node], null);
     this.views.push(this.graph.currentView);
     this.graph.updateGraph();
+  }
+
+  /**
+   * Retrieve the node that correspond with the route param id value. If
+   * it is valid load up the graph of the node, otherwise navigate back to
+   * the project page.
+   */
+  initPage(): void {
+    let id;  // Route Param.
+    this.route.params
+        .switchMap((params: Params) => {
+          id = +params['id'];
+          return this.nodeService.getNode(id);
+        })
+        .subscribe((node: Node) => {
+          if (!node) {  // Route back to the project page if id doesn't exist.
+            console.error(`There are no nodes with the id: ${id}!`);
+            console.error('Returning to the project page');
+            this.router.navigate(['../../']);
+            return;
+          }
+          this.initGraph(node);
+          this.nodeService.select = node;
+          return this.node = node;
+        });
   }
 
   /** Insert a node onto the graph and updateToService nodeService.
