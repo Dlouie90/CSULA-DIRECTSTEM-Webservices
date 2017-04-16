@@ -1,9 +1,33 @@
 <div *ngIf="node">
-  <button id="btn-new-project"
-          (click)="select()"
-          class="btn btn-outline-success btn-lg btn-block mx-auto">
-    Graph Editor
-  </button>
+
+  <div class="row">
+  </div>
+
+  <div class="row">
+
+    <div class="col-4">
+      <button type="button"
+              (click)="gotoEditor(true)"
+              class="btn btn-outline-success btn-lg btn-block">
+        Create New Project
+      </button>
+    </div>
+
+    <div class="col-4">
+      <button (click)="gotoEditor(false)"
+              class="btn btn-outline-success btn-lg btn-block">
+        Graph Editor
+      </button>
+    </div>
+
+    <div class="col-4">
+      <button (click)="gotoVisiual()"
+              class="btn btn-outline-success btn-lg btn-block">
+        Visualization
+      </button>
+    </div>
+  </div>
+
   <app-accordion title="Primary Fields"
                  id="privw--{{node.id}}">
 

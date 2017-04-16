@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {NodeUtility} from '../../shared/node-utility.model';
+import {Node} from '../../shared/node.model';
 
 @Component({
   selector   : 'app-node-quickview',
@@ -13,6 +15,10 @@ export class NodeQuickviewComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  get nodeTitle(): string {
+    return NodeUtility.title(this.node);
   }
 
 }

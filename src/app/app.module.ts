@@ -21,6 +21,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {QuickEditComponent} from './projects/editor/quick-edit/quick-edit.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
 import {DebugComponent} from './debug/debug.component';
+import {VisualComponent} from './projects/visual/visual.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import {DebugComponent} from './debug/debug.component';
     QuickEditComponent,
     BreadcrumbComponent,
     DebugComponent,
+    VisualComponent,
   ],
 
   imports: [

@@ -30,8 +30,16 @@ export class DetailComponent implements OnInit {
     this.editMode = false;
   }
 
-  select(): void {
-    this.router.navigate(['../../../projects', this.node.id, 'editor']);
+  gotoEditor(isNewProject: boolean): void {
+    if (isNewProject) {
+      const node = this.nodeService.createNew();
+      this.router.navigate(['/projects', node.id, 'editor'], 'editor');
+    } else {
+      this.router.navigate(['/projects', this.node.id, 'editor']);
+    }
   }
 
+  gotoVisiual(): void {
+    this.router.navigate(['/projects', this.node.id, 'visual']);
+  }
 }
