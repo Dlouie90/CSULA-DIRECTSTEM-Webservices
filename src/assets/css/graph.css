@@ -19,9 +19,13 @@ g.conceptG circle {
 
 text {
   fill        : rgb(34, 34, 35);
-  font-size   : 20px !important;
+  font-size   : 20px;
   font-family : monospace;
   font-weight : bolder;
+}
+
+text.tree-text {
+  font-size : 14px !important;
 }
 
 g.conceptG:hover circle {
@@ -71,4 +75,16 @@ path.link.hidden {
 path.link.selected {
   fill   : rgb(91, 148, 255);
   stroke : rgb(71, 128, 235) !important;
+}
+
+.leaf-node {
+  fill         : #fff;
+  stroke       : steelblue;
+  stroke-width : 5px;
+}
+
+.parent-node {
+  fill         : lightsteelblue;
+  stroke       : steelblue;
+  stroke-width : 5px;
 }

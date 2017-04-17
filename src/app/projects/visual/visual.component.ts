@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Node} from '../../shared/node.model';
 import * as d3 from 'd3';
+import {NodeUtility} from '../../shared/node-utility.model';
 
 @Component({
   selector   : 'app-visual',
@@ -12,7 +13,6 @@ export class VisualComponent implements OnInit {
   @Input()
   node: Node;
 
-  clone;
   htmlElement;
   host;
 
@@ -67,7 +67,7 @@ export class VisualComponent implements OnInit {
         .append('g')
         .attr('transform', function (d) {
           return `rotate(${d.x - 90})translate(${d.y})`;
-        });
+        })
 
     nodeGroups.append('circle')
         .attr('r', (d: Node) => {
@@ -77,13 +77,17 @@ export class VisualComponent implements OnInit {
             return nodeRadius;
           }
         })
-        .attr({
-          fill          : '#fff',
-          stroke        : 'steelblue',
-          'stroke-width': 5
+        // Stylesheet graph.css
+        .classed('leaf-node', (d: Node) => {
+          return !d.children || d.children.length === 0;
+        })
+        .classed('parent-node', (d: Node) => {
+          return d.children && d.children.length > 0;
         });
 
+
     nodeGroups.append('text')
+        .attr('class', 'tree-text')
         .attr({
           dy           : '.51em',
           'text-anchor': function (d) {
@@ -104,7 +108,7 @@ export class VisualComponent implements OnInit {
           }
         })
         .text(function (d: Node) {
-          return `id-${d.id}`;
+          return NodeUtility.title(d);
         });
   }
 
