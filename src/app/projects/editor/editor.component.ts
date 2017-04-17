@@ -175,6 +175,7 @@ export class EditorComponent implements OnInit {
             this.router.navigate(['../../']);
             return;
           }
+          console.log(node);
           this.initGraph(node);
           this.nodeService.select = node;
           return this.node = node;

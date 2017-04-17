@@ -3,6 +3,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {NodeService} from '../../shared/node.service';
 import {Node} from '../../shared/node.model';
 import * as d3 from 'd3';
+import * as _ from 'lodash';
 
 @Component({
   selector   : 'app-visual',
@@ -19,7 +20,6 @@ export class VisualComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    console.log('alo');
     this.init();
   }
 
@@ -36,13 +36,12 @@ export class VisualComponent implements OnInit {
           if (!node) {
             this.router.navigate(['/projects']);
           }
-          this.initTree(node);
-          return this.node = node;
+          this.node = _.cloneDeep(node);
+          this.initTree(this.node);
         });
   }
 
   initTree(node: Node): void {
-    console.log('tree!');
     const center = 250;
     console.log(center);
     const nodeRadius = 4.5;

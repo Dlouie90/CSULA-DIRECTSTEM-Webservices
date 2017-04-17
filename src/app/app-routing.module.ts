@@ -39,6 +39,10 @@ const routes: Routes = [
   {
     path     : 'debug',
     component: DebugComponent
+  },
+  {
+    path     : '**',
+    component: HomeComponent
   }
 ];
 
