@@ -7,8 +7,6 @@ svg {
 .visual {
   height  : 1000px !important;
   width   : 1000px !important;
-  display : block;
-  margin  : auto;
 }
 
 g.conceptG circle {

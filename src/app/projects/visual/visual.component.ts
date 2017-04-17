@@ -38,7 +38,9 @@ export class VisualComponent implements OnInit {
     // visual class width = 1000px, thus 500 is the center
     const center     = 500;
     const nodeRadius = 25;
-    const mainGroup  = this.host.append('svg').attr('class', 'visual').append('g')
+    const mainDiv    = this.host.append('div').classed('container', true);
+    const svg        = mainDiv.append('svg').attr('class', 'visual');
+    const mainGroup  = svg.append('g')
         .attr('transform', `translate(${center},${center})`);
 
     const cluster = d3.layout.cluster()
@@ -78,6 +80,8 @@ export class VisualComponent implements OnInit {
         .attr('r', (d: Node) => {
           if (d.id === this.node.id) {
             return nodeRadius * 2;
+          } else if (!d.children || d.children.length === 0) {
+            return nodeRadius / 2;
           } else {
             return nodeRadius;
           }
