@@ -3,6 +3,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {NodeService} from '../../shared/node.service';
 import {Node} from '../../shared/node.model';
 import 'rxjs/add/operator/switchMap';
+import * as _ from 'lodash';
 
 @Component({
   templateUrl: './detail.component.html',
@@ -28,6 +29,10 @@ export class DetailComponent implements OnInit {
           return this.node = node;
         });
     this.editMode = false;
+  }
+
+  nodeClone(): Node {
+    return _.cloneDeep(this.node);
   }
 
   gotoEditor(isNewProject: boolean): void {

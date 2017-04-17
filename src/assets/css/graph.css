@@ -44,15 +44,15 @@ g.selected:hover circle {
 }
 
 path.link {
-  fill         : rgb(147, 147, 147);
-  stroke       : rgb(147, 147, 147);
+  fill         : #ccc;
+  stroke       : #ccc;
   stroke-width : 6px;
   cursor       : default;
 }
 
 marker {
-  fill   : rgb(147, 147, 147);
-  stroke : rgb(147, 147, 147);
+  fill   : #ccc;
+  stroke : #ccc;
 }
 
 path.link:hover {

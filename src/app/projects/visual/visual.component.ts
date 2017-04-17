@@ -1,9 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {NodeService} from '../../shared/node.service';
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Node} from '../../shared/node.model';
 import * as d3 from 'd3';
-import * as _ from 'lodash';
 
 @Component({
   selector   : 'app-visual',
@@ -15,41 +12,32 @@ export class VisualComponent implements OnInit {
   @Input()
   node: Node;
 
-  constructor(private route: ActivatedRoute,
-              private nodeService: NodeService,
-              private router: Router) { }
+  clone;
+  htmlElement;
+  host;
 
-  ngOnInit() {
-    this.init();
+  constructor(private element: ElementRef) {
+    this.htmlElement = this.element.nativeElement;
+    this.host        = d3.select(this.element.nativeElement);
+  }
+
+  ngOnInit(): void {
+    this.initTree(this.node);
   }
 
   /****************************************************/
   /****************************************************/
   /****************************************************/
-
-  init(): void {
-    this.route.params
-        .switchMap((params: Params) => {
-          return this.nodeService.getNode(+params['id']);
-        })
-        .subscribe((node: Node) => {
-          if (!node) {
-            this.router.navigate(['/projects']);
-          }
-          this.node = _.cloneDeep(node);
-          this.initTree(this.node);
-        });
-  }
 
   initTree(node: Node): void {
-    const center = 250;
-    console.log(center);
-    const nodeRadius = 4.5;
-    const mainGroup  = d3.select('#d3-tree').append('svg').append('g')
+    // visual class width = 1000px, thus 500 is the center
+    const center     = 500;
+    const nodeRadius = 25;
+    const mainGroup  = this.host.append('svg').attr('class', 'visual').append('g')
         .attr('transform', `translate(${center},${center})`);
 
     const cluster = d3.layout.cluster()
-        .size([360, center - 50]);
+        .size([360, center / 1.5]);
 
     const nodes = cluster.nodes(node);
     const links = cluster.links(nodes);
@@ -70,7 +58,7 @@ export class VisualComponent implements OnInit {
           d             : diagonal,
           fill          : 'none',
           stroke        : '#ccc',
-          'stroke-width': 2
+          'stroke-width': 5
         });
 
     const nodeGroups = mainGroup.selectAll('g')
@@ -82,29 +70,41 @@ export class VisualComponent implements OnInit {
         });
 
     nodeGroups.append('circle')
+        .attr('r', (d: Node) => {
+          if (d.id === this.node.id) {
+            return nodeRadius * 2;
+          } else {
+            return nodeRadius;
+          }
+        })
         .attr({
-          r             : nodeRadius,
           fill          : '#fff',
           stroke        : 'steelblue',
-          'stroke-width': 3
+          'stroke-width': 5
         });
 
     nodeGroups.append('text')
         .attr({
-          dy           : '.31em',
+          dy           : '.51em',
           'text-anchor': function (d) {
             return d.x < 180 ? 'start' : 'end';
           },
-          transform    : function (d) {
-            return d.x < 180 ?
-                'translate(' + (nodeRadius * 2) + ')' :
-                'rotate(180)' +
-                'translate(' + (-nodeRadius * 2) + ')';
+          transform    : (d: Node) => {
+            if (d.id === this.node.id) {
+              return d.x < 180 ?
+                  'translate(' + (nodeRadius * 3.0) + ')' :
+                  'rotate(180)' +
+                  'translate(' + (-nodeRadius * 3.0) + ')';
+            } else {
+              return d.x < 180 ?
+                  'translate(' + (nodeRadius * 1.50) + ')' :
+                  'rotate(180)' +
+                  'translate(' + (-nodeRadius * 1.50) + ')';
+            }
           }
         })
-        .style('font', '12px sans-serif')
         .text(function (d: Node) {
-          return `ID:${d.id}`;
+          return `id-${d.id}`;
         });
   }
 

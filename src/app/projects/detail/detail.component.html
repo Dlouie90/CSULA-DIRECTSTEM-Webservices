@@ -1,11 +1,8 @@
 <div *ngIf="node">
 
   <div class="row">
-  </div>
 
-  <div class="row">
-
-    <div class="col-4">
+    <div class="col-6">
       <button type="button"
               (click)="gotoEditor(true)"
               class="btn btn-outline-success btn-lg btn-block">
@@ -13,17 +10,10 @@
       </button>
     </div>
 
-    <div class="col-4">
+    <div class="col-6">
       <button (click)="gotoEditor(false)"
               class="btn btn-outline-success btn-lg btn-block">
         Graph Editor
-      </button>
-    </div>
-
-    <div class="col-4">
-      <button (click)="gotoVisiual()"
-              class="btn btn-outline-success btn-lg btn-block">
-        Visualization
       </button>
     </div>
   </div>

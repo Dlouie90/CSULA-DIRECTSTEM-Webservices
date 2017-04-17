@@ -24,6 +24,8 @@ export class EditorComponent implements OnInit {
 
   views: Array<View>;
 
+  radioOptions: string;
+
   constructor(private nodeService: NodeService,
               private route: ActivatedRoute,
               private modalService: NgbModal,
@@ -33,6 +35,7 @@ export class EditorComponent implements OnInit {
   ngOnInit() {
     this.views = [];
     this.initPage();
+    this.radioOptions = 'editor';
   }
 
   /* *********************************************************************** */
@@ -145,6 +148,10 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  get nodeClone(): Node {
+    return _.cloneDeep(this.node);
+  }
+
   /**
    * Initialize the graph view with the corresponding node (single).
    * Thus parentNode will be NULL and NO edge will be shown.
@@ -175,7 +182,6 @@ export class EditorComponent implements OnInit {
             this.router.navigate(['../../']);
             return;
           }
-          console.log(node);
           this.initGraph(node);
           this.nodeService.select = node;
           return this.node = node;

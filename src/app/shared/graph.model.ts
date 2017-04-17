@@ -589,7 +589,7 @@ export class Graph {
         .call(thisGraph.drag);
 
     newGs.append('circle')
-        .attr('r', 10)
+        .attr('r', 0)
         .transition()
         .attr('r', String(final.NODE_RADIUS));
 

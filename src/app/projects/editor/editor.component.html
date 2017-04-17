@@ -1,13 +1,49 @@
-<!-- Navigate through composition levels -->
-<app-breadcrumb [views]="views"></app-breadcrumb>
+<!-- Radio: switch from editor to graph view -->
+<div class="my-center text-center">
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             id="editor-view-radio"
+             value="editor">
+      Editor View
+    </label>
+  </div>
 
-<!-- The Visual Graph -->
-<div id="d3-editor"
-     (click)="closeContextMenu()"
-     (mouseup)="detectRightMouseClick($event); detectShiftLMouseUp($event);"
-     oncontextmenu="return false">
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             id="radial-tree-radio"
+             value="tree">
+      Radial Tree
+    </label>
+  </div>
 </div>
 
+<!-- Editor View -->
+<div [hidden]="radioOptions !== 'editor'">
+  <!-- Navigate through composition levels -->
+  <app-breadcrumb [views]="views"></app-breadcrumb>
+
+  <!-- The Visual Graph -->
+  <div id="d3-editor"
+       (click)="closeContextMenu()"
+       (mouseup)="detectRightMouseClick($event); detectShiftLMouseUp($event);"
+       oncontextmenu="return false">
+  </div>
+</div>
+
+<!-- Tree View -->
+<div *ngIf="radioOptions === 'tree'">
+  <app-visual *ngIf="node"
+              [node]="nodeClone">
+  </app-visual>
+</div>
 <!---------------------------------------------------->
 <!------------------ Modals -------------------------->
 <!---------------------------------------------------->

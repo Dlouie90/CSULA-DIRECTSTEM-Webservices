@@ -25,10 +25,6 @@ const routes: Routes = [
         path     : ':id/detail',
         component: DetailComponent,
       },
-      {
-        path     : ':id/visual',
-        component: VisualComponent
-      }
     ]
   },
   {
