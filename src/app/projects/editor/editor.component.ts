@@ -26,6 +26,9 @@ export class EditorComponent implements OnInit {
 
   radioOptions: string;
 
+  // Mouse Position, used to insert new nodes onto the coordinate.
+  rightClickPos: { x: number, y: number };
+
   constructor(private nodeService: NodeService,
               private route: ActivatedRoute,
               private modalService: NgbModal,
@@ -43,13 +46,13 @@ export class EditorComponent implements OnInit {
   /* *********************************************************************** */
 
   /** Create a composite node of the clicked nodes */
-  compositeClickNodes($event): void {
+  compositeClickNodes(): void {
     console.log('COMPOSITE CLICKED NODES');
 
     const OFFSET = -120;
     const node   = this.nodeService.createNew({
-      x: $event.clientX,
-      y: $event.clientY + OFFSET
+      x: this.rightClickPos.x,
+      y: this.rightClickPos.y + OFFSET
     });
 
     // Add the clickedNodes as children of this node.
@@ -115,6 +118,7 @@ export class EditorComponent implements OnInit {
         'left'   : ($event.clientX + 1) + 'px',
         'top'    : ($event.clientY + 1) + 'px'
       };
+      this.rightClickPos   = {x: $event.clientX, y: $event.clientY};
       return false;
     }
   }
@@ -190,11 +194,11 @@ export class EditorComponent implements OnInit {
 
   /** Insert a node onto the graph and updateToService nodeService.
    * Also add the node into its parent.children array. */
-  insertNode($event): void {
+  insertNode(): void {
     const OFFSET = -120;
     const node   = this.nodeService.createNew({
-      x: $event.clientX,
-      y: $event.clientY + OFFSET
+      x: this.rightClickPos.x,
+      y: this.rightClickPos.y + OFFSET
     });
 
     /* Update the view to include the new node. */
