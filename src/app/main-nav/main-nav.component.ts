@@ -27,7 +27,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
       {title: 'Home', url: 'home'},
       {title: 'Projects', url: 'projects'},
       {title: 'Dashboard', url: 'dashboard', disable: true},
-      {title: 'Profile', url: 'profile', disable: true},
       {title: 'Debug', url: 'debug'}
     ];
   }

@@ -4,6 +4,13 @@ svg {
   border : dotted dodgerblue thin;
 }
 
+.visual {
+  height  : 1000px !important;
+  width   : 1000px !important;
+  display : block;
+  margin  : auto;
+}
+
 g.conceptG circle {
   fill         : rgb(229, 239, 255);
   stroke       : rgb(190, 210, 240);
@@ -12,7 +19,7 @@ g.conceptG circle {
 
 text {
   fill        : rgb(34, 34, 35);
-  font-size   : 18px !important;
+  font-size   : 20px !important;
   font-family : monospace;
   font-weight : bolder;
 }
