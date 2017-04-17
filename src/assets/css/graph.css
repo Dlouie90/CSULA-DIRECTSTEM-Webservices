@@ -33,7 +33,7 @@ g.conceptG:hover circle {
   stroke : rgb(235, 225, 97) !important;
 }
 
-g.selected circle {
+.selected circle {
   stroke       : rgb(51, 108, 215) !important;
   stroke-width : 15px;
 }

@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Node} from '../../shared/node.model';
 import * as d3 from 'd3';
 import {NodeUtility} from '../../shared/node-utility.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector   : 'app-visual',
@@ -16,7 +17,11 @@ export class VisualComponent implements OnInit {
   htmlElement;
   host;
 
-  constructor(private element: ElementRef) {
+  selectedNode: Node;
+
+  constructor(private element: ElementRef,
+              private router: Router) {
+
     this.htmlElement = this.element.nativeElement;
     this.host        = d3.select(this.element.nativeElement);
   }
@@ -67,7 +72,7 @@ export class VisualComponent implements OnInit {
         .append('g')
         .attr('transform', function (d) {
           return `rotate(${d.x - 90})translate(${d.y})`;
-        })
+        });
 
     nodeGroups.append('circle')
         .attr('r', (d: Node) => {
@@ -83,8 +88,11 @@ export class VisualComponent implements OnInit {
         })
         .classed('parent-node', (d: Node) => {
           return d.children && d.children.length > 0;
+        })
+        .on('dblclick', (d: Node) => {
+          this.selectedNode = d;
+          this.navigate(d);
         });
-
 
     nodeGroups.append('text')
         .attr('class', 'tree-text')
@@ -112,5 +120,10 @@ export class VisualComponent implements OnInit {
         });
   }
 
+  navigate(node: Node): void {
+    if (this.selectedNode) {
+      this.router.navigate(['/projects', node.id, 'detail']);
+    }
+  }
 }
 
