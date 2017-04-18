@@ -5,8 +5,8 @@ svg {
 }
 
 .visual {
-  height  : 1000px !important;
-  width   : 1000px !important;
+  height : 1000px !important;
+  width  : 1000px !important;
 }
 
 g.conceptG circle {
@@ -75,14 +75,18 @@ path.link.selected {
   stroke : rgb(71, 128, 235) !important;
 }
 
-.leaf-node {
+.composite-node {
   fill         : #fff;
   stroke       : steelblue;
   stroke-width : 5px;
 }
 
-.parent-node {
+.root-node {
   fill         : lightsteelblue;
   stroke       : steelblue;
   stroke-width : 5px;
+}
+
+.children {
+  font-size   : 15px !important;
 }

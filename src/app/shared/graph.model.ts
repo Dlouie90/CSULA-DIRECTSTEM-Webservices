@@ -603,10 +603,13 @@ export class Graph {
           }
         });
     newGs.append('text')
+        .classed('children', true)
         .attr('text-anchor', 'middle')
         .attr('y', 30)
         .text(d => {
-          return `#${d.children.length}`;
+          if (d.children.length > 0) {
+            return `(${d.children.length})`;
+          }
         });
 
     // remove old nodes;

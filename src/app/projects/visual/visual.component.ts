@@ -65,7 +65,7 @@ export class VisualComponent implements OnInit {
           d             : diagonal,
           fill          : 'none',
           stroke        : '#ccc',
-          'stroke-width': 5
+          'stroke-width': 2.5
         });
 
     const nodeGroups = mainGroup.selectAll('g')
@@ -80,18 +80,16 @@ export class VisualComponent implements OnInit {
         .attr('r', (d: Node) => {
           if (d.id === this.node.id) {
             return nodeRadius * 2;
-          } else if (!d.children || d.children.length === 0) {
-            return nodeRadius / 2;
           } else {
-            return nodeRadius;
+            return nodeRadius / 2;
           }
         })
         // Stylesheet graph.css
-        .classed('leaf-node', (d: Node) => {
-          return !d.children || d.children.length === 0;
+        .classed('composite-node', (d: Node) => {
+          return d.id !== this.node.id;
         })
-        .classed('parent-node', (d: Node) => {
-          return d.children && d.children.length > 0;
+        .classed('root-node', (d: Node) => {
+          return d.id === this.node.id;
         })
         .on('dblclick', (d: Node) => {
           this.selectedNode = d;
@@ -120,7 +118,7 @@ export class VisualComponent implements OnInit {
           }
         })
         .text(function (d: Node) {
-          return NodeUtility.title(d);
+          return `id-${d.id}`;
         });
   }
 
