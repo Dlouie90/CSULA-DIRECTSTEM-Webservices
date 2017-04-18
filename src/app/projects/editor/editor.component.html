@@ -147,6 +147,26 @@
         <i class="fa fa-pencil"
            aria-hidden="true"></i>
         Edit</a>
+      <!-- SWAP -->
+      <a class="dropdown-item"
+         (click)="swapNode()">
+        <i class="fa fa-exchange"
+           aria-hidden="true"></i>
+        Swap
+      </a>
+      <!-- IMPORT -->
+      <a class="dropdown-item"
+         (click)="importNode()">
+        <i class="fa fa-upload"
+           aria-hidden="true"></i>
+        Import
+      </a>
+      <!-- COMPOSITE -->
+      <a class="dropdown-item"
+         (click)="compositeClickNodes()">
+        <i class="fa fa-plus-square-o"
+           aria-hidden="true"></i>
+        Composite</a>
       <!-- View -->
       <a class="dropdown-item"
          (click)="viewComposition(emptyCompositionModal)">
@@ -154,16 +174,13 @@
            aria-hidden="true"></i>
         View Composition
       </a>
+      <!-- RETURN TO PARENT -->
       <a class="dropdown-item"
          (click)="returnToParent()">
         <i class="fa fa-step-backward"
            aria-hidden="true"></i>
         Return to Parent</a>
-      <a class="dropdown-item"
-         (click)="compositeClickNodes()">
-        <i class="fa fa-plus-square-o"
-           aria-hidden="true"></i>
-        Composite</a>
+      <!-- DEBUG -->
       <a class="dropdown-item"
          (click)="debugNode(debugModal)">
         <i class="fa fa-bug"

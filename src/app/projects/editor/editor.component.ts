@@ -152,8 +152,8 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  get nodeClone(): Node {
-    return _.cloneDeep(this.node);
+  importNode(): void {
+    alert('to be implemented');
   }
 
   /**
@@ -232,6 +232,10 @@ export class EditorComponent implements OnInit {
     this.modalService.open(content);
   }
 
+  get nodeClone(): Node {
+    return _.cloneDeep(this.node);
+  }
+
   removeNodeFromService(node: Node): void {
     return this.nodeService.removeNode(node);
   }
@@ -246,7 +250,7 @@ export class EditorComponent implements OnInit {
   removeEdge(): void {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
-    const currentView  = this.currentView;
+    const currentView = this.currentView;
     if (currentView.parentNode) {
       currentView.parentNode.children = currentView.nodes;
     }
@@ -292,6 +296,10 @@ export class EditorComponent implements OnInit {
 
   get selectedNode(): Node {
     return this.graph.state.selectedNode;
+  }
+
+  swapNode(): void {
+    alert('To be implemented...');
   }
 
   /**
