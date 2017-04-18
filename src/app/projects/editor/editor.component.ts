@@ -214,7 +214,7 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
-  lastView(): View {
+  get lastView(): View {
     return _.last(this.views);
   }
 
@@ -246,7 +246,12 @@ export class EditorComponent implements OnInit {
   removeEdge(): void {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
-    this.updateViewToService(this.graph.currentView);
+    const currentView  = this.currentView;
+    if (currentView.parentNode) {
+      currentView.parentNode.children = currentView.nodes;
+    }
+    this.replaceRecentView(currentView);
+    this.updateViewToService(currentView);
     this.closeContextMenu();
   }
 
