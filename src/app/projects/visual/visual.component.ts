@@ -38,6 +38,9 @@ export class VisualComponent implements OnInit {
     // visual class width = 1000px, thus 500 is the center
     const center     = 500;
     const nodeRadius = 25;
+    const tooltipDiv = this.host.append('div')
+        .classed('tooltip', true)
+        .style('opacity', 0);
     const mainDiv    = this.host.append('div').classed('container', true);
     const svg        = mainDiv.append('svg').attr('class', 'visual');
     const mainGroup  = svg.append('g')
@@ -94,6 +97,42 @@ export class VisualComponent implements OnInit {
         .on('dblclick', (d: Node) => {
           this.selectedNode = d;
           this.navigate(d);
+        })
+        // Tooltip, its excessively ugly but i'm not sure if
+        // d3 allow for html template.
+        .on('mouseover', (d: Node) => {
+          tooltipDiv.transition()
+              .duration(200)
+              .style('opacity', .9);
+          tooltipDiv.html(`
+<dl>
+<div class="row">
+<dt class="col-sm-5">Title:</dt>
+<dd class="col-sm-7">${NodeUtility.title(d)}</dd>
+</div>
+
+<div class="row">
+<dt class="col-sm-5">Domain:</dt>
+<dd class="col-sm-7">${d.domain}</dd>
+</div>
+
+<div class="row">
+<dt class="col-sm-5">Path:</dt>
+<dd class="col-sm-7">${d.path}</dd>
+</div>
+
+<div class="row">
+<dt class="col-sm-5">Measurement:</dt>
+<dd class="col-sm-7">${parseFloat(String(Math.random())).toFixed(2)} Mangos</dd>
+</div>
+</dl>`)
+              .style('left', (d3.event as any).pageX + 'px')
+              .style('top', (d3.event as any).pageY + 'px');
+        })
+        .on('mouseout', function (d) {
+          tooltipDiv.transition()
+              .duration(500)
+              .style('opacity', 0);
         });
 
     nodeGroups.append('text')
