@@ -100,7 +100,7 @@ div.tooltip {
   max-width      : 350px;
   padding        : 2px;
   font           : 15px sans-serif;
-  background     : lightsteelblue;
+  background     : rgba(176, 196, 222, .50);
   border         : 0;
   border-radius  : 8px;
   pointer-events : none;
@@ -108,6 +108,11 @@ div.tooltip {
 
 div.tooltip dl {
   margin-left : 5px;
+}
+
+.svg-ctree {
+  width  : 960px;
+  height : 800px;
 }
 
 div#d3-ctree .node {
