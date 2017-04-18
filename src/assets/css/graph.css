@@ -16,7 +16,7 @@ g.conceptG circle {
   stroke-width : 4px;
 }
 
-text {
+div#d3-editor text {
   fill        : rgb(34, 34, 35);
   font-size   : 20px;
   font-family : monospace;
@@ -133,4 +133,10 @@ div#d3-ctree .link {
   fill         : none;
   stroke       : #ccc;
   stroke-width : 1px;
+}
+
+#svg-barChart {
+  width  : 500px !important;
+  height : 100% !important;
+  border : none !important;
 }

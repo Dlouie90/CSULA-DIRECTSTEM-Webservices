@@ -352,4 +352,9 @@ export class EditorComponent implements OnInit {
     }
     this.closeContextMenu();
   }
+
+  viewPerformance(modal): void {
+    this.openQuickEditModal(modal);
+    this.closeContextMenu();
+  }
 }

@@ -74,6 +74,25 @@
   </div>
 </template>
 
+<!-- Performance chart -->
+<template #chartModal
+          let-c="close"
+          let-d="dismiss"
+          size="lg">
+  <div class="modal-header"
+       id="my-title">
+    <h4 class="modal-title">24-Hours Performance</h4>
+  </div>
+  <div class="modal-body">
+    <app-bar-chart></app-bar-chart>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary btn-block"
+            (click)="c('Close click')">Close</button>
+  </div>
+</template>
+
 <!-- No composition nodes warning modal -->
 <template #emptyCompositionModal
           let-c="close"
@@ -131,62 +150,52 @@
       <a class="dropdown-item"
          (click)="insertNode()">
         <i class="fa fa-plus-circle"
-           aria-hidden="true"></i>
-        Insert
-      </a>
+           aria-hidden="true"></i>&nbsp;Insert</a>
       <!-- DELETE-->
       <a class="dropdown-item"
          (click)="removeSelected()">
         <i class="fa fa-trash"
-           aria-hidden="true"></i>
-        Delete
-      </a>
+           aria-hidden="true"></i>&nbsp;Delete</a>
       <!-- EDIT-->
       <a class="dropdown-item"
          (click)="edit(content)">
         <i class="fa fa-pencil"
-           aria-hidden="true"></i>
-        Edit</a>
+           aria-hidden="true"></i>&nbsp;Edit</a>
       <!-- SWAP -->
       <a class="dropdown-item"
          (click)="swapNode()">
         <i class="fa fa-exchange"
-           aria-hidden="true"></i>
-        Swap
-      </a>
+           aria-hidden="true"></i>&nbsp;Swap</a>
       <!-- IMPORT -->
       <a class="dropdown-item"
          (click)="importNode()">
         <i class="fa fa-upload"
-           aria-hidden="true"></i>
-        Import
-      </a>
+           aria-hidden="true"></i>&nbsp;Import</a>
       <!-- COMPOSITE -->
       <a class="dropdown-item"
          (click)="compositeClickNodes()">
         <i class="fa fa-plus-square-o"
-           aria-hidden="true"></i>
-        Composite</a>
+           aria-hidden="true"></i>&nbsp;Composite</a>
       <!-- View -->
       <a class="dropdown-item"
          (click)="viewComposition(emptyCompositionModal)">
         <i class="fa fa-info-circle"
-           aria-hidden="true"></i>
-        View Composition
-      </a>
+           aria-hidden="true"></i>&nbsp;Composition</a>
+      <!-- Performance -->
+      <a class="dropdown-item"
+         (click)="viewPerformance(chartModal)">
+        <i class="fa fa-bar-chart"
+           aria-hidden="true"></i>Performance</a>
       <!-- RETURN TO PARENT -->
       <a class="dropdown-item"
          (click)="returnToParent()">
         <i class="fa fa-step-backward"
-           aria-hidden="true"></i>
-        Return to Parent</a>
-      <!-- DEBUG -->
-      <a class="dropdown-item"
-         (click)="debugNode(debugModal)">
-        <i class="fa fa-bug"
-           aria-hidden="true"></i>
-        Debug(edges)
-      </a>
+           aria-hidden="true"></i>&nbsp;&nbsp;Back</a>
+      <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
+      <!--<a class="dropdown-item"-->
+         <!--(click)="debugNode(debugModal)">-->
+        <!--<i class="fa fa-bug"-->
+           <!--aria-hidden="true"></i>&nbsp;Debug(edges)</a>-->
     </div>
   </div>
 </div>

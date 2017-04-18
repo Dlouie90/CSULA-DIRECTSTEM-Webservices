@@ -23,6 +23,7 @@ import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.compo
 import {DebugComponent} from './debug/debug.component';
 import {VisualComponent} from './projects/visual/visual.component';
 import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-tree.component';
+import {BarChartComponent} from './projects/bar-chart/bar-chart.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-
     DebugComponent,
     VisualComponent,
     CollapsibleTreeComponent,
+    BarChartComponent,
   ],
 
   imports: [

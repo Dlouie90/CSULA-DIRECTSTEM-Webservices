@@ -13,6 +13,12 @@
   user-select           : none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-i {
+#my-title {
+  text-align : center;
+  margin     : auto;
+}
+
+.dropdown-menu i {
+  margin-left  : 1em;
   margin-right : 1em;
 }
