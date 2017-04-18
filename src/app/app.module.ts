@@ -22,6 +22,7 @@ import {QuickEditComponent} from './projects/editor/quick-edit/quick-edit.compon
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
 import {DebugComponent} from './debug/debug.component';
 import {VisualComponent} from './projects/visual/visual.component';
+import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-tree.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {VisualComponent} from './projects/visual/visual.component';
     BreadcrumbComponent,
     DebugComponent,
     VisualComponent,
+    CollapsibleTreeComponent,
   ],
 
   imports: [

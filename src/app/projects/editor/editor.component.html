@@ -23,6 +23,17 @@
       Radial Tree
     </label>
   </div>
+
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             value="clickable-tree">
+      Radial Tree
+    </label>
+  </div>
 </div>
 
 <!-- Editor View -->
@@ -43,6 +54,10 @@
   <app-visual *ngIf="node"
               [node]="nodeClone">
   </app-visual>
+</div>
+
+<div *ngIf="radioOptions === 'clickable-tree'">
+  <app-collapsible-tree></app-collapsible-tree>
 </div>
 <!---------------------------------------------------->
 <!------------------ Modals -------------------------->

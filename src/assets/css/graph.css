@@ -109,3 +109,23 @@ div.tooltip {
 div.tooltip dl {
   margin-left : 5px;
 }
+
+div#d3-ctree .node {
+  cursor : pointer;
+}
+
+div#d3-ctree .node circle {
+  fill         : #fff;
+  stroke       : steelblue;
+  stroke-width : 2px;
+}
+
+div#d3-ctree .node text {
+  font : 10px sans-serif;
+}
+
+div#d3-ctree .link {
+  fill         : none;
+  stroke       : #ccc;
+  stroke-width : 1px;
+}
