@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -32,7 +33,8 @@ public class Example {
     	}
     	JsonObject ret = new JsonObject();
     	ret.add("result", alist);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
     @GET
     @Path("/add")
@@ -41,7 +43,8 @@ public class Example {
     	System.out.println("adding " + num1 + " and " + num2);
     	JsonObject ret = new JsonObject();
     	ret.addProperty("result", num1+num2);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
     @GET
     @Path("/sub")
@@ -50,7 +53,8 @@ public class Example {
     	System.out.println("subtracting " + num1 + " and " + num2);
     	JsonObject ret = new JsonObject();
     	ret.addProperty("result", num1-num2);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
     @GET
     @Path("/mul")
@@ -68,7 +72,8 @@ public class Example {
     	System.out.println("dividing " + num1 + " and " + num2);
     	JsonObject ret = new JsonObject();
     	ret.addProperty("result", num1/num2);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
     @GET
     @Path("/mod")
@@ -77,6 +82,7 @@ public class Example {
     	System.out.println("modding " + num1 + " and " + num2);
     	JsonObject ret = new JsonObject();
     	ret.addProperty("result", num1%num2);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
 }
