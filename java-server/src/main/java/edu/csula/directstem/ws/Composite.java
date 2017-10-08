@@ -195,7 +195,7 @@ public class Composite {
 		}).start();
 		return Response.ok().entity(g).build();
 	}
-	private static JsonObject runComposite(JsonObject j, JsonArray context) {
+	private static JsonObject runComposite(JsonObject j, JsonArray context) throws Exception {
 		if(j.get("childEdges").getAsJsonArray().size() > 0) {
 			for(Iterator<JsonElement> i = j.get("childEdges").getAsJsonArray().iterator(); i.hasNext();) {
 				JsonObject ch = i.next().getAsJsonObject();
@@ -203,17 +203,6 @@ public class Composite {
 					.get(Composite.findNode(j.get("children").getAsJsonArray(), ch.get("destId").getAsInt())).getAsJsonObject()
 					.get("inputs").getAsJsonObject()
 					.add(ch.get("name").getAsString(), j.get("inputs").getAsJsonObject().get(ch.get("with").getAsString()));
-			}
-		}
-		if(j.get("compEdges").getAsJsonArray().size() > 0) {
-			for(Iterator<JsonElement> i = j.get("compEdges").getAsJsonArray().iterator(); i.hasNext();) {
-				JsonObject ed = i.next().getAsJsonObject();
-				JsonObject edSrc = j.get("children").getAsJsonArray().get(Composite.findNode(j.get("children").getAsJsonArray(), ed.get("srcId").getAsInt())).getAsJsonObject(); //get the appropriate child
-				if(edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()).isJsonNull()) { //if the needed value is null, go get it. This could sort-of fall down if some service returns a bunch of nulls, but that's pretty unlikely?
-					edSrc = Composite.runComposite(edSrc,j.get("children").getAsJsonArray());
-					j.get("children").getAsJsonArray().set(ed.get("srcId").getAsInt(), edSrc); //update our child
-				}
-				j.get("outputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
 			}
 		}
 		if(j.get("edges").getAsJsonArray().size() > 0) {
@@ -224,8 +213,22 @@ public class Composite {
 					edSrc = Composite.runComposite(edSrc,context);
 					context.set(ed.get("srcId").getAsInt(), edSrc); //update our sibling. this "should" be retained up-the-chain. I think. Probably.
 				}
-				j.get("outputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
-
+				j.get("inputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
+			}
+		}
+		if(!j.get("composition").getAsBoolean()) {
+			j.add("outputs", Composite.getResult(j));
+		} else {
+			if(j.get("compEdges").getAsJsonArray().size() > 0) {
+				for(Iterator<JsonElement> i = j.get("compEdges").getAsJsonArray().iterator(); i.hasNext();) {
+					JsonObject ed = i.next().getAsJsonObject();
+					JsonObject edSrc = j.get("children").getAsJsonArray().get(Composite.findNode(j.get("children").getAsJsonArray(), ed.get("srcId").getAsInt())).getAsJsonObject(); //get the appropriate child
+					if(edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()).isJsonNull()) { //if the needed value is null, go get it. This could sort-of fall down if some service returns a bunch of nulls, but that's pretty unlikely?
+						edSrc = Composite.runComposite(edSrc,j.get("children").getAsJsonArray());
+						j.get("children").getAsJsonArray().set(ed.get("srcId").getAsInt(), edSrc); //update our child
+					}
+					j.get("outputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
+				}
 			}
 		}
 		return j;
