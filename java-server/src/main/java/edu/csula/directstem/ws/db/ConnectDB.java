@@ -16,7 +16,7 @@ public class ConnectDB {
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
-            con=DriverManager.getConnection("jdbc:mysql://localhost/"+db_name+"?user="+user_name+"&password="+password);
+            con=DriverManager.getConnection("jdbc:mysql://localhost/"+db_name+"?user="+user_name+"&password="+password+"&serverTimezone=UTC");
         }
         catch(Exception e)
         {

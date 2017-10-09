@@ -62,8 +62,8 @@ public class Composite {
 		PreparedStatement p;
 		p = conn.prepareStatement("insert into nodes values (?,?,?,?,?);");
 		p.setInt(1, j.get("id").getAsInt());
-		p.setInt(2, j.get("x").getAsInt());
-		p.setInt(3, j.get("y").getAsInt());
+		if(j.has("x")) p.setInt(2, j.get("x").getAsInt());
+		if(j.has("y")) p.setInt(3, j.get("y").getAsInt());
 		p.setInt(4, j.get("composition").getAsBoolean() ? 1 : 0); //can't cast boolean to int. dumb.
 		p.setString(5, j.get("composition").getAsBoolean() ? null : j.get("url").getAsString());
 		p.executeUpdate();
@@ -357,8 +357,10 @@ public class Composite {
 		rs.next();
 		JsonObject ret = new JsonObject();
 		ret.addProperty("id",id);
-		ret.addProperty("x", rs.getInt(2));
-		ret.addProperty("y", rs.getInt(3));
+		int temp = rs.getInt(2);
+		if(!rs.wasNull()) ret.addProperty("x", rs.getInt(2));
+		temp = rs.getInt(3);
+		if(!rs.wasNull()) ret.addProperty("y", rs.getInt(3));
 		ret.addProperty("composition", rs.getInt(4) > 0);
 		ret.addProperty("url", rs.getString(5));
 		ret.add("parameters",new JsonObject());
