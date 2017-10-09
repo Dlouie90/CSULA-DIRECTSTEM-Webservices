@@ -26,8 +26,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -91,8 +93,10 @@ public class Composite {
 				JsonObject child = i.next().getAsJsonObject();
 				p.setInt(1, j.get("id").getAsInt());
 				p.setInt(2, child.get("id").getAsInt());
+				p.addBatch();
 				Composite.addComposite(child); //recurse
 			}
+			p.executeBatch();
 		}
 		if(j.get("edges").getAsJsonArray().size() > 0) { //sibling-to-sibling
 			p = conn.prepareStatement("insert into edges values (?,?,?,?);");
@@ -183,6 +187,7 @@ public class Composite {
 					}
 					p.executeBatch();
 				} catch (Exception e) {
+					e.printStackTrace();
 					Connection conn = ConnectDB.getConnection();
 					try {
 						PreparedStatement p = conn.prepareStatement("insert into results values (?,?,?,?,?);");
@@ -192,7 +197,6 @@ public class Composite {
 						p.setString(4, null);
 						p.setBoolean(5, true);
 						p.executeUpdate();
-						e.printStackTrace();
 					} catch (SQLException e1) {
 						// give up; couldn't write error.
 						e1.printStackTrace();
@@ -216,9 +220,11 @@ public class Composite {
 			for(Iterator<JsonElement> i = j.get("edges").getAsJsonArray().iterator(); i.hasNext();) {
 				JsonObject ed = i.next().getAsJsonObject();
 				JsonObject edSrc = context.get(Composite.findNode(context, ed.get("srcId").getAsInt())).getAsJsonObject(); //get the appropriate sibling
+				System.out.println(ed.get("with").getAsString());
+				System.out.println(edSrc.get("id").getAsInt());
 				if(edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()).isJsonNull()) { //if the needed value is null, go get it. This could sort-of fall down if some service returns a bunch of nulls, but that's pretty unlikely?
 					edSrc = Composite.runComposite(edSrc,context);
-					context.set(ed.get("srcId").getAsInt(), edSrc); //update our sibling. this "should" be retained up-the-chain. I think. Probably.
+					context.set(findNode(context,ed.get("srcId").getAsInt()), edSrc); //update our sibling. this "should" be retained up-the-chain. I think. Probably.
 				}
 				j.get("inputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
 			}
@@ -230,9 +236,12 @@ public class Composite {
 				for(Iterator<JsonElement> i = j.get("compEdges").getAsJsonArray().iterator(); i.hasNext();) {
 					JsonObject ed = i.next().getAsJsonObject();
 					JsonObject edSrc = j.get("children").getAsJsonArray().get(Composite.findNode(j.get("children").getAsJsonArray(), ed.get("srcId").getAsInt())).getAsJsonObject(); //get the appropriate child
+					System.out.println(ed.get("with").getAsString());
+					System.out.println(edSrc.get("id").getAsInt());
+					System.out.println(j.get("id").getAsInt());
 					if(edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()).isJsonNull()) { //if the needed value is null, go get it. This could sort-of fall down if some service returns a bunch of nulls, but that's pretty unlikely?
 						edSrc = Composite.runComposite(edSrc,j.get("children").getAsJsonArray());
-						j.get("children").getAsJsonArray().set(ed.get("srcId").getAsInt(), edSrc); //update our child
+						j.get("children").getAsJsonArray().set(findNode(j.get("children").getAsJsonArray(),ed.get("srcId").getAsInt()), edSrc); //update our child
 					}
 					j.get("outputs").getAsJsonObject().add(ed.get("name").getAsString(), edSrc.get("outputs").getAsJsonObject().get(ed.get("with").getAsString()));
 				}
@@ -274,8 +283,9 @@ public class Composite {
 		return parser.parse(br).getAsJsonObject();
 	}
 	private static int findNode(JsonArray ja, int id) {
+		System.out.println("Looking for " + id + "in a context of " + ja.size() + " nodes.");
 		for(int i = 0; i < ja.size(); i++) {
-			if(ja.get(i).getAsInt() == id) return i;
+			if(ja.get(i).getAsJsonObject().get("id").getAsInt() == id) return i;
 		}
 		return -1;
 	}
@@ -292,12 +302,21 @@ public class Composite {
 			p.setString(1, c);
 			ResultSet rs = p.executeQuery();
 			if(rs.next()) {
-				JsonObject res = new JsonObject();
-				do {
-					res.add(rs.getString(3), parser.parse(rs.getString(4)));
-				} while(rs.next());
-				Gson gson = new Gson();
-				return Response.status(200).entity(gson.toJson(res)).build();
+				if(rs.getBoolean(5)) {
+					Gson gson = new Gson();
+					return Response.status(200).entity("{\"failed\":true}").build();
+				} else {
+					JsonObject res = new JsonObject();
+					do {
+						if(rs.getString(4).equals("null")) {
+							res.add(rs.getString(3),JsonNull.INSTANCE);
+						} else {
+							res.add(rs.getString(3), parser.parse(rs.getString(4)));
+						}
+					} while(rs.next());
+					Gson gson = new Gson();
+					return Response.status(200).entity(gson.toJson(res)).build();
+				}
 			} else {
 				return Response.status(400)
 						.entity("{\"error\":\"No result found. Either you input an invalid GUID, your request has not finished running, or something has gone seriously wrong on the server.\"}")
@@ -315,14 +334,20 @@ public class Composite {
 	@Path("/getcomp")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public static Response getComposite(String c) {
+	public static Response getComposite(@QueryParam("id") String c) {
 		try {
-			return Response.ok().entity(Composite.getComposite(Integer.parseInt(c))).build();
+			Gson gson = new GsonBuilder().serializeNulls().create();
+			return Response.ok().entity(gson.toJson(Composite.getComposite(Integer.parseInt(c)))).build();
 		} catch(SQLException e) {
-			return Response.status(500).entity(e).build();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString(); // stack trace as a string
+			return Response.status(500).entity(sStackTrace).build();
 		}
 	}
 	private static JsonObject getComposite(int id) throws SQLException {
+		System.out.println("Getting " + id);
 		JsonParser parser = new JsonParser();
 		Connection conn = ConnectDB.getConnection();
 		PreparedStatement p;
@@ -363,9 +388,9 @@ public class Composite {
 		rs = p.executeQuery();
 		while(rs.next()) {
 			JsonObject edge = new JsonObject();
-			edge.addProperty("srcId",rs.getInt(1));
-			edge.addProperty("name",rs.getString(2));
-			edge.addProperty("with",rs.getString(3));
+			edge.addProperty("srcId",rs.getInt(2));
+			edge.addProperty("name",rs.getString(3));
+			edge.addProperty("with",rs.getString(4));
 			ret.get("edges").getAsJsonArray().add(edge);
 		}
 		ret.add("compEdges", new JsonArray());
@@ -374,9 +399,9 @@ public class Composite {
 		rs = p.executeQuery();
 		while(rs.next()) {
 			JsonObject edge = new JsonObject();
-			edge.addProperty("srcId",rs.getInt(1));
-			edge.addProperty("name",rs.getString(2));
-			edge.addProperty("with",rs.getString(3));
+			edge.addProperty("srcId",rs.getInt(2));
+			edge.addProperty("name",rs.getString(3));
+			edge.addProperty("with",rs.getString(4));
 			ret.get("compEdges").getAsJsonArray().add(edge);
 		}
 		ret.add("childEdges", new JsonArray());
@@ -385,9 +410,9 @@ public class Composite {
 		rs = p.executeQuery();
 		while(rs.next()) {
 			JsonObject edge = new JsonObject();
-			edge.addProperty("destId",rs.getInt(1));
-			edge.addProperty("name",rs.getString(2));
-			edge.addProperty("with",rs.getString(3));
+			edge.addProperty("destId",rs.getInt(2));
+			edge.addProperty("name",rs.getString(3));
+			edge.addProperty("with",rs.getString(4));
 			ret.get("childEdges").getAsJsonArray().add(edge);
 		}
 		ret.add("inputs",new JsonObject());
@@ -395,7 +420,6 @@ public class Composite {
 		p.setInt(1, id);
 		rs = p.executeQuery();
 		while(rs.next()) {
-			
 			ret.get("inputs").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
 		}
 		ret.add("outputs",new JsonObject());
@@ -403,6 +427,7 @@ public class Composite {
 		p.setInt(1, id);
 		rs = p.executeQuery();
 		while(rs.next()) {
+			System.out.println("Output: " + rs.getInt(1) + "," + rs.getString(2) + "," + rs.getString(3));
 			ret.get("outputs").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
 		}
 		return ret;

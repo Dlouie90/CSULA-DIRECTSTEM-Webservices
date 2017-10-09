@@ -63,7 +63,8 @@ public class Example {
     	System.out.println("multiplying " + num1 + " and " + num2);
     	JsonObject ret = new JsonObject();
     	ret.addProperty("result", num1*num2);
-    	return ret.getAsString();
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
     }
     @GET
     @Path("/div")
