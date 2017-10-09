@@ -63,7 +63,9 @@ public class Composite {
 		p = conn.prepareStatement("insert into nodes values (?,?,?,?,?);");
 		p.setInt(1, j.get("id").getAsInt());
 		if(j.has("x")) p.setInt(2, j.get("x").getAsInt());
+		else p.setNull(2, java.sql.Types.INTEGER);
 		if(j.has("y")) p.setInt(3, j.get("y").getAsInt());
+		else p.setNull(3, java.sql.Types.INTEGER);
 		p.setInt(4, j.get("composition").getAsBoolean() ? 1 : 0); //can't cast boolean to int. dumb.
 		p.setString(5, j.get("composition").getAsBoolean() ? null : j.get("url").getAsString());
 		p.executeUpdate();
