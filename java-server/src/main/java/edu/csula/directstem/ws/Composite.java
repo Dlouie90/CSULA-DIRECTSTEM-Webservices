@@ -161,26 +161,23 @@ public class Composite {
 	@Path("/run")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public static Response runComposite(final String c) {
+	public static Response runComposite(String c) {
+		JsonParser parser = new JsonParser();
+		final int id = parser.parse(c).getAsJsonObject().get("id").getAsInt();
 		UUID uuid = UUID.randomUUID();
 		final String g = uuid.toString();
-		try {
-			Integer.parseInt(c);
-		} catch (NumberFormatException e) {
-			return Response.status(400).build();
-		}
 		new Thread(new Runnable() {
-			String b = c;
+			int b = id;
 			String guid = g;
 		    public void run() {
 				try {
 					Gson gson = new Gson();
-					JsonObject graph = Composite.getComposite(Integer.parseInt(b));
+					JsonObject graph = Composite.getComposite(b);
 					JsonObject out = Composite.runComposite(graph,null).get("outputs").getAsJsonObject();
 					Connection conn = ConnectDB.getConnection();
 					PreparedStatement p = conn.prepareStatement("insert into results values (?,?,?,?,?);");
 					for(Entry<String,JsonElement> entry : out.entrySet()) {
-						p.setInt(1, Integer.parseInt(b));
+						p.setInt(1, b);
 						p.setString(2,guid);
 						p.setString(3, entry.getKey());
 						p.setString(4, gson.toJson(entry.getValue()));
@@ -193,7 +190,7 @@ public class Composite {
 					Connection conn = ConnectDB.getConnection();
 					try {
 						PreparedStatement p = conn.prepareStatement("insert into results values (?,?,?,?,?);");
-						p.setInt(1, Integer.parseInt(b));
+						p.setInt(1, b);
 						p.setString(2, guid);
 						p.setString(3, null);
 						p.setString(4, null);
