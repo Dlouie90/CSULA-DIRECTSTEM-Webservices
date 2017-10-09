@@ -203,7 +203,10 @@ public class Composite {
 				}
 		    }
 		}).start();
-		return Response.ok().entity(g).build();
+		JsonObject res = new JsonObject();
+		res.addProperty("guid", g);
+		Gson gson = new Gson();
+		return Response.ok().entity(gson.toJson(res)).build();
 	}
 	private static JsonObject runComposite(JsonObject j, JsonArray context) throws Exception {
 		if(j.get("childEdges").getAsJsonArray().size() > 0) {
