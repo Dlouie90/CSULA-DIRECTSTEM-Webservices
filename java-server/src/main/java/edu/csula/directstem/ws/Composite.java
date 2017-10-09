@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
@@ -44,7 +47,11 @@ public class Composite {
 			return Response.status(200).build();
 		}
 		catch (Exception e) {
-			return Response.status(500).entity(e).build();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString(); // stack trace as a string
+			return Response.status(500).entity(sStackTrace).build();
 		}
 	}
 	public static void addComposite(JsonObject j) throws Exception { //the in-out passing should be modified to use an object-oriented, "Real" Jersey model.
@@ -56,7 +63,7 @@ public class Composite {
 		p.setInt(2, j.get("x").getAsInt());
 		p.setInt(3, j.get("y").getAsInt());
 		p.setInt(4, j.get("composition").getAsBoolean() ? 1 : 0); //can't cast boolean to int. dumb.
-		p.setString(5, j.get("url").getAsString());
+		p.setString(5, j.get("composition").getAsBoolean() ? null : j.get("url").getAsString());
 		p.executeUpdate();
 		if(j.get("parameters").getAsJsonObject().size() > 0) {
 			p = conn.prepareStatement("insert into parameters values (?,?,?);");
@@ -68,9 +75,9 @@ public class Composite {
 			}
 			p.executeBatch();
 		}
-		if(j.get("returns").getAsJsonObject().size() > 0) {
+		if(j.get("returnType").getAsJsonObject().size() > 0) {
 			p = conn.prepareStatement("insert into returns values (?,?,?);");
-			for(Entry<String,JsonElement> entry : j.get("returns").getAsJsonObject().entrySet()) {
+			for(Entry<String,JsonElement> entry : j.get("returnType").getAsJsonObject().entrySet()) {
 				p.setInt(1, j.get("id").getAsInt());
 				p.setString(2, entry.getKey());
 				p.setString(3, entry.getValue().getAsString());
@@ -125,7 +132,7 @@ public class Composite {
 		}
 		if(j.get("inputs").getAsJsonObject().size() > 0) {
 			p = conn.prepareStatement("insert into inputs values (?,?,?);");
-			for(Entry<String,JsonElement> entry : j.get("parameters").getAsJsonObject().entrySet()) {
+			for(Entry<String,JsonElement> entry : j.get("inputs").getAsJsonObject().entrySet()) {
 				p.setInt(1, j.get("id").getAsInt());
 				p.setString(2, entry.getKey());
 				p.setString(3, gson.toJson(entry.getValue()));
@@ -235,14 +242,28 @@ public class Composite {
 	}
 	//right now only works with flat input objects (i.e. no inputs:{foo:3,bar:{baz:5}}), and doesn't work with urlencoded arguments
 	private static JsonObject getResult(JsonObject j) throws MalformedURLException, IOException, RuntimeException {
-		URL url = new URL(j.get("url").getAsString());
+		String u = j.get("url").getAsString();
+		boolean first = true;
+		if(j.get("inputs").getAsJsonObject().size() > 0) {
+			for(Entry<String,JsonElement> entry : j.get("inputs").getAsJsonObject().entrySet()) {
+				if(!entry.getValue().isJsonNull()) {
+					if(first) {
+						u = u + "?" + entry.getKey() + "=" + entry.getValue().getAsString();
+						first = false;
+					}
+					else {
+						u = u + "&" + entry.getKey() + "=" + entry.getValue().getAsString();
+					}
+				}
+			}
+		}
+		System.out.println("final url is " + u);
+		URL url = new URL(u);
 		Gson gson = new Gson();
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setDoOutput(true);
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Accept", "application/json");
-		OutputStream o = conn.getOutputStream();
-		o.write(gson.toJson(j.get("inputs").getAsJsonObject()).getBytes("UTF-8"));
-		o.close();
 		if (conn.getResponseCode() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ conn.getResponseCode());
@@ -262,7 +283,7 @@ public class Composite {
 	@Path("/runresult")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public static Response resultComposite(String c) {
+	public static Response resultComposite(@QueryParam("run") String c) {
 		Connection conn = ConnectDB.getConnection();
 		JsonParser parser = new JsonParser();
 		PreparedStatement p;
@@ -275,15 +296,19 @@ public class Composite {
 				do {
 					res.add(rs.getString(3), parser.parse(rs.getString(4)));
 				} while(rs.next());
-				return Response.status(200).entity(res).build();
+				Gson gson = new Gson();
+				return Response.status(200).entity(gson.toJson(res)).build();
 			} else {
 				return Response.status(400)
 						.entity("{\"error\":\"No result found. Either you input an invalid GUID, your request has not finished running, or something has gone seriously wrong on the server.\"}")
 						.build();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return Response.status(500).entity(e).build();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString(); // stack trace as a string
+			return Response.status(500).entity(sStackTrace).build();
 		}
 	}
 	@GET
@@ -318,12 +343,12 @@ public class Composite {
 		while(rs.next()) {
 			ret.get("parameters").getAsJsonObject().addProperty(rs.getString(2), rs.getString(3));
 		}
-		ret.add("returns",new JsonObject());
+		ret.add("returnType",new JsonObject());
 		p = conn.prepareStatement("select * from returns where id=?;");
 		p.setInt(1, id);
 		rs = p.executeQuery();
 		while(rs.next()) {
-			ret.get("returns").getAsJsonObject().addProperty(rs.getString(2), rs.getString(3));
+			ret.get("returnType").getAsJsonObject().addProperty(rs.getString(2), rs.getString(3));
 		}
 		ret.add("children", new JsonArray());
 		p = conn.prepareStatement("select * from children where id=?;");
@@ -371,20 +396,19 @@ public class Composite {
 		rs = p.executeQuery();
 		while(rs.next()) {
 			
-			ret.get("parameters").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
+			ret.get("inputs").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
 		}
-		ret.add("parameters",new JsonObject());
-		p = conn.prepareStatement("select * from parameters where id=?;");
+		ret.add("outputs",new JsonObject());
+		p = conn.prepareStatement("select * from outputs where id=?;");
 		p.setInt(1, id);
 		rs = p.executeQuery();
 		while(rs.next()) {
-			ret.get("parameters").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
+			ret.get("outputs").getAsJsonObject().add(rs.getString(2), parser.parse(rs.getString(3)));
 		}
 		return ret;
 	}
 	@GET
 	@Path("/list")
-	@Consumes("application/json")
 	@Produces("application/json")
 	public static Response listComposite(String c) {
 		return Response.status(200).build();
