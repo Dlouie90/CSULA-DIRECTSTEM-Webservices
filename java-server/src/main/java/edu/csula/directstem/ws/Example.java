@@ -47,6 +47,34 @@ public class Example {
     	return gson.toJson(ret);
     }
     @GET
+    @Path("/sum")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getSum(@QueryParam("num1") int num1, @QueryParam("num2") int num2, @QueryParam("num3") int num3) {
+    	System.out.println("adding " + num1 + " and " + num2 + " and " + num3);
+    	JsonObject ret = new JsonObject();
+    	ret.addProperty("result", num1+num2+num3);
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
+    }
+    @GET
+    @Path("/increment")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getIncrement(@QueryParam("num") int num) {
+    	JsonObject ret = new JsonObject();
+    	ret.addProperty("result", num+1);
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
+    }
+    @GET
+    @Path("/invert")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getInvert(@QueryParam("num") int num) {
+    	JsonObject ret = new JsonObject();
+    	ret.addProperty("result", -num);
+    	Gson gson = new Gson();
+    	return gson.toJson(ret);
+    }
+    @GET
     @Path("/sub")
     @Produces(MediaType.APPLICATION_JSON)
     public String getSub(@QueryParam("num1") int num1, @QueryParam("num2") int num2) {

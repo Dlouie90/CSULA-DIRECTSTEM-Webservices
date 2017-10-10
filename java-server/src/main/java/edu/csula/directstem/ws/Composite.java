@@ -447,6 +447,39 @@ public class Composite {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public static Response delComposite(String c) {
-		return Response.status(200).build();
+		JsonParser parser = new JsonParser();
+		int id = parser.parse(c).getAsJsonObject().get("id").getAsInt();
+		if(deleteComposite(id)) {
+			return Response.status(200).build();
+		} else {
+			return Response.status(500).build();
+		}
+	}
+	private static boolean deleteComposite(int id) {
+		Connection conn = ConnectDB.getConnection();
+		PreparedStatement p;
+		try {
+			p = conn.prepareStatement("select childid from children where id=?;");
+			p.setInt(1, id);
+			ResultSet rs = p.executeQuery();
+			while(rs.next()) {
+				deleteComposite(rs.getInt(1));
+			}
+			p = conn.prepareStatement("delete from inputs where id=?; delete from outputs where id=?; delete from childedges where id=?; delete from edges where id=?; delete from compedges where id=?; delete from returns where id=?; delete from parameters where id=?;delete from nodes where id=?;");
+			p.setInt(1, id);
+			p.setInt(2, id);
+			p.setInt(3, id);
+			p.setInt(4, id);
+			p.setInt(5, id);
+			p.setInt(6, id);
+			p.setInt(7, id);
+			p.setInt(8, id);
+			p.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 }
