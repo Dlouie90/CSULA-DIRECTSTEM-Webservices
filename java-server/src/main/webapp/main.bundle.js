@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n\n  <div class=\"row\">\n    <div class=\"col-6 scrollable\">\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Create a User</h2>\n        <app-create-user-form (onCreate)=\"onResult($event)\"></app-create-user-form>\n      </div>\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Login User</h2>\n        <app-login-form (onLogin)=\"onResult($event)\"></app-login-form>\n      </div>\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Update a User</h2>\n        <app-update-user-form (onUpdate)=\"onResult($event)\"></app-update-user-form>\n      </div>\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Get All Users</h2>\n        <app-get-all-users (onGetAllUser)=\"onResult($event)\"></app-get-all-users>\n      </div>\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Get User By Id</h2>\n        <app-user-by-id-form (onGetUser)=\"onResult($event)\"></app-user-by-id-form>\n      </div>\n\n      <div class=\"card p-3\">\n        <h2 class=\"card-header text-center\">Delete User By ID</h2>\n        <app-delete-user-form (onDeleteUser)=\"onResult($event)\"></app-delete-user-form>\n      </div>\n    </div>\n\n\n    <div class=\"col-6\">\n      <h2>Result</h2>\n      <pre>\n        {{ requestResult | json }}\n      </pre>\n    </div>\n\n  </div>\n\n</div>\n"
+module.exports = "<div class=\"container\">\n\n  <div class=\"text-center mt-2 mb-5\">\n    <div class=\"btn-group\" role=\"group\" aria-label=\"Basic example\">\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(1)\">Create</button>\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(2)\">Login</button>\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(3)\">Update</button>\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(4)\">Get All</button>\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(5)\">Get One</button>\n      <button type=\"button\" class=\"btn btn-secondary\" (click)=\"updatePage(6)\">Delete</button>\n    </div>\n  </div>\n\n  <div class=\"row\">\n    <div class=\"col-6 scrollable\" [ngSwitch]=\"index\">\n\n      <div class=\"card p-3\" *ngSwitchCase=\"1\">\n        <h2 class=\"card-header text-center\">Create a User</h2>\n        <app-create-user-form (onCreate)=\"onResult($event)\"></app-create-user-form>\n      </div>\n\n      <div class=\"card p-3\" *ngSwitchCase=\"2\">\n        <h2 class=\"card-header text-center\">Login User</h2>\n        <app-login-form (onLogin)=\"onResult($event)\"></app-login-form>\n      </div>\n\n      <div class=\"card p-3\" *ngSwitchCase=\"3\">\n        <h2 class=\"card-header text-center\">Update a User</h2>\n        <app-update-user-form (onUpdate)=\"onResult($event)\"></app-update-user-form>\n      </div>\n\n      <div class=\"card p-3\" *ngSwitchCase=\"4\">\n        <h2 class=\"card-header text-center\">Get All Users</h2>\n        <app-get-all-users (onGetAllUser)=\"onResult($event)\"></app-get-all-users>\n      </div>\n\n      <div class=\"card p-3\" *ngSwitchCase=\"5\">\n        <h2 class=\"card-header text-center\">Get User By Id</h2>\n        <app-user-by-id-form (onGetUser)=\"onResult($event)\"></app-user-by-id-form>\n      </div>\n\n      <div class=\"card p-3\" *ngSwitchCase=\"6\">\n        <h2 class=\"card-header text-center\">Delete User By ID</h2>\n        <app-delete-user-form (onDeleteUser)=\"onResult($event)\"></app-delete-user-form>\n      </div>\n    </div>\n\n    <div class=\"card col-6 p-3\">\n      <h2 class=\"card-header\">Result</h2>\n      <div class=\"card-block\">\n      <pre>\n        {{ requestResult | json }}\n      </pre>\n      </div>\n    </div>\n\n  </div>\n\n</div>\n"
 
 /***/ }),
 
@@ -64,6 +64,7 @@ var AppComponent = (function () {
     function AppComponent(formBuilder) {
         this.formBuilder = formBuilder;
         this.requestResult = {};
+        this.index = 1;
         this.createUserForm = formBuilder.group({
             firstName: [''],
             lastName: [''],
@@ -79,6 +80,9 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.onResult = function (result) {
         this.requestResult = result;
+    };
+    AppComponent.prototype.updatePage = function (page) {
+        this.index = page;
     };
     return AppComponent;
 }());
