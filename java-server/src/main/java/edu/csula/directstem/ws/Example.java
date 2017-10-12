@@ -38,7 +38,6 @@ public class Example {
     }
     @GET
     @Path("/add")
-    @Produces(MediaType.APPLICATION_JSON)
     public String getAdd(@QueryParam("num1") int num1, @QueryParam("num2") int num2) {
     	System.out.println("adding " + num1 + " and " + num2);
     	return Integer.toString(num1+num2);
@@ -55,19 +54,16 @@ public class Example {
     }
     @GET
     @Path("/increment")
-    @Produces(MediaType.APPLICATION_JSON)
     public String getIncrement(@QueryParam("num") int num) {
     	return Integer.toString(num+1);
     }
     @GET
     @Path("/invert")
-    @Produces(MediaType.APPLICATION_JSON)
     public String getInvert(@QueryParam("num") int num) {
     	return Integer.toString(-num);
     }
     @GET
     @Path("/sub")
-    @Produces(MediaType.APPLICATION_JSON)
     public String getSub(@QueryParam("num1") int num1, @QueryParam("num2") int num2) {
     	System.out.println("subtracting " + num1 + " and " + num2);
     	return Integer.toString(num1-num2);
