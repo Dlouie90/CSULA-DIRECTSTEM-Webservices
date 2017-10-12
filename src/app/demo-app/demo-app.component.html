@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div class="list-group col-3">
+      <button *ngFor="let service of serviceArray"
+              type="button" class="list-group-item list-group-item-action"
+              (click)="selectService(service)">
+        {{ service.description }}
+      </button>
+    </div>
+
+    <div class="col-9">
+      <div class="text-center card">
+        <div class=" card-block">
+          <button class="btn btn-secondary"
+                  (click)="addService()">Add Service
+          </button>
+          <button class="btn btn-secondary"
+                  (click)="runService()">Run Service
+          </button>
+          <button class="btn btn-secondary"
+                  (click)="getServiceResult()">Get Result Of Service
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">Result</h2>
+        </div>
+
+        <div class="card-block text-center">
+          <div *ngIf="showSpinner()">
+            <img src="/assets/images/Spinner.gif">
+          </div>
+          <div *ngIf="!showSpinner()">
+        <pre>
+        {{ result | json}}
+        </pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <h2 class=" text-center">Current Service</h2>
+        </div>
+        <div class="card-block">
+      <pre>
+        {{ currentService | json }}
+      </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
