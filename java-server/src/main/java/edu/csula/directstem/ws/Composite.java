@@ -41,7 +41,6 @@ public class Composite {
 	@POST
 	@Path("/add")
 	@Consumes("application/json")
-	@Produces("application/json")
 	public static Response addComposite(String c) {
 		try {
 			JsonParser parser = new JsonParser();
@@ -54,6 +53,24 @@ public class Composite {
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			String sStackTrace = sw.toString(); // stack trace as a string
+			return Response.status(500).entity(sStackTrace).build();
+		}
+	}
+	@POST
+	@Path("/addservice")
+	@Consumes("application/json")
+	public static Response addService(String c) {
+		try {
+			JsonParser parser = new JsonParser();
+			JsonObject g = (JsonObject) parser.parse(c);
+			addService(g);
+			return Response.status(200).build();
+		}
+		catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString();
 			return Response.status(500).entity(sStackTrace).build();
 		}
 	}
@@ -509,6 +526,19 @@ public class Composite {
 			s.execute("delete from services;");
 			s.execute("delete from nodes;");
 			s.close();
+			Class currentClass = new Object() { }.getClass().getEnclosingClass();
+			ClassLoader classLoader = currentClass.getClassLoader();
+			BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream("ws.json")));
+			JsonParser parser = new JsonParser();
+			JsonArray ja = parser.parse(br).getAsJsonObject().get("obj").getAsJsonArray();
+			for(int i = 0; i < ja.size(); i++) {
+				try {
+					addService(ja.get(i));
+				} catch (Exception e) {
+					e.printStackTrace();
+					return Response.status(520).build();
+				}
+			}
 			return Response.status(200).build();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -516,44 +546,5 @@ public class Composite {
 			return Response.status(500).build();
 		}
 
-	}
-	@POST
-	@Path("/del")
-	@Consumes("application/json")
-	public static Response delComposite(String c) {
-		JsonParser parser = new JsonParser();
-		int id = parser.parse(c).getAsJsonObject().get("id").getAsInt();
-		if(deleteComposite(id)) {
-			return Response.status(200).build();
-		} else {
-			return Response.status(500).build();
-		}
-	}
-	private static boolean deleteComposite(int id) {
-		Connection conn = ConnectDB.getConnection();
-		PreparedStatement p;
-		try {
-			p = conn.prepareStatement("select childid from children where id=?;");
-			p.setInt(1, id);
-			ResultSet rs = p.executeQuery();
-			while(rs.next()) {
-				deleteComposite(rs.getInt(1));
-			}
-			p = conn.prepareStatement("delete from inputs where id=?; delete from outputs where id=?; delete from childedges where id=?; delete from edges where id=?; delete from compedges where id=?; delete from returns where id=?; delete from parameters where id=?;delete from nodes where id=?;");
-			p.setInt(1, id);
-			p.setInt(2, id);
-			p.setInt(3, id);
-			p.setInt(4, id);
-			p.setInt(5, id);
-			p.setInt(6, id);
-			p.setInt(7, id);
-			p.setInt(8, id);
-			p.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
 	}
 }

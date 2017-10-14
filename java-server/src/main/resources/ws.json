@@ -1,0 +1,99 @@
+{
+	"obj": [
+		{
+			"id": 2,
+			"url": "http://localhost:8080/webservice/rest/numbers/increment",
+			"title": "Increment",
+			"description": "This service increments a number",
+			"return": "",
+			"parameters": [
+				"num"
+			]
+		},
+		{
+			"id": 1,
+			"url": "http://localhost:8080/webservice/rest/numbers/add",
+			"title": "Add",
+			"description": "This service adds two numbers together and returns the result",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2"
+			]
+		},
+		{
+			"id": 3,
+			"url": "http://localhost:8080/webservice/rest/numbers/invert",
+			"title": "Invert",
+			"description": "This service inverts a number",
+			"return": "",
+			"parameters": [
+				"num"
+			]
+		},
+		{
+			"id": 4,
+			"url": "http://localhost:8080/webservice/rest/numbers/sub",
+			"title": "Sub",
+			"description": "This service subtracts one number from another",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2"
+			]
+		},
+		{
+			"id": 5,
+			"url": "http://localhost:8080/webservice/rest/numbers/mul",
+			"title": "Mul",
+			"description": "This service multiplies two numbers",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2"
+			]
+		},
+		{
+			"id": 6,
+			"url": "http://18.221.242.81:8080/webservice/rest/numbers/div",
+			"title": "Div",
+			"description": "This service divides one number by another",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2"
+			]
+		},
+		{
+			"id": 7,
+			"url": "http://localhost:8080/webservice/rest/numbers/mod",
+			"title": "Mod",
+			"description": "This service returns the modulus of one number by another",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2"
+			]
+		},
+		{
+			"id": 8,
+			"url": "http://localhost:8080/webservice/rest/numbers/random",
+			"title": "Rand",
+			"description": "This service returns a random number",
+			"return": "",
+			"parameters": []
+		},
+		{
+			"id": 9,
+			"url": "http://localhost:8080/webservice/rest/numbers/sum",
+			"title": "Add",
+			"description": "This service adds three numbers together and returns the result",
+			"return": "",
+			"parameters": [
+				"num1",
+				"num2",
+				"num3"
+			]
+		}
+	]
+}
