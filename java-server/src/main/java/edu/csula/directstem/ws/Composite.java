@@ -470,6 +470,30 @@ public class Composite {
 	public static Response listComposite(String c) {
 		return Response.status(200).build();
 	}
+	@GET
+	@Path("/listservices")
+	@Produces("application/json")
+	public static Response listServices(String c) {
+		Connection conn = ConnectDB.getConnection();
+		PreparedStatement p;
+		try {
+			p = conn.prepareStatement("select id from services;");
+			//this is less efficient than querying it all at once, but at the scale we're working at right now it's fine.
+			ResultSet rs = p.executeQuery();
+			JsonArray r = new JsonArray();
+			while(rs.next()) {
+				r.add(getService(rs.getInt(1)));
+			}
+			JsonObject res = new JsonObject();
+			res.add("result", r);
+			Gson gson = new GsonBuilder().serializeNulls().create();
+			return Response.status(200).entity(gson.toJson(res)).build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.status(500).entity("{\"status\":\"An error occurred.\"}").build();
+		}
+	}
 	@POST
 	@Path("/bulkdel")
 	public static Response del() {
