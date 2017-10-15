@@ -64,7 +64,7 @@
 <!---------------------------------------------------->
 
 <!-- Quick Edit Modal -->
-<template #content
+<ng-template #content
           let-close="close"
           let-dismiss="dismiss">
 
@@ -72,10 +72,10 @@
                   [closeFunction]="close"></app-quick-edit>
   <div class="modal-footer">
   </div>
-</template>
+</ng-template>
 
 <!-- Performance chart -->
-<template #chartModal
+<ng-template #chartModal
           let-c="close"
           let-d="dismiss"
           size="lg">
@@ -89,12 +89,13 @@
   <div class="modal-footer">
     <button type="button"
             class="btn btn-secondary btn-block"
-            (click)="c('Close click')">Close</button>
+            (click)="c('Close click')">Close
+    </button>
   </div>
-</template>
+</ng-template>
 
 <!-- No composition nodes warning modal -->
-<template #emptyCompositionModal
+<ng-template #emptyCompositionModal
           let-c="close"
           let-d="dismiss">
 
@@ -115,13 +116,14 @@
   <div class="modal-footer">
     <button type="button"
             class="btn btn-secondary"
-            (click)="c('Close click')">Close</button>
+            (click)="c('Close click')">Close
+    </button>
   </div>
-</template>
+</ng-template>
 
 
 <!-- view selected node in json -->
-<template #debugModal
+<ng-template #debugModal
           let-c="close"
           let-d="dismiss">
 
@@ -133,69 +135,67 @@
   <div class="modal-footer">
     <button type="button"
             class="btn btn-secondary"
-            (click)="c('Close click')">Close</button>
+            (click)="c('Close click')">Close
+    </button>
   </div>
-</template>
+</ng-template>
 
 <!------------------------------------------------------>
 <!-------------------- CONTEXT MENU -------------------->
 <!------------------------------------------------------>
-<div class="rightClickPanel noselect"
+<div class="rightClickPanel noselect card"
      [ngStyle]="rightPanelStyle"
      oncontextmenu="return false">
 
-  <div class="dropdown show">
-    <div class="dropdown-menu">
-      <!-- INSERT -->
-      <a class="dropdown-item"
-         (click)="insertNode()">
-        <i class="fa fa-plus-circle"
-           aria-hidden="true"></i>&nbsp;Insert</a>
-      <!-- DELETE-->
-      <a class="dropdown-item"
-         (click)="removeSelected()">
-        <i class="fa fa-trash"
-           aria-hidden="true"></i>&nbsp;Delete</a>
-      <!-- EDIT-->
-      <a class="dropdown-item"
-         (click)="edit(content)">
-        <i class="fa fa-pencil"
-           aria-hidden="true"></i>&nbsp;Edit</a>
-      <!-- SWAP -->
-      <a class="dropdown-item"
-         (click)="swapNode()">
-        <i class="fa fa-exchange"
-           aria-hidden="true"></i>&nbsp;Swap</a>
-      <!-- IMPORT -->
-      <a class="dropdown-item"
-         (click)="importNode()">
-        <i class="fa fa-upload"
-           aria-hidden="true"></i>&nbsp;Import</a>
-      <!-- COMPOSITE -->
-      <a class="dropdown-item"
-         (click)="compositeClickNodes()">
-        <i class="fa fa-plus-square-o"
-           aria-hidden="true"></i>&nbsp;Composite</a>
-      <!-- View -->
-      <a class="dropdown-item"
-         (click)="viewComposition(emptyCompositionModal)">
-        <i class="fa fa-info-circle"
-           aria-hidden="true"></i>&nbsp;Composition</a>
-      <!-- Performance -->
-      <a class="dropdown-item"
-         (click)="viewPerformance(chartModal)">
-        <i class="fa fa-bar-chart"
-           aria-hidden="true"></i>Performance</a>
-      <!-- RETURN TO PARENT -->
-      <a class="dropdown-item"
-         (click)="returnToParent()">
-        <i class="fa fa-step-backward"
-           aria-hidden="true"></i>&nbsp;&nbsp;Back</a>
-      <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
-      <!--<a class="dropdown-item"-->
-         <!--(click)="debugNode(debugModal)">-->
-        <!--<i class="fa fa-bug"-->
-           <!--aria-hidden="true"></i>&nbsp;Debug(edges)</a>-->
-    </div>
-  </div>
+  <!-- INSERT -->
+  <a class="dropdown-item"
+     (click)="insertNode()">
+    <i class="fa fa-plus-circle"
+       aria-hidden="true"></i>&nbsp;Insert</a>
+  <!-- DELETE-->
+  <a class="dropdown-item"
+     (click)="removeSelected()">
+    <i class="fa fa-trash"
+       aria-hidden="true"></i>&nbsp;Delete</a>
+  <!-- EDIT-->
+  <a class="dropdown-item"
+     (click)="edit(content)">
+    <i class="fa fa-pencil"
+       aria-hidden="true"></i>&nbsp;Edit</a>
+  <!-- SWAP -->
+  <a class="dropdown-item"
+     (click)="swapNode()">
+    <i class="fa fa-exchange"
+       aria-hidden="true"></i>&nbsp;Swap</a>
+  <!-- IMPORT -->
+  <a class="dropdown-item"
+     (click)="importNode()">
+    <i class="fa fa-upload"
+       aria-hidden="true"></i>&nbsp;Import</a>
+  <!-- COMPOSITE -->
+  <a class="dropdown-item"
+     (click)="compositeClickNodes()">
+    <i class="fa fa-plus-square-o"
+       aria-hidden="true"></i>&nbsp;Composite</a>
+  <!-- View -->
+  <a class="dropdown-item"
+     (click)="viewComposition(emptyCompositionModal)">
+    <i class="fa fa-info-circle"
+       aria-hidden="true"></i>&nbsp;Composition</a>
+  <!-- Performance -->
+  <a class="dropdown-item"
+     (click)="viewPerformance(chartModal)">
+    <i class="fa fa-bar-chart"
+       aria-hidden="true"></i>Performance</a>
+  <!-- RETURN TO PARENT -->
+  <a class="dropdown-item"
+     (click)="returnToParent()">
+    <i class="fa fa-step-backward"
+       aria-hidden="true"></i>&nbsp;&nbsp;Back</a>
+  <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
+  <!--<a class="dropdown-item"-->
+  <!--(click)="debugNode(debugModal)">-->
+  <!--<i class="fa fa-bug"-->
+  <!--aria-hidden="true"></i>&nbsp;Debug(edges)</a>-->
+
 </div>

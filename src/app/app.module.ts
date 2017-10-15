@@ -16,7 +16,6 @@ import { NodeService } from './shared/node.service';
 import { AccordionComponent } from './projects/detail/accordion/accordion.component';
 import { PropertyTableComponent } from './projects/detail/property-table/property-table.component';
 import { EditorComponent } from './projects/editor/editor.component';
-import { NodeQuickviewComponent } from './main-nav/node-quickview/node-quickview.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { QuickEditComponent } from './projects/editor/quick-edit/quick-edit.component';
 import { BreadcrumbComponent } from './projects/editor/breadcrumb/breadcrumb.component';
@@ -39,7 +38,6 @@ import { DemoAppModule } from './demo-app/demo-app.module';
         AccordionComponent,
         PropertyTableComponent,
         EditorComponent,
-        NodeQuickviewComponent,
         QuickEditComponent,
         BreadcrumbComponent,
         DebugComponent,

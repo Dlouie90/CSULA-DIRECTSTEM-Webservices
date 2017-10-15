@@ -1,8 +1,6 @@
 /* Bootstrap 4: HTML, CSS, and JS framework */
-@import url(assets/css/bootstrap.css);
-
+@import url(vendor/bootstrap-4.0.0-beta-dist/css/bootstrap.css);
 /* Graph/Nodes/Edge Styles */
 @import url(assets/css/graph.css);
-
 /* Font Awesome CSS ICON library: http://fontawesome.io/ */
 @import url(vendor/font-awesome-4.7.0/css/font-awesome.css);

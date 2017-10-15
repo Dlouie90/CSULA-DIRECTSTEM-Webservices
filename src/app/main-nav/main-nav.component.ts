@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Path} from '../shared/path.interface';
 import {NodeService} from '../shared/node.service';
 import {Node} from '../shared/node.model';
@@ -8,18 +8,13 @@ import {Node} from '../shared/node.model';
   templateUrl: './main-nav.component.html',
   styleUrls  : ['./main-nav.component.css']
 })
-export class MainNavComponent implements OnInit, OnDestroy {
+export class MainNavComponent implements OnInit {
 
   selectedNode: Node;
   paths: Path[];
-  _subscription: any;
 
   constructor(private nodeService: NodeService) {
     this.selectedNode = nodeService.select;
-
-    this._subscription = nodeService.selectedChanged.subscribe((value) => {
-      this.selectedNode = value;
-    });
   }
 
   ngOnInit() {
@@ -30,9 +25,5 @@ export class MainNavComponent implements OnInit, OnDestroy {
       {title: 'Debug', url: 'debug'},
       {title: 'Demo', url: 'demo'}
     ];
-  }
-
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
   }
 }

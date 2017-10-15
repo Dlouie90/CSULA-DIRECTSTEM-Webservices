@@ -5,7 +5,6 @@ import {ProjectsComponent} from './projects/projects.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {EditorComponent} from './projects/editor/editor.component';
 import {DebugComponent} from './debug/debug.component';
-import {VisualComponent} from './projects/visual/visual.component';
 
 const routes: Routes = [
   {
