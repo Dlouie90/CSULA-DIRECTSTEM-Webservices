@@ -55,7 +55,7 @@
 		},
 		{
 			"id": 6,
-			"url": "http://murder of leon trotsky:8080/webservice/rest/numbers/div",
+			"url": "http://localhost:8080/webservice/rest/numbers/div",
 			"title": "Div",
 			"description": "This service divides one number by another",
 			"return": "",
