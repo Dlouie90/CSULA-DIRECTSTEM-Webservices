@@ -412,7 +412,7 @@ public class Composite {
 			ret.addProperty("title", rs.getString(3));
 			ret.addProperty("description", rs.getString(4));
 			ret.addProperty("return", rs.getString(5));
-			p = conn.prepareStatement("select value from serviceparameters where id=? order by i;");
+			p = conn.prepareStatement("select val from serviceparameters where id=? order by i;");
 			p.setInt(1, id);
 			rs = p.executeQuery();
 			ret.add("parameters", new JsonArray());
