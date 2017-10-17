@@ -1,14 +1,19 @@
 <div class="container">
-  <div class="row">
-    <div class="list-group col-3">
-      <button *ngFor="let service of serviceArray"
-              type="button" class="list-group-item list-group-item-action"
-              (click)="selectService(service)">
-        {{ service.description }}
+
+  <div class="btn-toolbar">
+    <div class="btn btn-group">
+      <button class="btn btn-light" type="button"
+              (click)="updateIndexTo(1)">1
+      </button>
+      <button class="btn btn-light" type="button"
+              (click)="updateIndexTo(2)">2
       </button>
     </div>
+  </div>
 
-    <div class="col-9">
+  <div [ngSwitch]="index">
+    <section *ngSwitchCase="1">
+
       <div class="text-center card">
         <div class=" card-block">
           <button class="btn btn-secondary"
@@ -50,6 +55,12 @@
       </pre>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section *ngSwitchCase="2">
+      <button class ="btn btn-outline-info" (click)="open()">Open Modal</button>
+    </section>
   </div>
+
+
 </div>

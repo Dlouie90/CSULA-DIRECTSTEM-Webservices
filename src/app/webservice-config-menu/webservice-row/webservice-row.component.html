@@ -1,0 +1,17 @@
+<section class="row">
+  <label class="form-check-label col-2">{{ parameter }}</label>
+
+  <div class="col-3">
+    <select class="form-control" (change)="select($event.target.value)">
+      <option value="-1"></option>
+      <option *ngFor="let service of serviceOptions"
+              [value]="service.id" [selected]="isSelected(service)">
+        {{ service.title }}
+      </option>
+    </select>
+  </div>
+
+  <div class="col-7">
+    <app-webservice-card [serviceNode]="selectedService"></app-webservice-card>
+  </div>
+</section>

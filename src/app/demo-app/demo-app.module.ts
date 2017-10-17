@@ -3,7 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DemoAppComponent } from './demo-app.component';
 import { DemoAppRoutingModule } from './demo-app-routing.module';
 import { HttpModule } from '@angular/http';
-import { WebserviceService } from './webservice.service';
+import { DemoService } from './demo.service';
+import { WebserviceModalModule } from '../webservice-config-menu/webservice-modal.module';
+import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
 
 @NgModule({
     declarations: [
@@ -12,12 +14,15 @@ import { WebserviceService } from './webservice.service';
     imports: [
         BrowserModule,
         HttpModule,
+        WebserviceModalModule,
         DemoAppRoutingModule,
     ],
     exports: [],
     providers: [
-        WebserviceService,
+        DemoService,
+    ],
+    entryComponents: [
+        WebserviceConfigMenuComponent
     ]
 })
-export class DemoAppModule {
-}
+export class DemoAppModule {}

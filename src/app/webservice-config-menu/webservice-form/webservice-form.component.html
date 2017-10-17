@@ -1,0 +1,42 @@
+<form [formGroup]="formGroup">
+  <div class="form-group row">
+    <label class="col-3" for="service-id">id:</label>
+    <div class="col-9">
+      <input id="service-id" class="form-control" type="number"
+             formControlName="id">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-3" for="service-title">title:</label>
+    <div class="col-9">
+      <input id="service-title" class="form-control" type="text"
+             formControlName="title">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-3" for="service-description">description:</label>
+    <div class="col-9">
+      <input id="service-description" class="form-control" type="text"
+             formControlName="description">
+    </div>
+  </div>
+
+  <div class="form-group row" formArrayName="parameters"
+       *ngFor="let _ of parameters.controls; let i=index">
+    <label class="col-3" for="param-{{i}}">parameter #{{ i+1 }}</label>
+    <div class="col-9">
+      <input id="param-{{i}}" class="form-control" type="text" [formControlName]="i">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-3" for="service-url">url:</label>
+    <div class="col-9">
+      <input id="service-url" class="form-control" type="text"
+             formControlName="url">
+    </div>
+  </div>
+
+</form>

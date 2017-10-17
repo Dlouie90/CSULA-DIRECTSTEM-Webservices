@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { serviceArray } from './webservice-mock-data';
 
 @Injectable()
-export class WebserviceService {
+export class DemoService {
     private _services: any[] = serviceArray;
 
     get simpleService(): any {

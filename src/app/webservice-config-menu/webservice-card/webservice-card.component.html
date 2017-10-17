@@ -1,0 +1,13 @@
+<section class="card">
+  <div class="card-header" [ngClass]="selectedStyles">
+    <span class="title">{{ title }}</span>
+    <span class="card-subtitle small font-italic"
+          *ngIf="serviceNode" [ngClass]="subtitleStyle">( {{ parameters }} )</span>
+    <span class="badge badge-pill badge-secondary float-right"
+          *ngIf="serviceNode">id: {{ id }}</span>
+  </div>
+  <div class="card-body">
+    <p>{{ description }}</p>
+  </div>
+  <blockquote class="blockquote-footer ml-3">{{ url }}</blockquote>
+</section>

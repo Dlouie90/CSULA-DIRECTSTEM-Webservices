@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { WebserviceService } from './webservice.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DemoService } from './demo.service';
+import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
 
 @Component({
     selector: 'app-demo-app',
@@ -13,15 +16,29 @@ export class DemoAppComponent implements OnInit {
     result: any;
     guid: string;
     waitingForResponse: boolean;
-
     serviceArray: any[];
+    index = 1;
 
     constructor(private http: Http,
-                private webservice: WebserviceService) {
+                private webservice: DemoService,
+                private route: ActivatedRoute,
+                private router: Router,
+                private modalService: NgbModal) {
+
         this.serviceArray = webservice.services;
+        this.route.queryParams
+            .subscribe(params => this.index = params['index']);
     }
 
-    ngOnInit() {
+    ngOnInit() { }
+
+    updateIndexTo(value: number): void {
+        this.index = value;
+        this.router.navigate(['demo'], {
+            queryParams: {
+                index: value
+            }
+        });
     }
 
     addService(): void {
@@ -63,5 +80,9 @@ export class DemoAppComponent implements OnInit {
 
     selectService(service: any): void {
         this.currentService = service;
+    }
+
+    open(): void {
+        this.modalService.open(WebserviceConfigMenuComponent, {size: 'lg'});
     }
 }
