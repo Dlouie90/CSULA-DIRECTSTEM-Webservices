@@ -3,6 +3,7 @@ package edu.csula.directstem.ws;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.csula.directstem.ws.db.UserDatabase;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,7 +17,8 @@ public class Demo {
     @Produces(MediaType.APPLICATION_JSON)
     public String getUsers() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("message", "get all users request");
+        jsonObject=UserDatabase.retrieveAll();
+
         return new Gson().toJson(jsonObject);
     }
 
@@ -28,7 +30,9 @@ public class Demo {
         System.out.println("POST - Create a User");
 
         JsonObject userJsonObject = (JsonObject) parser.parse(user);
-        userJsonObject.addProperty("message", "POST - create user");
+        String message=UserDatabase.createUser(userJsonObject);
+
+        userJsonObject.addProperty("message", message);
         return new Gson().toJson(userJsonObject);
     }
 
@@ -40,7 +44,8 @@ public class Demo {
         System.out.println("POST - Login User");
 
         JsonObject userJsonObject = (JsonObject) parser.parse(user);
-        userJsonObject.addProperty("message", "POST - Login User");
+
+        userJsonObject=UserDatabase.loginUser(userJsonObject);
         return new Gson().toJson(userJsonObject);
     }
 
@@ -52,7 +57,8 @@ public class Demo {
         System.out.println("PUT - update user by id: " + id);
 
         JsonObject userJsonObject = (JsonObject) parser.parse(user);
-        userJsonObject.addProperty("message", "PUT - update user");
+        userJsonObject=UserDatabase.updateUser(userJsonObject);
+
         return new Gson().toJson(userJsonObject);
     }
 
@@ -64,7 +70,7 @@ public class Demo {
         System.out.println("GET - USER BY ID: " + id);
 
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("message", "get user by id:" + id);
+        jsonObject=UserDatabase.retrieveUser(id);
         return new Gson().toJson(jsonObject);
     }
 
@@ -75,7 +81,7 @@ public class Demo {
         System.out.println("DELETE - USER BY ID: " + id);
 
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("message", "delete user by id:" + id);
+        jsonObject=UserDatabase.deleteUser(id);
         return new Gson().toJson(jsonObject);
     }
 }
