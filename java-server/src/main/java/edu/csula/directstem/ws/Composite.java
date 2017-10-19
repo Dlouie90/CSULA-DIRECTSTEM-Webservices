@@ -1,13 +1,10 @@
 package edu.csula.directstem.ws;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,13 +12,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -33,11 +31,28 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import edu.csula.directstem.ws.db.ConnectDB;
 
 @Path("/comp")
 public class Composite {
+	@GET
+	@Path("/run/{id}")
+	public static Response runComp(@PathParam("id") int id, @QueryParam("input") List<String> inp) {
+		try {
+			JsonObject c = getComposite(id);
+			for(int i = 0; i < inp.size(); i++) {
+				c.get("inputs").getAsJsonArray().set(i, new JsonPrimitive(inp.get(i)));
+			}
+			String res = runComposite(c,null).get("output").getAsString();
+			return Response.status(200).entity(res).build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
 	@POST
 	@Path("/add")
 	@Consumes("application/json")
@@ -45,8 +60,10 @@ public class Composite {
 		try {
 			JsonParser parser = new JsonParser();
 			JsonObject g = (JsonObject) parser.parse(c);
-			addComposite(g);
-			return Response.status(200).build();
+			addComposite(g,null);
+			updateIds(g);
+			Gson gson = new Gson();
+			return Response.status(200).entity(gson.toJson(g)).build();
 		}
 		catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -63,8 +80,7 @@ public class Composite {
 		try {
 			JsonParser parser = new JsonParser();
 			JsonObject g = (JsonObject) parser.parse(c);
-			addService(g);
-			return Response.status(200).build();
+			return Response.status(200).entity(addService(g)).build();
 		}
 		catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -80,86 +96,95 @@ public class Composite {
 			JsonObject s = j.getAsJsonObject();
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement p;
-			p = conn.prepareStatement("select count(id) from services where id=?;");
-			p.setInt(1,s.get("id").getAsInt());
-			ResultSet rs = p.executeQuery();
+			p = conn.prepareStatement("insert into services (url,title,description,ret) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			p.setString(1, s.get("url").getAsString());
+			if(s.has("title")) p.setString(2, s.get("title").getAsString()); 
+			else p.setNull(2, java.sql.Types.VARCHAR);
+			if(s.has("description")) p.setString(3, s.get("description").getAsString()); 
+			else p.setNull(3, java.sql.Types.VARCHAR);
+			if(s.has("return")) p.setString(4, s.get("return").getAsString()); 
+			else p.setNull(4, java.sql.Types.VARCHAR);
+			p.executeUpdate();
+			ResultSet rs = p.getGeneratedKeys();
 			rs.next();
-			if(rs.getInt(1) == 0) {
-				p = conn.prepareStatement("insert into services values (?,?,?,?,?)");
-				p.setInt(1, s.get("id").getAsInt());
-				p.setString(2, s.get("url").getAsString());
-				if(s.has("title")) p.setString(3, s.get("title").getAsString()); 
-				else p.setNull(5, java.sql.Types.VARCHAR);
-				if(s.has("description")) p.setString(4, s.get("description").getAsString()); 
-				else p.setNull(5, java.sql.Types.VARCHAR);
-				if(s.has("return")) p.setString(5, s.get("return").getAsString()); 
-				else p.setNull(5, java.sql.Types.VARCHAR);
-				p.executeUpdate();
-				if(s.has("parameters") && s.get("parameters").getAsJsonArray().size() > 0) {
-					p = conn.prepareStatement("insert into serviceparameters values (?,?,?);");
-					int count = 1;
-					for(Iterator<JsonElement> i = s.get("parameters").getAsJsonArray().iterator(); i.hasNext();) {
-						p.setInt(1, s.get("id").getAsInt());
-						p.setInt(2, count++);
-						p.setString(3, i.next().getAsString());
-						p.addBatch();
-					}
-					p.executeBatch();
+			s.addProperty("id", rs.getInt(1));
+			if(s.has("parameters") && s.get("parameters").getAsJsonArray().size() > 0) {
+				p = conn.prepareStatement("insert into serviceparameters values (?,?,?);");
+				int count = 1;
+				for(Iterator<JsonElement> i = s.get("parameters").getAsJsonArray().iterator(); i.hasNext();) {
+					p.setInt(1, s.get("id").getAsInt());
+					p.setInt(2, count++);
+					p.setString(3, i.next().getAsString());
+					p.addBatch();
 				}
-			} 
+				p.executeBatch();
+			}
 			return s.get("id").getAsInt();
 		}
 	}
-	public static void addComposite(JsonObject j) throws Exception { //the in-out passing should be modified to use an object-oriented, "Real" Jersey model.
+	public static void updateIds(JsonObject j) {
+		j.addProperty("id",j.get("newid").getAsInt());
+		j.remove("newid");
+		for(Iterator<JsonElement> i = j.get("children").getAsJsonArray().iterator(); i.hasNext();) {
+			updateIds(i.next().getAsJsonObject());
+		}
+		return;
+	}
+	public static void addComposite(JsonObject j, JsonArray context) throws Exception { //the in-out passing should be modified to use an object-oriented, "Real" Jersey model.
+		System.out.println("Working on node " + j.get("id").getAsInt());
+		if(j.has("newid")) {
+			System.out.println("node " + j.get("id").getAsInt() + " apparently already has a newid. that newid is:");
+			System.out.println(j.get("newid").getAsInt());
+			return; //it's already been added.
+		}
 		Gson gson = new Gson();
 		Connection conn = ConnectDB.getConnection();
 		PreparedStatement p;
-		//check if there's already a node by this id
-		p = conn.prepareStatement("select count(id) from nodes where id=?;");
-		p.setInt(1, j.get("id").getAsInt());
-		ResultSet rs = p.executeQuery();
-		rs.next();
-		if(rs.getInt(1) > 0) return;
-		p = conn.prepareStatement("insert into nodes values (?,?,?,?,?,?);");
-		p.setInt(1, j.get("id").getAsInt());
+		p = conn.prepareStatement("insert into nodes (description,composition,service,compedge,outp) values (?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
 		if(j.has("description") && !j.get("description").isJsonNull()) {
-			p.setString(2, j.get("description").getAsString());
+			p.setString(1, j.get("description").getAsString());
 		} else {
-			p.setNull(2, java.sql.Types.VARCHAR);
+			p.setNull(1, java.sql.Types.VARCHAR);
 		}
-		p.setInt(3, j.get("composition").getAsBoolean() ? 1 : 0); //can't cast boolean to int. dumb.
+		p.setInt(2, j.get("composition").getAsBoolean() ? 1 : 0); //can't cast boolean to int. dumb.
 		if(!j.get("composition").getAsBoolean()) {
-			p.setInt(4, addService(j.get("service")));
+			p.setInt(3, addService(j.get("service")));
 		} else {
-			p.setNull(4, java.sql.Types.INTEGER);
+			p.setNull(3, java.sql.Types.INTEGER);
 		}
 		if(j.get("compEdge").isJsonNull()) {
-			p.setNull(5, java.sql.Types.INTEGER);
+			p.setNull(4, java.sql.Types.INTEGER);
 		} else {
-			p.setInt(5, j.get("compEdge").getAsInt());
+			JsonObject ch = j.get("children").getAsJsonArray().get(findNode(j.get("children").getAsJsonArray(),j.get("compEdge").getAsInt())).getAsJsonObject();
+			Composite.addComposite(ch,j.get("children").getAsJsonArray()); //add the compedge first so we know its id
+			p.setInt(4, ch.get("newid").getAsInt());
 		}
 		if(j.get("output").isJsonNull()) {
-			p.setNull(6, java.sql.Types.VARCHAR);
+			p.setNull(5, java.sql.Types.VARCHAR);
 		} else {
-			p.setString(6, gson.toJson(j.get("output")));
+			p.setString(5, gson.toJson(j.get("output")));
 		}
 		p.executeUpdate();
+		ResultSet rs = p.getGeneratedKeys();
+		rs.next();
+		j.addProperty("newid", rs.getInt(1));
+		System.out.println("It's now known as " + j.get("newid").getAsInt());
 		if(j.has("children") && j.get("children").getAsJsonArray().size() > 0) {
 			System.out.println(gson.toJson(j.get("children")));
 			p = conn.prepareStatement("insert into children values (?,?);");
 			for(Iterator<JsonElement> i = j.get("children").getAsJsonArray().iterator(); i.hasNext();) {
 				JsonObject child = i.next().getAsJsonObject();
-				p.setInt(1, j.get("id").getAsInt());
-				p.setInt(2, child.get("id").getAsInt());
+				Composite.addComposite(child,j.get("children").getAsJsonArray()); //recurse
+				p.setInt(1, j.get("newid").getAsInt());
+				p.setInt(2, child.get("newid").getAsInt());
 				p.addBatch();
-				Composite.addComposite(child); //recurse
 			}
 			p.executeBatch();
 		}
 		if(j.has("inputs") && j.get("inputs").getAsJsonArray().size() > 0) {
 			p = conn.prepareStatement("insert into inputs values (?,?,?);");
 			for(int i = 0; i < j.get("inputs").getAsJsonArray().size(); i++) {
-				p.setInt(1, j.get("id").getAsInt());
+				p.setInt(1, j.get("newid").getAsInt());
 				p.setInt(2, i);
 				try {
 					p.setString(3, j.get("inputs").getAsJsonArray().get(i).getAsString());
@@ -174,8 +199,9 @@ public class Composite {
 			p = conn.prepareStatement("insert into childedges values (?,?,?,?);");
 			for(Iterator<JsonElement> i = j.get("childEdges").getAsJsonArray().iterator(); i.hasNext();) {
 				JsonObject e = i.next().getAsJsonObject();
-				p.setInt(1, j.get("id").getAsInt());
-				p.setInt(2, e.get("destId").getAsInt());
+				p.setInt(1, j.get("newid").getAsInt());
+				int destId = j.get("children").getAsJsonArray().get(findNode(j.get("children").getAsJsonArray(),e.get("destId").getAsInt())).getAsJsonObject().get("newid").getAsInt();
+				p.setInt(2, destId);
 				p.setInt(3, e.get("paramNo").getAsInt());
 				p.setInt(4, e.get("inputNo").getAsInt());
 				p.addBatch();
@@ -186,8 +212,10 @@ public class Composite {
 			p = conn.prepareStatement("insert into edges values (?,?,?);");
 			for(Iterator<JsonElement> i = j.get("edges").getAsJsonArray().iterator(); i.hasNext();) {
 				JsonObject e = i.next().getAsJsonObject();
-				p.setInt(1, j.get("id").getAsInt());
-				p.setInt(2, e.get("srcId").getAsInt());
+				JsonObject neighbor = context.get(findNode(context,e.get("srcId").getAsInt())).getAsJsonObject();
+				if(!neighbor.has("newid")) Composite.addComposite(neighbor,context); //because we need to refer to this node and it hasn't been added yet, short-circuit our parent's "children" loop.
+				p.setInt(1, j.get("newid").getAsInt());
+				p.setInt(2, neighbor.get("newid").getAsInt());
 				p.setInt(3, e.get("paramNo").getAsInt());
 				p.addBatch();
 			}
@@ -443,7 +471,7 @@ public class Composite {
 		} else {
 			ret.add("service", getService(sid));
 		}
-		ret.addProperty("compEdge",rs.getString(5));
+		ret.addProperty("compEdge",rs.getInt(5));
 		ret.add("children", new JsonArray());
 		p = conn.prepareStatement("select childid from children where id=?;");
 		p.setInt(1, id);
@@ -530,7 +558,9 @@ public class Composite {
 			ClassLoader classLoader = currentClass.getClassLoader();
 			BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream("ws.json")));
 			JsonParser parser = new JsonParser();
-			JsonArray ja = parser.parse(br).getAsJsonObject().get("obj").getAsJsonArray();
+			JsonElement foo = parser.parse(br);
+			System.out.println(foo.toString());
+			JsonArray ja = foo.getAsJsonObject().get("obj").getAsJsonArray();
 			for(int i = 0; i < ja.size(); i++) {
 				try {
 					addService(ja.get(i));

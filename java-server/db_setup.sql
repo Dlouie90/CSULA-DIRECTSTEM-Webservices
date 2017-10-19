@@ -11,7 +11,7 @@ CREATE TABLE Users (
 insert into Users values ('adam@ajberman.com','root'),('jguo@calstatela.edu','root');
 
 CREATE TABLE nodes (
-	id int NOT NULL,
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	description varchar(255),
 	composition boolean,
 	service int,
@@ -19,7 +19,7 @@ CREATE TABLE nodes (
 	outp varchar(255)
 );
 CREATE TABLE services (
-	id int NOT NULL,
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	url varchar(255),
 	title varchar(255),
 	description varchar(255),
