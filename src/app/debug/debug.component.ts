@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Node} from '../shared/node.model';
-import {NodeService} from '../shared/node.service';
+import {Node} from '../shared/models/node.model';
+import {NodeService} from '../shared/services/node.service';
 
 @Component({
   selector   : 'app-debug',

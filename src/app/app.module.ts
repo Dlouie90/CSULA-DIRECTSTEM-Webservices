@@ -8,13 +8,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { CarouselComponent } from './home/carousel/carousel.component';
 import { CommonModule } from '@angular/common';
-import { FooterComponent } from './footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { DetailComponent } from './projects/detail/detail.component';
-import { NodeService } from './shared/node.service';
-import { AccordionComponent } from './projects/detail/accordion/accordion.component';
-import { PropertyTableComponent } from './projects/detail/property-table/property-table.component';
+import { NodeService } from './shared/services/node.service';
 import { EditorComponent } from './projects/editor/editor.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { QuickEditComponent } from './projects/editor/quick-edit/quick-edit.component';
@@ -31,12 +28,9 @@ import { DemoAppModule } from './demo-app/demo-app.module';
         MainNavComponent,
         HomeComponent,
         CarouselComponent,
-        FooterComponent,
         DashboardComponent,
         ProjectsComponent,
         DetailComponent,
-        AccordionComponent,
-        PropertyTableComponent,
         EditorComponent,
         QuickEditComponent,
         BreadcrumbComponent,

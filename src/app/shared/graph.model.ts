@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {Node} from './node.model';
+import {Node} from './models/node.model';
 import {View} from './view.model';
 import {NodeUtility} from './node-utility.model';
 
@@ -551,14 +551,6 @@ export class Graph {
         // Enable/disable clickNodes css
         .classed(final.CLICKED_NODE, function (d) {
           return thisGraph.clickNodes.findIndex((n: Node) => n.id === d.id) !== -1;
-        })
-        .select('text')
-        .text(function (d) {
-          if (Node.isRegular(d)) {
-            return NodeUtility.title(d);
-          } else {
-            return d.isInput ? 'Input' : 'Output';
-          }
         });
 
     // add new circles to the graph(they are wrapped in <g>)
@@ -596,11 +588,7 @@ export class Graph {
     newGs.append('text')
         .attr('text-anchor', 'middle')
         .text(function (d) {
-          if (Node.isRegular(d)) {
             return NodeUtility.title(d);
-          } else {
-            return d.isInput ? 'Input' : 'Output';
-          }
         });
     newGs.append('text')
         .classed('children', true)

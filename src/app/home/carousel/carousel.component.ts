@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Path} from '../../shared/path.interface';
+import {Path} from '../../shared/models/path.interface';
 
 @Component({
   selector   : 'app-carousel',

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ServiceNode } from '../models/webservice.models';
-import { IServiceParameterEntry } from '../models/service-parameter-entry.inteface';
+import { Node } from '../../shared/models/node.model';
+import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
 
 @Component({
     selector: 'app-webservice-row',
@@ -8,11 +8,12 @@ import { IServiceParameterEntry } from '../models/service-parameter-entry.intefa
     styleUrls: ['./webservice-row.component.css']
 })
 export class WebserviceRowComponent implements OnInit {
-    @Input() serviceOptions: ServiceNode[];
-    @Input() currentNode: ServiceNode;
+    @Input() nodeOptions: Node[];
+    @Input() currentNode: Node;
     @Input() parameter: string;
-    @Output() onSelect = new EventEmitter<IServiceParameterEntry>();
-    selectedService: ServiceNode;
+    @Output() onSelect = new EventEmitter<ParameterEntry>();
+
+    selectedNode: Node;
 
 
     constructor() { }
@@ -23,20 +24,20 @@ export class WebserviceRowComponent implements OnInit {
 
     updateSelectedService(): void {
         const id = this.currentNode.getIdOfParam(this.parameter);
-        this.selectedService = this.serviceOptions
+        this.selectedNode = this.nodeOptions
             .find(service => service.id === id);
     }
 
-    select(stringId: string): void {
-        const numberId = parseInt(stringId, 10);
-        this.selectedService = this.serviceOptions.find(service => {
-            return service.id === numberId;
-        });
-        this.onSelect.emit({parameter: this.parameter, id: numberId});
+    isSelected(node: Node): boolean {
+        return this.currentNode.parameterMap[this.parameter] === node.id;
     }
 
-    isSelected(node: ServiceNode): boolean {
-        return this.currentNode.paramsMap[this.parameter] === node.id;
+    onSelectId(stringId: string): void {
+        const numberId = parseInt(stringId, 10);
+        this.selectedNode = this.nodeOptions.find(node => {
+            return node.serviceId === numberId;
+        });
+        this.onSelect.emit({parameter: this.parameter, id: numberId});
     }
 }
 

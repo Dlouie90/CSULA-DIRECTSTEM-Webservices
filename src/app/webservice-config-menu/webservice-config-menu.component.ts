@@ -1,48 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import { WebserviceService } from '../shared/services/webservice.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ServiceNode } from './models/webservice.models';
-import { IService } from './models/service.interface';
-
+import { IService } from '../shared/models/service.interface';
+import { NodeService } from '../shared/services/node.service';
+import { Node } from '../shared/models/node.model';
 
 @Component({
     selector: 'app-webservice-menu',
     templateUrl: './webservice-config-menu.component.html',
 })
 export class WebserviceConfigMenuComponent implements OnInit {
-    serviceNodes: ServiceNode[];
-    selectedNode: ServiceNode;
+    nodes: Node[];
+    selectedNode: Node;
 
-    constructor(private webserviceService: WebserviceService,
+
+    constructor(private nodeService: NodeService,
                 public activeModal: NgbActiveModal) {}
 
     ngOnInit(): void {
         this.getServices();
     }
 
-    getServices(): void {
-        this.webserviceService.getServices()
+    private getServices(): void {
+        this.nodeService.getServices()
             .subscribe(
-                (results: IService[]) => {
-                    this.serviceNodes = this.toServiceNodes(results);
+                (services: IService[]) => {
+                    this.nodes = this.toNodes(services);
                 },
                 (error: any) => {
-                    this.serviceNodes = [];
+                    this.nodes = [];
                     console.error(error);
                 }
             );
     }
 
-    onSelectService(serviceNode: ServiceNode): void {
-        this.selectedNode = serviceNode;
+    private toNodes(services: IService[]): Node[] {
+        return services.map(service => {
+            const id = NodeService.generateTempId();
+            return new Node(id, 300, 300, service);
+        });
     }
 
-    private toServiceNodes(services: IService[]): ServiceNode [] {
-        return services.map(service => new ServiceNode(service));
+    onSelectService(selectedNode: Node): void {
+        this.selectedNode = selectedNode;
     }
 
-    close(reason: string): void {
+    onClose(reason: string): void {
         this.activeModal.close(reason);
     }
-
 }

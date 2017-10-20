@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import {NodeUtility} from '../../shared/node-utility.model';
-import {Node} from '../../shared/node.model';
+import {Node} from '../../shared/models/node.model';
 
 /* based on https://bl.ocks.org/mbostock/4339083 */
 @Component({

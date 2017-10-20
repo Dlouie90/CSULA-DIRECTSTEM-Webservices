@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { ServiceNode } from '../models/webservice.models';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Node } from '../../shared/models/node.model';
 
 @Component({
     selector: 'app-webservice-form',
@@ -8,46 +8,32 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
     styleUrls: ['./webservice-form.component.css']
 })
 export class WebserviceFormComponent implements OnChanges {
-    @Input() serviceNode: ServiceNode;
+    @Input() node: Node;
     formGroup: FormGroup;
 
 
     constructor(private formBuilder: FormBuilder) { }
 
     ngOnChanges(): void {
-        this.formGroup = this.createFormGroup(this.serviceNode);
+        this.formGroup = this.createFormGroup(this.node);
     }
 
-    createFormGroup(node: ServiceNode): FormGroup {
+    private createFormGroup(node: Node): FormGroup {
         if (!node) {
             return this.emptyFormGroup;
         }
 
-        const service = node.service;
-
         const form = this.formBuilder.group({
-            id: service.id,
-            title: service.title,
-            description: service.description,
-            url: service.url,
-            parameters: this.createParamsFormArray(service.parameters)
+            id: node.serviceId,
+            title: node.serviceTitle,
+            description: node.serviceDescription,
+            url: node.serviceUrl,
+            parameters: this.createParamsFormArray(node.serviceParameters)
         });
         // these forms show existing serviceNode info. the user don't need to
         // edit them so we "disabled" it
         form.disable();
         return form;
-    }
-
-    createParamsFormArray(params: string[]): FormArray {
-        const paramFormControls = params
-            .map(param => this.formBuilder.control(param));
-        const paramFormArray = this.formBuilder.array(paramFormControls);
-        paramFormArray.disable();
-        return paramFormArray;
-    }
-
-    get parameters(): FormArray {
-        return this.formGroup.get('parameters') as FormArray;
     }
 
     private get emptyFormGroup(): FormGroup {
@@ -60,5 +46,17 @@ export class WebserviceFormComponent implements OnChanges {
         });
         emptyFormGroup.disable();
         return emptyFormGroup;
+    }
+
+    private createParamsFormArray(params: string[]): FormArray {
+        const paramFormControls = params
+            .map(param => this.formBuilder.control(param));
+        const paramFormArray = this.formBuilder.array(paramFormControls);
+        paramFormArray.disable();
+        return paramFormArray;
+    }
+
+    get parameters(): FormArray {
+        return this.formGroup.get('parameters') as FormArray;
     }
 }

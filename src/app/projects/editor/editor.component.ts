@@ -2,9 +2,9 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 import {Component, Input, OnInit} from '@angular/core';
 import {Graph} from '../../shared/graph.model';
-import {NodeService} from '../../shared/node.service';
+import {NodeService} from '../../shared/services/node.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Node} from '../../shared/node.model';
+import {Node} from '../../shared/models/node.model';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {View} from '../../shared/view.model';
 
@@ -187,7 +187,6 @@ export class EditorComponent implements OnInit {
             return;
           }
           this.initGraph(node);
-          this.nodeService.select = node;
           return this.node = node;
         });
   }

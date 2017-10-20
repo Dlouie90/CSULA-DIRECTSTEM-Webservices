@@ -4,7 +4,7 @@
     <ngb-tab id="tab-1" title="Webservice's Profile">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-form [serviceNode]="selectedNode"></app-webservice-form>
+          <app-webservice-form [node]="selectedNode"></app-webservice-form>
         </div>
       </ng-template>
     </ngb-tab>
@@ -12,7 +12,7 @@
     <ngb-tab id="tab-2" title="Select Webservice">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-list [serviceOptions]="serviceNodes"
+          <app-webservice-list [nodeOptions]="nodes"
                                [currentNode]="selectedNode" (onRefresh)="getServices()"
                                (onSelect)="onSelectService($event)"></app-webservice-list>
         </div>
@@ -22,7 +22,7 @@
     <ngb-tab id="tab-3" title="Configure Inputs" [disabled]="!selectedNode">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-inputs-wiring [serviceOptions]="serviceNodes"
+          <app-webservice-inputs-wiring [nodeOptions]="nodes"
                                         [currentNode]="selectedNode">
           </app-webservice-inputs-wiring>
         </div>
@@ -32,6 +32,6 @@
 </div>
 <!-- Close Buttons-->
 <div class="modal-footer">
-  <button class="btn btn-success" (click)="close('save')">Save</button>
-  <button class="btn btn-danger" (click)="close('cancel')">Cancel</button>
+  <button class="btn btn-success" (click)="onClose('save')">Save</button>
+  <button class="btn btn-danger" (click)="onClose('cancel')">Cancel</button>
 </div>

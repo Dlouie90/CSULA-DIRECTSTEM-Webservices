@@ -1,4 +1,4 @@
-import {Node} from './node.model';
+import {Node} from './models/node.model';
 
 /**
  * Represent the current visual state of the graphs.

@@ -8,6 +8,7 @@ import { Path } from '../shared/models/path.interface';
 })
 export class MainNavComponent {
     paths: Path[];
+    calstateLogoShieldSrc = 'assets/images/calstate-logo-shield.jpg';
 
     constructor() {
         this.paths = [

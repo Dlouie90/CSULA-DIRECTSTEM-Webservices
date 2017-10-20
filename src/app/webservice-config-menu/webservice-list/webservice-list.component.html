@@ -1,8 +1,8 @@
 <button class="btn btn-outline-primary" type="button"
-        (click)="refreshServices()">Refresh Table
+        (click)="onRefreshService()">Refresh Table
 </button>
-<div class='service-container my-2' *ngFor="let service of serviceOptions"
-     (click)="select(service)">
-  <app-webservice-card [serviceNode]="service"
-                       [selected]="isSelected(service)"></app-webservice-card>
+<div class='service-container my-2' *ngFor="let node of nodeOptions"
+     (click)="onSelectNode(node)">
+  <app-webservice-card [node]="node"
+                       [selected]="isSelected(node)"></app-webservice-card>
 </div>

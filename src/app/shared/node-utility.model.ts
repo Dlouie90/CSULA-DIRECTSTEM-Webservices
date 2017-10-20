@@ -1,4 +1,4 @@
-import {Node} from './node.model';
+import {Node} from './models/node.model';
 
 /** Provides utility methods for Node class.
  *

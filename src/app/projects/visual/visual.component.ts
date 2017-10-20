@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
-import {Node} from '../../shared/node.model';
+import {Node} from '../../shared/models/node.model';
 import * as d3 from 'd3';
 import {NodeUtility} from '../../shared/node-utility.model';
 import {Router} from '@angular/router';
@@ -112,13 +112,8 @@ export class VisualComponent implements OnInit {
 </div>
 
 <div class="row">
-<dt class="col-sm-5">Domain:</dt>
-<dd class="col-sm-7">${d.domain}</dd>
-</div>
-
-<div class="row">
-<dt class="col-sm-5">Path:</dt>
-<dd class="col-sm-7">${d.path}</dd>
+<dt class="col-sm-5">URL:</dt>
+<dd class="col-sm-7">${d.url}</dd>
 </div>
 
 <div class="row">

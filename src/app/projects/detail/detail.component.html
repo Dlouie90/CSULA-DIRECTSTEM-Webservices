@@ -1,136 +1,54 @@
-<div *ngIf="node">
-
-  <div class="row">
-
-    <div class="col-6">
-      <button type="button"
-              (click)="gotoEditor(true)"
-              class="btn btn-outline-success btn-lg btn-block">
-        Create New Project
-      </button>
-    </div>
-
-    <div class="col-6">
-      <button (click)="gotoEditor(false)"
-              class="btn btn-outline-success btn-lg btn-block">
-        Graph Editor
-      </button>
+<div class="mb-5 pb-5" *ngIf="node">
+  <!-- Enable form editing checkbox -->
+  <div class="form-group row">
+    <div class="ml-auto col-9">
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input id="checkbox-edit-mode" class="form-check-input" type="checkbox"
+                 [(ngModel)]="editMode"> Edit Mode
+        </label>
+        <button class="btn btn-outline-primary" (click)="gotoEditor(false)">
+          Graph Editor
+        </button>
+      </div>
     </div>
   </div>
 
-  <app-accordion title="Primary Fields"
-                 id="privw--{{node.id}}">
-
-    <!-- Enable form editing checkbox -->
-    <div class="form-group row">
-      <label for="checkbox-edit-mode"
-             class="col-2 col-form-label"></label>
-      <div class="col-10">
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">
-            <input class="form-check-input"
-                   type="checkbox"
-                   id="checkbox-edit-mode"
-                   [(ngModel)]="editMode"> Edit Mode
-          </label>
-        </div>
-      </div>
+  <!-- ID -->
+  <div class="form-group row px-3">
+    <label for="webservice-id" class="col-3 col-form-label">ID</label>
+    <div class="col-9">
+      <input class="form-control" type="text" id="webservice-id"
+             [value]="node.id" readonly>
     </div>
+  </div>
 
-    <!-- ID -->
-    <div class="form-group row">
-      <label for="webservice-id"
-             class="col-2 col-form-label">ID</label>
-      <div class="col-10">
-        <input class="form-control"
-               type="text"
-               [value]="node.id"
-               id="webservice-id"
-               readonly>
-      </div>
+  <!-- URL -->
+  <div class="form-group row px-3">
+    <label for="input-domain" class="col-3 col-form-label">URL</label>
+    <div class="col-9">
+      <input id="input-domain" class="form-control col-form-label" type="text"
+             [value]="node.url" readonly>
     </div>
+  </div>
 
-    <!-- Title -->
-    <div class="form-group row">
-      <label for="webservice-title"
-             class="col-2 col-form-label">Title</label>
-      <div class="col-10">
-        <input class="form-control"
-               type="text"
-               [(ngModel)]="node.title"
-               [value]="node.title"
-               id="webservice-title"
-               [readonly]="!editMode">
-      </div>
+  <!-- Title -->
+  <div class="form-group row px-3">
+    <label for="webservice-title" class="col-3 col-form-label">Title</label>
+    <div class="col-9">
+      <input class="form-control" type="text" id="webservice-title"
+             [(ngModel)]="node.title" [value]="node.title" [readonly]="!editMode">
     </div>
+  </div>
 
-    <!-- DOMAIN-->
-    <div class="form-group row">
-      <label for="input-domain"
-             class="col-2 col-form-label">Domain</label>
-      <div class="col-10">
-        <input class="form-control col-form-label"
-               type="text"
-               [value]="node.domain"
-               id="input-domain"
-               readonly>
-      </div>
+  <!-- Description -->
+  <div class="form-group row px-3">
+    <label for="node-description" class="col-3 col-form-label">Description</label>
+    <div class="col-9">
+    <textarea id="node-description" class="form-control" rows="8"
+              [(ngModel)]="node.description" [value]="node.description"
+              [readonly]="!editMode"> </textarea>
     </div>
-
-    <!-- DOMAIN-->
-    <div class="form-group row">
-      <label for="input-path"
-             class="col-2 col-form-label">Path</label>
-      <div class="col-10">
-        <input class="form-control col-form-label"
-               type="text"
-               [value]="node.path"
-               id="input-path"
-               readonly>
-      </div>
-    </div>
-
-    <!-- Type -->
-    <div class="form-group row">
-      <label for="node-type"
-             class="col-2 col-form-label">Type</label>
-      <div class="col-10">
-        <input class="form-control"
-               type="text"
-               [(ngModel)]="node.type"
-               [value]="node.type"
-               id="node-type"
-               [readonly]="!editMode">
-      </div>
-    </div>
-
-    <!-- Description -->
-    <div class="form-group row">
-      <label for="node-description"
-             class="col-2 col-form-label">Description</label>
-      <div class="col-10">
-    <textarea class="form-control"
-              rows="8"
-              [(ngModel)]="node.description"
-              [value]="node.description"
-              id="node-description"
-              [readonly]="!editMode">
-    </textarea>
-      </div>
-    </div>
-  </app-accordion>
-
-
-  <!-- List the webservice parameters properties -->
-  <app-accordion title="Parameters Fields"
-                 id="pravw-{{node.id}}">
-    <app-property-table [properties]="node.parameters"></app-property-table>
-  </app-accordion>
-
-  <!-- List the webservice returned object properties (key:value)-->
-  <app-accordion title="Properties Fields"
-                 id="properties-quickview">
-    <app-property-table [properties]="node.returnValues"></app-property-table>
-  </app-accordion>
+  </div>
 
 </div>

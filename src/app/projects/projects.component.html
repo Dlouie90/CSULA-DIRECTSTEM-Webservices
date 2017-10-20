@@ -1,21 +1,20 @@
-<div class="container">
-
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="list-group">
-        <a *ngFor="let node of nodes"
-           class="list-group-item list-group-item-action"
-           [routerLink]="[node.id, 'detail']"
-           routerLinkActive="active">
-          <span *ngIf="node.title">{{node.title}}</span>
-          <span *ngIf="!node.title">{{'node-id-'+node.id | uppercase}}</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="col-sm-9">
-      <router-outlet></router-outlet>
-    </div>
-
+<div class="container row mx-3">
+  <!--col-2-->
+  <div class="col-3 text-center">
+    <button class="btn btn-success mb-3" type="button" (click)="createNewProject()">
+      <i class="fa fa-plus-square-o" aria-hidden="true"></i> Create New Project
+    </button>
+    <ul class="list-group">
+      <li class="list-group-item"
+          *ngFor="let node of nodes"
+          [routerLink]="['detail', node.id]" routerLinkActive="active">
+        {{ node.title }}
+      </li>
+    </ul>
   </div>
+  <!--col-10-->
+  <div class="col-9">
+    <router-outlet></router-outlet>
+  </div>
+
 </div>

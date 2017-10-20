@@ -9,3 +9,8 @@ nav {
     margin-bottom: 1.5em;
     margin-top: .75em;
 }
+
+img#logo {
+    max-height: 2em;
+    max-width: 3em;
+}

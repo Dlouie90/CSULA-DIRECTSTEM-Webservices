@@ -1,38 +1,39 @@
 import { Component, Input } from '@angular/core';
-import { ServiceNode } from '../models/webservice.models';
+import { Node } from '../../shared/models/node.model';
+
 
 @Component({
     selector: 'app-webservice-card',
     templateUrl: './webservice-card.component.html'
 })
 export class WebserviceCardComponent {
-    @Input() serviceNode: ServiceNode;
+    @Input() node: Node;
     @Input() selected: boolean;
 
 
     constructor() {}
 
     get title(): string {
-        return (this.serviceNode && this.serviceNode.title ) || '';
+        return (this.node && this.node.serviceTitle ) || '';
     }
 
     get id(): string {
-        return (this.serviceNode && this.serviceNode.id.toString()) || '';
+        return (this.node && this.node.serviceId.toString()) || '';
     }
 
     get description(): string {
-        return (this.serviceNode && this.serviceNode.description) || '';
+        return (this.node && this.node.serviceDescription) || '';
     }
 
     get url(): string {
-        return (this.serviceNode && this.serviceNode.url) || '';
+        return (this.node && this.node.serviceUrl) || '';
     }
 
     get parameters(): string {
-        if (!this.serviceNode) {
+        if (!this.node) {
             return '';
         }
-        return this.serviceNode.parameters.join(', ');
+        return this.node.serviceParameters.join(', ');
     }
 
     get selectedStyles(): any {

@@ -6,7 +6,7 @@
   </div>
 
   <div class="" *ngFor="let param of parameters">
-    <app-webservice-row [parameter]="param" [serviceOptions]="serviceOptions"
+    <app-webservice-row [parameter]="param" [nodeOptions]="nodeOptions"
                         [currentNode]="currentNode" (onSelect)="onSelect($event)">
     </app-webservice-row>
   </div>
