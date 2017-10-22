@@ -26,13 +26,10 @@
     "@types/lodash": "^4.14.62",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.5",
     "d3": "^3.5.17",
-    "express": "^4.16.1",
     "lodash": "^4.17.4",
     "core-js": "^2.4.1",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14",
-    "superagent": "^3.6.3",
-    "body-parser": "^1.18.1"
   },
   "devDependencies": {
     "@angular/cli": "1.4.5",
