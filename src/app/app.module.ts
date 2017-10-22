@@ -7,7 +7,9 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { CarouselComponent } from './home/carousel/carousel.component';
-import { CommonModule } from '@angular/common';
+import {
+    CommonModule, HashLocationStrategy, LocationStrategy
+} from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { DetailComponent } from './projects/detail/detail.component';
@@ -50,7 +52,10 @@ import { DemoAppModule } from './demo-app/demo-app.module';
         AppRoutingModule,
     ],
 
-    providers: [NodeService],
+    providers: [
+        NodeService,
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
+    ],
 
     bootstrap: [AppComponent]
 })

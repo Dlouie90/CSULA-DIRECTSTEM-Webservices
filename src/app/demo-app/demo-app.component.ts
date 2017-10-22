@@ -6,12 +6,19 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DemoService } from './demo.service';
 import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
 
+
+interface DemoQueryParam {
+    name: string,
+    queryParams: { index: number }
+}
+
 @Component({
     selector: 'app-demo-app',
     templateUrl: './demo-app.component.html',
     styleUrls: ['./demo-app.component.css']
 })
 export class DemoAppComponent implements OnInit {
+    paths: DemoQueryParam[];
     currentService: any;
     result: any;
     guid: string;
@@ -28,9 +35,19 @@ export class DemoAppComponent implements OnInit {
         this.serviceArray = webservice.services;
         this.route.queryParams
             .subscribe(params => this.index = params['index']);
+
+        this.initPaths();
     }
 
     ngOnInit() { }
+
+    initPaths(): void {
+        this.paths = [
+            {name: 'Composition', queryParams: {index: 1}},
+            {name: 'Service Menu', queryParams: {index: 2}},
+            {name: 'User Database', queryParams: {index: 3}},
+        ];
+    }
 
     updateIndexTo(value: number): void {
         this.index = value;

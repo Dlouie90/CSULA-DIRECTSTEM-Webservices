@@ -1,0 +1,43 @@
+<form [formGroup]="updateForm" class="p-3" (submit)="updateUser()">
+
+  <div class="form-group row">
+    <label for="updateUserIdInput" class="col-4 col-form-label">User ID:</label>
+    <div class="col-8">
+      <input id="updateUserIdInput" class="form-control" type="number"
+             [formControl]="updateForm.controls['id']">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="updateFirstNameInput" class="col-4 col-form-label">First Name: </label>
+    <div class="col-8">
+      <input id="updateFirstNameInput" class="form-control" type="text"
+             [formControl]="updateForm.controls['firstName']">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="updateLastName" class="col-4 col-form-label">Last Name: </label>
+    <div class="col-8">
+      <input id="updateLastName" class="form-control" type="text"
+             [formControl]="updateForm.controls['lastName']">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="updateDescription" class="col-4 col-form-label">Description: </label>
+    <div class="col-8">
+      <textarea id="updateDescription" class="form-control" rows="8"
+                [formControl]="updateForm.controls['description']"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="ml-auto col-8">
+      <button class="btn btn-block btn-outline-primary" type="submit">Update
+      </button>
+    </div>
+  </div>
+
+</form>
+

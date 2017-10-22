@@ -1,14 +1,29 @@
 
-CREATE DATABASE directstem;
+CREATE DATABASE IF NOT EXISTS directstem;
 
 USE directstem;
 
-CREATE TABLE Users (
-    email varchar(255) NOT NULL,
-    password varchar(255) NOT NULL,
-	PRIMARY KEY (email)
+/* USERS */
+DROP TABLE IF EXISTS  users;
+CREATE TABLE users (
+	id        INTEGER AUTO_INCREMENT NOT NULL,
+	firstName VARCHAR(255) NOT NULL,
+	lastName  VARCHAR(255) NOT NULL,
+	password  VARCHAR(255) NOT NULL,
+	email     VARCHAR(255) NOT NULL UNIQUE,
+	description TEXT NULL,
+	PRIMARY KEY (id)
 );
-insert into Users values ('adam@ajberman.com','root'),('jguo@calstatela.edu','root');
+
+INSERT INTO users (firstName, lastName, password, email)
+VALUES ('Shay', 'Nguyen', 'shay', 'shay@nguyen.com');
+
+INSERT INTO users (firstName, lastName, password, email)
+VALUES ('Leanne', 'Graham', 'leanne', 'leanne@graham.com');
+
+INSERT INTO users (firstName, lastName, password, email)
+VALUES ('Ervin', 'Howell', 'ervin', 'ervin@howell.com');
+
 
 CREATE TABLE nodes (
 	id int NOT NULL,

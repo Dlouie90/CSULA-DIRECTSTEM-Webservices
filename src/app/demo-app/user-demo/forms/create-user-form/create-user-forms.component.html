@@ -1,0 +1,47 @@
+<form class="p-3" [formGroup]="newUserForm" (submit)="createUser()">
+  <!-- first name-->
+  <div class="form-group row">
+    <label for="newUserFirstNameInput" class="col-4">First Name: </label>
+    <div class="col-8">
+      <input id="newUserFirstNameInput" class="form-control"
+             [formControl]="newUserForm.controls['firstName']">
+    </div>
+  </div>
+  <!-- last name-->
+  <div class="form-group row">
+    <label for="newUserLastNameInput" class="col-4">Last Name: </label>
+    <div class="col-8">
+      <input id="newUserLastNameInput" class="form-control"
+             [formControl]="newUserForm.controls['lastName']">
+    </div>
+  </div>
+  <!-- email -->
+  <div class="form-group row">
+    <label for="newUserEmailInput" class="col-4">Email: </label>
+    <div class="col-8">
+      <input id="newUserEmailInput" class="form-control" type="email"
+             [formControl]="newUserForm.controls['email']">
+    </div>
+  </div>
+  <!-- password-->
+  <div class="form-group row">
+    <label for="newUserPasswordInput" class="col-4">Password: </label>
+    <div class="col-8">
+      <input id="newUserPasswordInput" class="form-control"
+             [formControl]="newUserForm.controls['password']">
+    </div>
+  </div>
+  <!-- description -->
+  <div class="form-group row">
+    <label for="newUserUsernameInput" class="col-4">Description: </label>
+    <div class="col-8">
+      <textarea id="newUserUsernameInput" class="form-control" rows="8"
+                [formControl]="newUserForm.controls['description']"></textarea>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="ml-auto col-8">
+      <button class="btn btn-block btn-outline-primary" type="submit">Create</button>
+    </div>
+  </div>
+</form>

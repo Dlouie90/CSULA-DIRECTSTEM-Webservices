@@ -1,66 +1,64 @@
-<div class="container">
+<div class="container-fluid mx-3">
+  <div class="row">
+    <nav class="nav flex-column col-2">
+      <a class="nav-link" *ngFor="let entry of paths"
+         routerLinkActive="active" [routerLink]="['/demo']" [queryParams]="entry.queryParams">
+        {{ entry.name }}</a>
+    </nav>
 
-  <div class="btn-toolbar">
-    <div class="btn btn-group">
-      <button class="btn btn-light" type="button"
-              (click)="updateIndexTo(1)">1
-      </button>
-      <button class="btn btn-light" type="button"
-              (click)="updateIndexTo(2)">2
-      </button>
-    </div>
-  </div>
+    <div class="col-10" [ngSwitch]="index">
+      <section *ngSwitchCase="1">
 
-  <div [ngSwitch]="index">
-    <section *ngSwitchCase="1">
-
-      <div class="text-center card">
-        <div class=" card-block">
-          <button class="btn btn-secondary"
-                  (click)="addService()">Add Service
-          </button>
-          <button class="btn btn-secondary"
-                  (click)="runService()">Run Service
-          </button>
-          <button class="btn btn-secondary"
-                  (click)="getServiceResult()">Get Result Of Service
-          </button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2 class="text-center">Result</h2>
-        </div>
-
-        <div class="card-block text-center">
-          <div *ngIf="showSpinner()">
-            <img src="/assets/images/Spinner.gif">
+        <div class="text-center card">
+          <div class=" card-block">
+            <button class="btn btn-secondary"
+                    (click)="addService()">Add Service
+            </button>
+            <button class="btn btn-secondary"
+                    (click)="runService()">Run Service
+            </button>
+            <button class="btn btn-secondary"
+                    (click)="getServiceResult()">Get Result Of Service
+            </button>
           </div>
-          <div *ngIf="!showSpinner()">
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="text-center">Result</h2>
+          </div>
+
+          <div class="card-block text-center">
+            <div *ngIf="showSpinner()">
+              <img src="/assets/images/Spinner.gif">
+            </div>
+            <div *ngIf="!showSpinner()">
         <pre>
         {{ result | json}}
         </pre>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="card mt-3">
-        <div class="card-header">
-          <h2 class=" text-center">Current Service</h2>
-        </div>
-        <div class="card-block">
+        <div class="card mt-3">
+          <div class="card-header">
+            <h2 class=" text-center">Current Service</h2>
+          </div>
+          <div class="card-block">
       <pre>
         {{ currentService | json }}
       </pre>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section *ngSwitchCase="2">
-      <button class ="btn btn-outline-info" (click)="open()">Open Modal</button>
-    </section>
+      <section *ngSwitchCase="2">
+        <button class="btn btn-outline-info" (click)="open()">Open Modal</button>
+      </section>
+
+      <section *ngSwitchCase="3">
+        <app-user-demo></app-user-demo>
+      </section>
+    </div>
   </div>
-
-
 </div>

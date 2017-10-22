@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-6">
+    <ngb-accordion #acc="ngbAccordion" activeIds="0,1,3,4,5">
+      <!-- Get All Users-->
+      <ngb-panel title="Get All Users" id="0">
+        <ng-template ngbPanelContent>
+          <app-get-all-users (onGetAllUser)="onResult($event)"></app-get-all-users>
+        </ng-template>
+      </ngb-panel>
+      <!-- Get User By ID-->
+      <ngb-panel title="Get User By Id" id="1">
+        <ng-template ngbPanelContent>
+          <app-user-by-id-form (onGetUser)="onResult($event)"></app-user-by-id-form>
+        </ng-template>
+      </ngb-panel>
+      <!-- Create User-->
+      <ngb-panel title="Create User" id="2">
+        <ng-template ngbPanelContent>
+          <app-create-user-form (onCreate)="onResult($event)"></app-create-user-form>
+        </ng-template>
+      </ngb-panel>
+      <!--Delete User By ID-->
+      <ngb-panel title="Delete User By ID" id="3">
+        <ng-template ngbPanelContent>
+          <app-delete-user-form (onDeleteUser)="onResult($event)"></app-delete-user-form>
+        </ng-template>
+      </ngb-panel>
+      <!-- Update User By ID-->
+      <ngb-panel title="Update User By ID" id="4">
+        <ng-template ngbPanelContent>
+          <app-update-user-form (onUpdate)="onResult($event)"></app-update-user-form>
+        </ng-template>
+      </ngb-panel>
+      <!-- User Login-->
+      <ngb-panel title="Login User" id="5">
+        <ng-template ngbPanelContent>
+          <app-login-form (onLogin)="onResult($event)"></app-login-form>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+
+  <div class="card col-6">
+    <h2 class="card-header">Result</h2>
+    <div class="card-block">
+      <pre>
+        {{ requestResult | json }}
+      </pre>
+    </div>
+  </div>
+</div>
