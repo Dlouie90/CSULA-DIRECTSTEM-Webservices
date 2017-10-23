@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { CarouselComponent } from './home/carousel/carousel.component';
 import {
-    CommonModule, HashLocationStrategy, LocationStrategy
+    HashLocationStrategy, LocationStrategy
 } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -23,8 +23,8 @@ import { VisualComponent } from './projects/visual/visual.component';
 import { CollapsibleTreeComponent } from './projects/collapsible-tree/collapsible-tree.component';
 import { BarChartComponent } from './projects/bar-chart/bar-chart.component';
 import { DemoAppModule } from './demo-app/demo-app.module';
-import { SplitPanelLoginComponent } from './split-panel-login/split-panel-login.component';
 import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.module';
+import { UserService } from './shared/services/user.service';
 
 @NgModule({
     declarations: [
@@ -48,7 +48,6 @@ import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.mod
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        CommonModule,
         NgbModule.forRoot(),
         DemoAppModule,
         AppRoutingModule,
@@ -56,6 +55,7 @@ import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.mod
     ],
 
     providers: [
+        UserService,
         NodeService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
     ],

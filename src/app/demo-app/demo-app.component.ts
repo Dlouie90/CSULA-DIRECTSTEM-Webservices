@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DemoService } from './demo.service';
 import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
 import { SplitPanelLoginComponent } from '../split-panel-login/split-panel-login.component';
 
@@ -24,15 +22,11 @@ export class DemoAppComponent implements OnInit {
     result: any;
     guid: string;
     waitingForResponse: boolean;
-    serviceArray: any[];
     index = 1;
 
-    constructor(private http: Http,
-                private webservice: DemoService,
-                private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private modalService: NgbModal) {
 
-        this.serviceArray = webservice.services;
         this.route.queryParams
             .subscribe(params => this.index = params['index']);
 
@@ -50,44 +44,44 @@ export class DemoAppComponent implements OnInit {
         ];
     }
 
-    addService(): void {
-        this.http.post('/add', this.currentService)
-            .toPromise()
-            .then(res => this.result = res.json())
-            .catch(err => console.log(`add() failed: ${ err }`));
-    }
+    // addService(): void {
+    //     this.http.post('/add', this.currentService)
+    //         .toPromise()
+    //         .then(res => this.result = res.json())
+    //         .catch(err => console.log(`add() failed: ${ err }`));
+    // }
 
-    runService(): void {
-        console.log(`running`);
-        console.log(this.currentService);
-        this.http
-            .post('/run', this.currentService)
-            .toPromise()
-            .then(res => {
-                this.result = res.json();
-                this.guid = this.result.guid;
-            })
-            .catch(err => this.result = {error: err});
-    }
+    // runService(): void {
+    //     console.log(`running`);
+    //     console.log(this.currentService);
+    //     this.http
+    //         .post('/run', this.currentService)
+    //         .toPromise()
+    //         .then(res => {
+    //             this.result = res.json();
+    //             this.guid = this.result.guid;
+    //         })
+    //         .catch(err => this.result = {error: err});
+    // }
 
-    getServiceResult(): void {
-        this.waitingForResponse = true;
-        setTimeout(() => {
-            this.waitingForResponse = false;
-        }, 2000);
-
-        this.http
-            .get(`/result?guid=${ this.guid }`)
-            .toPromise()
-            .then(res => this.result = res.json())
-            .catch(err => this.result = err);
-    }
+    // getServiceResult(): void {
+    //     this.waitingForResponse = true;
+    //     setTimeout(() => {
+    //         this.waitingForResponse = false;
+    //     }, 2000);
+    //
+    //     this.http
+    //         .get(`/result?guid=${ this.guid }`)
+    //         .toPromise()
+    //         .then(res => this.result = res.json())
+    //         .catch(err => this.result = err);
+    // }
 
     showSpinner(): boolean {
         return this.waitingForResponse;
     }
 
-    open(): void {
+    openConfiguMenu(): void {
         this.modalService.open(WebserviceConfigMenuComponent, {size: 'lg'});
     }
 

@@ -8,52 +8,11 @@
 
     <div class="col-10" [ngSwitch]="index">
       <section *ngSwitchCase="1">
-
-        <div class="text-center card">
-          <div class=" card-block">
-            <button class="btn btn-secondary"
-                    (click)="addService()">Add Service
-            </button>
-            <button class="btn btn-secondary"
-                    (click)="runService()">Run Service
-            </button>
-            <button class="btn btn-secondary"
-                    (click)="getServiceResult()">Get Result Of Service
-            </button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-center">Result</h2>
-          </div>
-
-          <div class="card-block text-center">
-            <div *ngIf="showSpinner()">
-              <img src="/assets/images/Spinner.gif">
-            </div>
-            <div *ngIf="!showSpinner()">
-        <pre>
-        {{ result | json}}
-        </pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <div class="card-header">
-            <h2 class=" text-center">Current Service</h2>
-          </div>
-          <div class="card-block">
-      <pre>
-        {{ currentService | json }}
-      </pre>
-          </div>
-        </div>
+        <app-service-list></app-service-list>
       </section>
 
       <section *ngSwitchCase="2">
-        <button class="btn btn-outline-info" (click)="open()">Open Modal</button>
+        <button class="btn btn-outline-info" (click)="openConfiguMenu()">Open Modal</button>
       </section>
 
       <section *ngSwitchCase="3">
@@ -61,9 +20,9 @@
       </section>
 
       <section *ngSwitchCase="4">
-        <button class="btn btn-outline-primary" (click)="openSplitPanel()">Open Split Panel Modal</button>
+        <button class="btn btn-outline-primary" (click)="openSplitPanel()">Open Split Panel Modal
+        </button>
       </section>
     </div>
-
   </div>
 </div>
