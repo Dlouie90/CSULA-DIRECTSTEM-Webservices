@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IService } from '../shared/models/service.interface';
 import { NodeService } from '../shared/services/node.service';
@@ -9,14 +9,17 @@ import { Node } from '../shared/models/node.model';
     templateUrl: './webservice-config-menu.component.html',
 })
 export class WebserviceConfigMenuComponent implements OnInit {
-    nodes: Node[];
-    selectedNode: Node;
-
+    @Input() node: Node;
+    @Input() serviceInputs: IService[] = [];
+    services: IService[];
+    selectedService: IService;
 
     constructor(private nodeService: NodeService,
-                public activeModal: NgbActiveModal) {}
+                public activeModal: NgbActiveModal) {
+    }
 
     ngOnInit(): void {
+        this.selectedService = this.node.service;
         this.getServices();
     }
 
@@ -24,24 +27,17 @@ export class WebserviceConfigMenuComponent implements OnInit {
         this.nodeService.getServices()
             .subscribe(
                 (services: IService[]) => {
-                    this.nodes = this.toNodes(services);
+                    this.services = services;
                 },
                 (error: any) => {
-                    this.nodes = [];
+                    this.services = [];
                     console.error(error);
                 }
             );
     }
 
-    private toNodes(services: IService[]): Node[] {
-        return services.map(service => {
-            const id = NodeService.generateTempId();
-            return new Node(id, 300, 300, service);
-        });
-    }
-
-    onSelectService(selectedNode: Node): void {
-        this.selectedNode = selectedNode;
+    onSelectService(service: IService): void {
+        this.selectedService = service;
     }
 
     onClose(reason: string): void {

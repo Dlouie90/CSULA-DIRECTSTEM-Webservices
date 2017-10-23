@@ -2,9 +2,9 @@
   <div class="card-header" [ngClass]="selectedStyles">
     <span class="title">{{ title }}</span>
     <span class="card-subtitle small font-italic"
-          *ngIf="node" [ngClass]="subtitleStyle">( {{ parameters }} )</span>
+          *ngIf="service" [ngClass]="subtitleStyle">( {{ parameters }} )</span>
     <span class="badge badge-pill badge-secondary float-right"
-          *ngIf="node">id: {{ id }}</span>
+          *ngIf="service ">id: {{ id }}</span>
   </div>
   <div class="card-body">
     <p>{{ description }}</p>

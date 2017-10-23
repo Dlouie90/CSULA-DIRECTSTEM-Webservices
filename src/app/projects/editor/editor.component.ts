@@ -7,6 +7,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Node } from '../../shared/models/node.model';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { View } from '../../shared/view.model';
+import { WebserviceConfigMenuComponent } from '../../webservice-config-menu/webservice-config-menu.component';
+import { IService } from '../../shared/models/service.interface';
 
 @Component({
     selector: 'app-editor',
@@ -135,12 +137,14 @@ export class EditorComponent implements OnInit {
         this.graph.updateGraph();
     }
 
-    edit(content): void {
+    edit(): void {
         if (this.graph.state.selectedNode) {
-            this.openQuickEditModal(content);
+            // this.openQuickEditModal(content);
+            this.openConfigModal();
         }
         this.closeContextMenu();
     }
+
 
     getDismissReason(reason: any): string {
         if (reason === ModalDismissReasons.ESC) {
@@ -221,6 +225,28 @@ export class EditorComponent implements OnInit {
             }, (reason) => {
                 this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
             });
+    }
+
+    openConfigModal() {
+        const modalRef = this.modalService
+            .open(WebserviceConfigMenuComponent, {size: 'lg'});
+        const inputs = this.getInputsToNode(this.selectedNode);
+        modalRef.componentInstance.node = this.selectedNode;
+        modalRef.componentInstance.serviceInputs = inputs;
+
+        modalRef.result
+            .then((result: any) => {
+                console.log('Closed with: ', result);
+            }, (reason: any) => {
+                console.log('Dismissed with', this.getDismissReason(reason));
+            });
+    }
+
+    getInputsToNode(node: Node): IService[] {
+        const edges = this.graph.edges;
+        return edges
+            .filter(edge => (edge.target.id === node.id) && edge.source.service)
+            .map(edge => edge.source.service);
     }
 
     openNoCompositionModal(content) {

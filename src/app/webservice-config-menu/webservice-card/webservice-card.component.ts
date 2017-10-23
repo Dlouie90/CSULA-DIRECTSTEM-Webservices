@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Node } from '../../shared/models/node.model';
+import { IService } from '../../shared/models/service.interface';
 
 
 @Component({
@@ -7,33 +7,32 @@ import { Node } from '../../shared/models/node.model';
     templateUrl: './webservice-card.component.html'
 })
 export class WebserviceCardComponent {
-    @Input() node: Node;
+    @Input() service: IService;
     @Input() selected: boolean;
-
 
     constructor() {}
 
     get title(): string {
-        return (this.node && this.node.serviceTitle ) || '';
+        return (this.service && this.service.title) || '';
     }
 
-    get id(): string {
-        return (this.node && this.node.serviceId.toString()) || '';
+    get id(): number {
+        return (this.service && this.service.id) || null;
     }
 
     get description(): string {
-        return (this.node && this.node.serviceDescription) || '';
+        return (this.service && this.service.description) || '';
     }
 
     get url(): string {
-        return (this.node && this.node.serviceUrl) || '';
+        return (this.service && this.service.url) || '';
     }
 
     get parameters(): string {
-        if (!this.node) {
+        if (!this.service) {
             return '';
         }
-        return this.node.serviceParameters.join(', ');
+        return this.service.parameters.join(', ');
     }
 
     get selectedStyles(): any {

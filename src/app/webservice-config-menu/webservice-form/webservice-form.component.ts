@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Node } from '../../shared/models/node.model';
+import { IService } from '../../shared/models/service.interface';
 
 @Component({
     selector: 'app-webservice-form',
@@ -8,44 +8,28 @@ import { Node } from '../../shared/models/node.model';
     styleUrls: ['./webservice-form.component.css']
 })
 export class WebserviceFormComponent implements OnChanges {
-    @Input() node: Node;
+    @Input() service: IService;
     formGroup: FormGroup;
-
 
     constructor(private formBuilder: FormBuilder) { }
 
     ngOnChanges(): void {
-        this.formGroup = this.createFormGroup(this.node);
+        this.formGroup = this.createFormGroup(this.service);
     }
 
-    private createFormGroup(node: Node): FormGroup {
-        if (!node) {
-            return this.emptyFormGroup;
-        }
-
+    private createFormGroup(service: IService): FormGroup {
         const form = this.formBuilder.group({
-            id: node.serviceId,
-            title: node.serviceTitle,
-            description: node.serviceDescription,
-            url: node.serviceUrl,
-            parameters: this.createParamsFormArray(node.serviceParameters)
+            id: (service && service.id) || '',
+            title: (service && service.title) || '',
+            description: (service && service.description) || '',
+            url: (service && service.url) || '',
+            parameters: this.createParamsFormArray(
+                (service && service.parameters) || [])
         });
         // these forms show existing serviceNode info. the user don't need to
         // edit them so we "disabled" it
         form.disable();
         return form;
-    }
-
-    private get emptyFormGroup(): FormGroup {
-        const emptyFormGroup = this.formBuilder.group({
-            id: '',
-            title: '',
-            description: '',
-            url: '',
-            parameters: this.formBuilder.array([])
-        });
-        emptyFormGroup.disable();
-        return emptyFormGroup;
     }
 
     private createParamsFormArray(params: string[]): FormArray {

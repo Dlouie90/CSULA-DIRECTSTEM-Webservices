@@ -9,6 +9,8 @@ import { WebserviceListComponent } from './webservice-list/webservice-list.compo
 import { WebserviceRowComponent } from './webservice-row/webservice-row.component';
 import { WebserviceConfigMenuComponent } from './webservice-config-menu.component';
 import { NodeService } from '../shared/services/node.service';
+import { CompositionFormComponent } from './composition-form/composition-form.component';
+import { ShareModule } from '../share.module';
 
 @NgModule({
     declarations: [
@@ -18,8 +20,10 @@ import { NodeService } from '../shared/services/node.service';
         WebserviceInputsWiringComponent,
         WebserviceListComponent,
         WebserviceRowComponent,
+        CompositionFormComponent,
     ],
     imports: [
+        ShareModule,
         BrowserModule,
         ReactiveFormsModule,
         NgbModule.forRoot(),

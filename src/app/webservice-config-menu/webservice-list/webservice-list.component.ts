@@ -1,27 +1,34 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Node } from '../../shared/models/node.model';
+import {
+    Component, EventEmitter, Input, OnChanges, OnInit, Output
+} from '@angular/core';
+import { IService } from '../../shared/models/service.interface';
 
 
 @Component({
     selector: 'app-webservice-list',
     templateUrl: './webservice-list.component.html',
 })
-export class WebserviceListComponent {
-    @Input() nodeOptions: Node[];
-    @Input() currentNode: Node;
-    @Output() onSelect = new EventEmitter<Node>();
+export class WebserviceListComponent implements OnChanges {
+    @Input() serviceOptions: IService[];
+    @Input() currentService: IService;
+    @Output() onSelect = new EventEmitter<IService>();
     @Output() onRefresh = new EventEmitter<void>();
-
+    selectedService: IService;
 
     constructor() {}
 
-    isSelected(node: Node): boolean {
-        if (!this.currentNode) { return false; }
-        return this.currentNode.serviceId === node.serviceId;
+    ngOnChanges(): void {
+        this.selectedService = this.currentService;
     }
 
-    onSelectNode(node: Node): void {
-        this.onSelect.emit(node);
+    isSelected(service: IService): boolean {
+        if (!this.selectedService) { return false; }
+        return this.selectedService.id === service.id;
+    }
+
+    onSelectService(service: IService): void {
+        this.selectedService = service;
+        this.onSelect.emit(service);
     }
 
     onRefreshService(): void {

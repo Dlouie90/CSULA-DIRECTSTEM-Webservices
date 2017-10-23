@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
 import { SplitPanelLoginComponent } from '../split-panel-login/split-panel-login.component';
-
+import { Node } from '../shared/models/node.model';
 
 interface DemoQueryParam {
     name: string,
@@ -17,11 +17,9 @@ interface DemoQueryParam {
     styleUrls: ['./demo-app.component.css']
 })
 export class DemoAppComponent implements OnInit {
+    demoNode = new Node(-1, -1, -1);
+
     paths: DemoQueryParam[];
-    currentService: any;
-    result: any;
-    guid: string;
-    waitingForResponse: boolean;
     index = 1;
 
     constructor(private route: ActivatedRoute,
@@ -44,45 +42,11 @@ export class DemoAppComponent implements OnInit {
         ];
     }
 
-    // addService(): void {
-    //     this.http.post('/add', this.currentService)
-    //         .toPromise()
-    //         .then(res => this.result = res.json())
-    //         .catch(err => console.log(`add() failed: ${ err }`));
-    // }
 
-    // runService(): void {
-    //     console.log(`running`);
-    //     console.log(this.currentService);
-    //     this.http
-    //         .post('/run', this.currentService)
-    //         .toPromise()
-    //         .then(res => {
-    //             this.result = res.json();
-    //             this.guid = this.result.guid;
-    //         })
-    //         .catch(err => this.result = {error: err});
-    // }
-
-    // getServiceResult(): void {
-    //     this.waitingForResponse = true;
-    //     setTimeout(() => {
-    //         this.waitingForResponse = false;
-    //     }, 2000);
-    //
-    //     this.http
-    //         .get(`/result?guid=${ this.guid }`)
-    //         .toPromise()
-    //         .then(res => this.result = res.json())
-    //         .catch(err => this.result = err);
-    // }
-
-    showSpinner(): boolean {
-        return this.waitingForResponse;
-    }
-
-    openConfiguMenu(): void {
-        this.modalService.open(WebserviceConfigMenuComponent, {size: 'lg'});
+    openConfigMenu(): void {
+        const modalRef = this.modalService
+            .open(WebserviceConfigMenuComponent, {size: 'lg'});
+        modalRef.componentInstance.node = this.demoNode;
     }
 
     openSplitPanel(): void {

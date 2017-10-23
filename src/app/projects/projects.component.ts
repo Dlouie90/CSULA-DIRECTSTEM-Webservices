@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-    nodes: Array<Node>;
+    nodes: Node[];
 
     constructor(private nodeService: NodeService,
                 private router: Router) {
@@ -19,20 +19,20 @@ export class ProjectsComponent implements OnInit {
         this.getNodes();
     }
 
-    getNodes(): void {
+    private getNodes(): void {
         this.nodeService.getNodes()
-            .then((nodes: Array<Node>) => {
-                this.nodes = nodes;
-            })
-            .catch((error) => {
-                console.log(error);
-                this.nodes = [];
-            });
+            .subscribe(
+                (nodes: Node[]) => this.nodes = nodes,
+                () => {
+                    this.nodes = [];
+                    console.log('failed to load nodes, defaulting to empty :', []);
+                });
     }
 
     createNewProject(): void {
-        const node: Node = this.nodeService.createNew();
-        this.router.navigate(['projects', node.id, 'editor'])
+        console.log('created new project');
+        const node = this.nodeService.createNew();
+        this.router.navigate(['projects', 'detail', node.id])
             .then(_ => console.log('navigate was successful'))
             .catch(_ => console.log('navigate was not successful'));
     }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Node } from '../../shared/models/node.model';
 import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
+import { IService } from '../../shared/models/service.interface';
 
 @Component({
     selector: 'app-webservice-row',
@@ -8,14 +8,12 @@ import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
     styleUrls: ['./webservice-row.component.css']
 })
 export class WebserviceRowComponent implements OnInit {
-    @Input() nodeOptions: Node[];
-    @Input() currentNode: Node;
+    @Input() serviceOptions: IService[] = [];
     @Input() parameter: string;
+    @Input() currentService: IService;
     @Output() onSelect = new EventEmitter<ParameterEntry>();
 
-    selectedNode: Node;
-
-
+    selectedService: IService;
     constructor() { }
 
     ngOnInit(): void {
@@ -23,19 +21,19 @@ export class WebserviceRowComponent implements OnInit {
     }
 
     updateSelectedService(): void {
-        const id = this.currentNode.getIdOfParam(this.parameter);
-        this.selectedNode = this.nodeOptions
+        const id = this.currentService.id;
+        this.selectedService = this.serviceOptions
             .find(service => service.id === id);
     }
 
-    isSelected(node: Node): boolean {
-        return this.currentNode.parameterMap[this.parameter] === node.id;
+    isSelected(service: IService): boolean {
+        return this.currentService.id === service.id;
     }
 
     onSelectId(stringId: string): void {
         const numberId = parseInt(stringId, 10);
-        this.selectedNode = this.nodeOptions.find(node => {
-            return node.serviceId === numberId;
+        this.selectedService = this.serviceOptions.find(service => {
+            return service.id === numberId;
         });
         this.onSelect.emit({parameter: this.parameter, id: numberId});
     }

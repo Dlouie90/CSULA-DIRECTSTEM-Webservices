@@ -1,17 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { NodeService } from '../../shared/services/node.service';
 import { Node } from '../../shared/models/node.model';
 import 'rxjs/add/operator/switchMap';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import 'rxjs/add/operator/mergeMap';
 
 @Component({
     templateUrl: './detail.component.html',
     styleUrls: ['./detail.component.css']
 })
 export class DetailComponent implements OnInit {
-    @Input() node: Node;
-    editMode: boolean;
+    node: Node;
 
     constructor(private nodeService: NodeService,
                 private route: ActivatedRoute,
@@ -19,15 +18,18 @@ export class DetailComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params
-            .switchMap((params: Params) => {
-                return this.nodeService.getNode(+params['id']);
+            .mergeMap((params: Params) => {
+                const id = +params['id'];
+                return this.nodeService.getNode(id);
             })
-            .subscribe((node: Node) => {
-                return this.node = node;
+            .subscribe((value: Node) => {
+                if (!value) {
+                    this.router.navigate(['projects']);
+                    return;
+                }
+                this.node = value;
             });
-        this.editMode = false;
     }
-
 
     gotoEditor(isNewProject: boolean): void {
         if (isNewProject) {

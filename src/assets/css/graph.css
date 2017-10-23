@@ -27,10 +27,10 @@ text.tree-text {
   font-size : 14px !important;
 }
 
-g.conceptG:hover circle {
-  fill   : rgb(255, 245, 117);
-  stroke : rgb(235, 225, 97) !important;
-}
+/*g.conceptG:hover circle {*/
+  /*fill   : rgb(255, 245, 117);*/
+  /*stroke : rgb(235, 225, 97) !important;*/
+/*}*/
 
 .selected circle {
   stroke       : rgb(51, 108, 215) !important;
@@ -41,10 +41,10 @@ g.clicked-node circle {
   fill : pink !important;
 }
 
-g.selected:hover circle {
-  fill   : rgb(255, 245, 117);
-  stroke : rgb(215, 205, 77) !important;;
-}
+/*g.selected:hover circle {*/
+  /*fill   : rgb(255, 245, 117);*/
+  /*stroke : rgb(215, 205, 77) !important;;*/
+/*}*/
 
 path.link {
   fill         : #ccc;
@@ -58,10 +58,10 @@ marker {
   stroke : #ccc;
 }
 
-path.link:hover {
-  fill   : rgb(255, 245, 117);
-  stroke : rgb(235, 225, 97) !important;
-}
+/*path.link:hover {*/
+  /*fill   : rgb(255, 245, 117);*/
+  /*stroke : rgb(235, 225, 97) !important;*/
+/*}*/
 
 g.connect-node circle {
   fill : #BEFFFF;

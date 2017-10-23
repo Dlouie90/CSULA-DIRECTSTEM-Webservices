@@ -6,10 +6,13 @@ export class Node {
     nodeTitle: string;
     description: string;
     url: string;
-    parameterMap: IParameterMap;
+    service: IService;
 
+    parameterMap: IParameterMap = {};
     neighbors: Node[] = [];
     children: Node[] = [];
+    inputs: Node[] = [];
+    outputs: Node[] = [];
 
     /** Return true if the node is neither a input or output node. */
     static isRegular(node) {
@@ -22,11 +25,7 @@ export class Node {
 
     constructor(public id: number,
                 public x: number,
-                public y: number,
-                public service?: IService) {
-
-        this.createDefaultParameterMap();
-    }
+                public y: number) {}
 
     createDefaultParameterMap(): void {
         const obj = {};
@@ -59,7 +58,7 @@ export class Node {
     }
 
     get serviceParameters(): string[] {
-        return this.service.parameters;
+        return (this.service && this.service.parameters) || [];
     }
 
     getIdOfParam(param: string): number {
@@ -68,6 +67,20 @@ export class Node {
     }
 
     setIdToParam(entry: ParameterEntry): void {
+        if (!this.parameterMap) {
+            this.parameterMap = {};
+        }
+
         this.parameterMap[entry.parameter] = entry.id;
+    }
+
+    get parameterEntries(): ParameterEntry[] {
+        const array = [];
+        for (const key in this.parameterMap) {
+            if (this.parameterMap.hasOwnProperty(key)) {
+                array.push({parameter: key, id: this.parameterMap[key]})
+            }
+        }
+        return array;
     }
 }

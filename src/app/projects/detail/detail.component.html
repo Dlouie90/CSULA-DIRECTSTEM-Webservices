@@ -1,54 +1,12 @@
-<div class="mb-5 pb-5" *ngIf="node">
-  <!-- Enable form editing checkbox -->
-  <div class="form-group row">
-    <div class="ml-auto col-9">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input id="checkbox-edit-mode" class="form-check-input" type="checkbox"
-                 [(ngModel)]="editMode"> Edit Mode
-        </label>
-        <button class="btn btn-outline-primary" (click)="gotoEditor(false)">
-          Graph Editor
-        </button>
-      </div>
+<!-- Enable form editing checkbox -->
+<div class="form-group row">
+  <div class="ml-auto col-9">
+    <div class="form-check form-check-inline">
+      <button class="btn btn-outline-primary" (click)="gotoEditor(false)">
+        Graph Editor
+      </button>
     </div>
   </div>
-
-  <!-- ID -->
-  <div class="form-group row px-3">
-    <label for="webservice-id" class="col-3 col-form-label">ID</label>
-    <div class="col-9">
-      <input class="form-control" type="text" id="webservice-id"
-             [value]="node.id" readonly>
-    </div>
-  </div>
-
-  <!-- URL -->
-  <div class="form-group row px-3">
-    <label for="input-domain" class="col-3 col-form-label">URL</label>
-    <div class="col-9">
-      <input id="input-domain" class="form-control col-form-label" type="text"
-             [value]="node.url" readonly>
-    </div>
-  </div>
-
-  <!-- Title -->
-  <div class="form-group row px-3">
-    <label for="webservice-title" class="col-3 col-form-label">Title</label>
-    <div class="col-9">
-      <input class="form-control" type="text" id="webservice-title"
-             [(ngModel)]="node.title" [value]="node.title" [readonly]="!editMode">
-    </div>
-  </div>
-
-  <!-- Description -->
-  <div class="form-group row px-3">
-    <label for="node-description" class="col-3 col-form-label">Description</label>
-    <div class="col-9">
-    <textarea id="node-description" class="form-control" rows="8"
-              [(ngModel)]="node.description" [value]="node.description"
-              [readonly]="!editMode"> </textarea>
-    </div>
-  </div>
-
 </div>
+
+<app-webservice-menu [node]="node"></app-webservice-menu>

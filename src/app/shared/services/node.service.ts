@@ -6,6 +6,9 @@ import { IService } from '../models/service.interface';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import * as _ from 'lodash';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/find';
+import 'rxjs/add/observable/from';
 
 @Injectable()
 export class NodeService {
@@ -37,6 +40,13 @@ export class NodeService {
             });
     }
 
+    /* Delete all the services except for the 'defaults'*/
+    resetService(): Observable<Response> {
+        const url = `${ this.baseUrl }/comp/bulkdel`;
+        return this.http
+            .post(url, {});
+    }
+
 
     createNew(pos?: { x: number, y: number }): Node {
         if (pos) {
@@ -50,13 +60,13 @@ export class NodeService {
         }
     }
 
-    getNodes(): Promise<Node[]> {
-        return Promise.resolve(this.nodes);
+    getNodes(): Observable<Node[]> {
+        return Observable.of(this.nodes);
     }
 
-    getNode(id: number): Promise<Node> {
-        return this.getNodes()
-            .then((nodes: Node[]) => nodes.find((node: Node) => node.id === id));
+    getNode(id: number): Observable<Node> {
+        return Observable.from(this.nodes)
+            .find((node: Node) => node.id === id);
     }
 
     /** Insert a new node if it is unique (by id) */

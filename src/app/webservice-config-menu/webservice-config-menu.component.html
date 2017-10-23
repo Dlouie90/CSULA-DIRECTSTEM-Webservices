@@ -1,29 +1,36 @@
 <div class="modal-body">
   <ngb-tabset>
     <!-- Profile Tab-->
-    <ngb-tab id="tab-1" title="Webservice's Profile">
+    <ngb-tab id="tab-0" title="Composition Profile">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-form [node]="selectedNode"></app-webservice-form>
+          <app-composition-form [node]="node"></app-composition-form>
+        </div>
+      </ng-template>
+    </ngb-tab>
+
+    <ngb-tab id="tab-1" title="Service's Profile">
+      <ng-template ngbTabContent>
+        <div class="p-3">
+          <app-webservice-form [service]="selectedService"></app-webservice-form>
         </div>
       </ng-template>
     </ngb-tab>
     <!-- Select Tab-->
-    <ngb-tab id="tab-2" title="Select Webservice">
+    <ngb-tab id="tab-2" title="Select Service">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-list [nodeOptions]="nodes"
-                               [currentNode]="selectedNode" (onRefresh)="getServices()"
-                               (onSelect)="onSelectService($event)"></app-webservice-list>
+          <app-webservice-list [serviceOptions]="services" [currentService]="selectedService"
+                               (onRefresh)="getServices()" (onSelect)="onSelectService($event)">
+          </app-webservice-list>
         </div>
       </ng-template>
     </ngb-tab>
     <!-- Inputs Wiring Tab-->
-    <ngb-tab id="tab-3" title="Configure Inputs" [disabled]="!selectedNode">
+    <ngb-tab id="tab-3" title="Configure Inputs" [disabled]="!selectedService">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-inputs-wiring [nodeOptions]="nodes"
-                                        [currentNode]="selectedNode">
+          <app-webservice-inputs-wiring [service]="selectedService" [serviceOptions]="serviceInputs">
           </app-webservice-inputs-wiring>
         </div>
       </ng-template>

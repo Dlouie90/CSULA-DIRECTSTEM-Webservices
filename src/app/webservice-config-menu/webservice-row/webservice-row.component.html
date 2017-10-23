@@ -5,14 +5,14 @@
     <select class="form-control" title="select service by title"
             (change)="onSelectId($event.target.value)">
       <option value="-1"></option>
-      <option *ngFor="let node of nodeOptions"
-              [value]="node.serviceId" [selected]="isSelected(node)">
-        {{ node.serviceTitle }}
+      <option *ngFor="let option of serviceOptions"
+              [value]="option.id" [selected]="isSelected(option)">
+        {{ option.title }}
       </option>
     </select>
   </div>
 
   <div class="col-7">
-    <app-webservice-card [node]="selectedNode"></app-webservice-card>
+    <app-webservice-card [service]="selectedService"></app-webservice-card>
   </div>
 </section>

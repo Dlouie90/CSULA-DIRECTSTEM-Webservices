@@ -1,0 +1,60 @@
+<form class="mb-2 pb-2" *ngIf="node" [formGroup]="nodeForm">
+  <!-- ID -->
+  <div class="form-group row px-3">
+    <label for="node-id" class="col-3 col-form-label">ID</label>
+    <div class="col-9">
+      <input id="node-id" class="form-control" type="text"
+             formControlName="id" readonly>
+    </div>
+  </div>
+  <!-- URL -->
+  <div class="form-group row px-3">
+    <label for="node-url" class="col-3 col-form-label">URL</label>
+    <div class="col-9">
+      <input id="node-url" class="form-control col-form-label" type="text"
+             formControlName="url" readonly>
+    </div>
+  </div>
+  <!-- Title -->
+  <div class="form-group row px-3">
+    <label for="node-title" class="col-3 col-form-label">Title</label>
+    <div class="col-9">
+      <input id="node-title" class="form-control" type="text"
+             formControlName="title">
+    </div>
+  </div>
+  <!-- Description -->
+  <div class="form-group row px-3">
+    <label for="node-description" class="col-3 col-form-label">Description</label>
+    <div class="col-9">
+    <textarea id="node-description" class="form-control" rows="8"
+              formControlName="description"></textarea>
+    </div>
+  </div>
+  <!-- Parameters -->
+  <div formArrayName="parameters">
+    <div class="form-group row px-3" *ngFor="let _ of parameters.controls; let i=index" [formGroupName]="i">
+      <label class="col-3">parameter #{{ i+1 }}</label>
+      <div class="col-9">
+        <input title="param#{{ i }}" class="form-control" type="text" readonly
+               formControlName="parameter">
+      </div>
+    </div>
+  </div>
+</form>
+
+<hr>
+
+<!-- Add Parameter Input -->
+<form *ngIf="node" class="form-group row px-3" [formGroup]="paramGroup">
+
+  <label class="col-3">Add Parameter</label>
+  <div class="col-5">
+    <input class="form-control" title="parameter" #param>
+  </div>
+  <div class="col=4">
+    <button class="btn btn-outline-primary" type="submit"
+            (click)="addParameter(param.value); param.value=''; ">Add
+    </button>
+  </div>
+</form>

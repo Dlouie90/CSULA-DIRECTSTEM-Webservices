@@ -1,4 +1,4 @@
-export interface ParameterEntry {
+export class ParameterEntry {
     parameter: string ;
     id: number;
 }

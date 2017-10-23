@@ -25,6 +25,8 @@ import { BarChartComponent } from './projects/bar-chart/bar-chart.component';
 import { DemoAppModule } from './demo-app/demo-app.module';
 import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.module';
 import { UserService } from './shared/services/user.service';
+import { ShareModule } from './share.module';
+import { WebserviceModalModule } from './webservice-config-menu/webservice-modal.module';
 
 @NgModule({
     declarations: [
@@ -45,13 +47,15 @@ import { UserService } from './shared/services/user.service';
     ],
 
     imports: [
+        ShareModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
         NgbModule.forRoot(),
         DemoAppModule,
         AppRoutingModule,
-        SplitPanelLoginModule
+        SplitPanelLoginModule,
+        WebserviceModalModule,
     ],
 
     providers: [

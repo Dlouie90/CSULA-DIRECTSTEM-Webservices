@@ -1,18 +1,16 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Node } from '../../shared/models/node.model';
 import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
+import { IService } from '../../shared/models/service.interface';
 
 @Component({
     selector: 'app-webservice-inputs-wiring',
     templateUrl: './webservice-inputs-wiring.component.html'
 })
 export class WebserviceInputsWiringComponent implements OnChanges {
-    @Input() nodeOptions: Node[];
-    @Input() currentNode: Node;
-
+    @Input() serviceOptions: IService[] = [];
+    @Input() service: IService;
     parameterForm: FormGroup;
-
 
     constructor(private formBuilder: FormBuilder) { }
 
@@ -36,10 +34,9 @@ export class WebserviceInputsWiringComponent implements OnChanges {
     onSelect(entry: ParameterEntry): void {
         this.parameterForm
             .setControl(entry.parameter, new FormControl(entry.id));
-        this.currentNode.setIdToParam(entry);
     }
 
     get parameters(): string[] {
-        return this.currentNode.serviceParameters;
+        return this.service.parameters;
     }
 }
