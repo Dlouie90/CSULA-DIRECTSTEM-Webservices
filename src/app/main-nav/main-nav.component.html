@@ -8,7 +8,13 @@
     </li>
   </ul>
 
-  <div class="ml-auto float-right">
-    CSULA <img id="logo"[src]="calstateLogoShieldSrc">
+  <div class="ml-auto float-right" *ngIf="!currentUser">
+    <a href="#" (click)="onClick()">Log in or sign up</a>
   </div>
+
+  <div class="ml-auto float-right" *ngIf="currentUser">
+    <span>{{ currentUser.firstName }} {{ currentUser.lastName }} </span>
+    <a href="#" (click)="logout()">Log out</a>
+  </div>
+
 </nav>

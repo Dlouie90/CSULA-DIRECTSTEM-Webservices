@@ -23,6 +23,8 @@ import { VisualComponent } from './projects/visual/visual.component';
 import { CollapsibleTreeComponent } from './projects/collapsible-tree/collapsible-tree.component';
 import { BarChartComponent } from './projects/bar-chart/bar-chart.component';
 import { DemoAppModule } from './demo-app/demo-app.module';
+import { SplitPanelLoginComponent } from './split-panel-login/split-panel-login.component';
+import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.module';
 
 @NgModule({
     declarations: [
@@ -50,6 +52,7 @@ import { DemoAppModule } from './demo-app/demo-app.module';
         NgbModule.forRoot(),
         DemoAppModule,
         AppRoutingModule,
+        SplitPanelLoginModule
     ],
 
     providers: [

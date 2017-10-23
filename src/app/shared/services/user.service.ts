@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import {  User } from '../models/user.model';
+import { User } from '../models/user.model';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/from';
@@ -10,6 +10,8 @@ import { LoginUserResponse } from '../models/server-response/login-user-response
 @Injectable()
 export class UserService {
     baseUrl = 'http://localhost:8080/webservice/rest/users';
+    currentUser: User;
+
 
     constructor(private http: Http) { }
 
@@ -53,4 +55,12 @@ export class UserService {
             .map((res: Response) => res.json());
     }
 
+    setCurrentUser(user: User): void {
+        if (user == null) { return; }
+        this.currentUser = user;
+    }
+
+    logout(): void {
+        this.currentUser = null;
+    }
 }
