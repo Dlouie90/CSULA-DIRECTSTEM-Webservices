@@ -1,0 +1,24 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <h4 id="title">LOG IN</h4>
+    <!-- display form messages (fail, success, invalid.. etc)-->
+    <div *ngIf="message" class="p-3 mb-2 bg-primary text-white">
+      {{ message }}
+      <button class="close text-white" (click)="deleteMessage()">x</button>
+    </div>
+  </div>
+  <!-- email -->
+  <div class="form-group">
+    <input class="form-control" type="email" title="email" placeholder="email"
+           formControlName="email" [ngClass]="getValidationStyle('email')">
+  </div>
+  <!-- password -->
+  <div class="form-group">
+    <input class="form-control" type="password" title="password" placeholder="password"
+           formControlName="password" [ngClass]="getValidationStyle('password')">
+  </div>
+  <!-- Submit Button -->
+  <div class="form-group mt-5">
+    <button class="btn btn-primary float-right" type="submit">Log In</button>
+  </div>
+</form>

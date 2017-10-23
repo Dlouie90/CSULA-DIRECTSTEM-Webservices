@@ -1,0 +1,10 @@
+<div id="split-panel" class="container p-5 rounded">
+  <div class="row">
+    <div id="divider-right" class="col-6">
+      <app-registration-form (onRegister)="onRegister($event)"></app-registration-form>
+    </div>
+    <div class="col-6">
+      <app-login-form (onLogin)="onLogin($event)"></app-login-form>
+    </div>
+  </div>
+</div>

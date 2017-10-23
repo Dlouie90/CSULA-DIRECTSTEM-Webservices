@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DemoService } from './demo.service';
 import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
+import { SplitPanelLoginComponent } from '../split-panel-login/split-panel-login.component';
 
 
 interface DemoQueryParam {
@@ -29,7 +30,6 @@ export class DemoAppComponent implements OnInit {
     constructor(private http: Http,
                 private webservice: DemoService,
                 private route: ActivatedRoute,
-                private router: Router,
                 private modalService: NgbModal) {
 
         this.serviceArray = webservice.services;
@@ -46,16 +46,8 @@ export class DemoAppComponent implements OnInit {
             {name: 'Composition', queryParams: {index: 1}},
             {name: 'Service Menu', queryParams: {index: 2}},
             {name: 'User Database', queryParams: {index: 3}},
+            {name: 'Login Registration', queryParams: {index: 4}}
         ];
-    }
-
-    updateIndexTo(value: number): void {
-        this.index = value;
-        this.router.navigate(['demo'], {
-            queryParams: {
-                index: value
-            }
-        });
     }
 
     addService(): void {
@@ -95,11 +87,12 @@ export class DemoAppComponent implements OnInit {
         return this.waitingForResponse;
     }
 
-    selectService(service: any): void {
-        this.currentService = service;
-    }
-
     open(): void {
         this.modalService.open(WebserviceConfigMenuComponent, {size: 'lg'});
+    }
+
+    openSplitPanel(): void {
+        this.modalService
+            .open(SplitPanelLoginComponent, {size: 'lg'})
     }
 }

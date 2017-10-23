@@ -6,9 +6,8 @@ import { HttpModule } from '@angular/http';
 import { DemoService } from './demo.service';
 import { WebserviceModalModule } from '../webservice-config-menu/webservice-modal.module';
 import { WebserviceConfigMenuComponent } from '../webservice-config-menu/webservice-config-menu.component';
-import { UserService } from '../shared/services/user.service';
-import { UserDemoComponent } from './user-demo/user-demo.component';
 import { UserDemoModule } from './user-demo/user-demo.module';
+import { SplitPanelLoginModule } from '../split-panel-login/split-panel-login.module';
 
 @NgModule({
     declarations: [
@@ -20,6 +19,7 @@ import { UserDemoModule } from './user-demo/user-demo.module';
         WebserviceModalModule,
         DemoAppRoutingModule,
         UserDemoModule,
+        SplitPanelLoginModule,
     ],
     exports: [],
     providers: [

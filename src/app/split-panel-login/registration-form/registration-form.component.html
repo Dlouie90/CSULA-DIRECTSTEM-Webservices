@@ -1,0 +1,34 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <h4 id="title">create a new account</h4>
+    <!-- display form messages (fail, success, invalid.. etc)-->
+    <div *ngIf="message" class="p-3 mb-2 bg-primary text-white">
+      {{ message }}
+      <button class="close text-white" (click)="close()">x</button>
+    </div>
+  </div>
+  <!-- email -->
+  <div class="form-group">
+    <input class="form-control" type="email" title="email" placeholder="email"
+           formControlName="email" [ngClass]="getValidationStyle('email')">
+  </div>
+  <!-- password -->
+  <div class="form-group">
+    <input class="form-control" type="password" title="password" placeholder="password"
+           formControlName="password" [ngClass]="getValidationStyle('password')">
+  </div>
+  <!-- first name-->
+  <div class="form-group">
+    <input class="form-control" type="text" title="first-name" placeholder="first name"
+           formControlName="firstName" [ngClass]="getValidationStyle('firstName')">
+  </div>
+  <!-- last name -->
+  <div class="form-group">
+    <input class="form-control" type="text" title="last-name" placeholder="last name"
+           formControlName="lastName" [ngClass]="getValidationStyle('lastName')">
+  </div>
+  <!-- Submit Button -->
+  <div class="form-group mt-5">
+    <button class="btn btn-primary float-right" type="submit">Sign Up</button>
+  </div>
+</form>

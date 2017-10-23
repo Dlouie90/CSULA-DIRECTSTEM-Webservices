@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../../../shared/services/user.service';
+import { CreateUserResponse } from '../../../../shared/models/server-response/create-user-response.model';
 
 @Component({
     selector: 'app-create-user-form',
@@ -25,7 +26,7 @@ export class CreateUserFormComponent {
     createUser(): void {
         this.userService.createUser(this.newUserForm.value)
             .subscribe(
-                (res: Response) => this.onCreate.emit(res),
+                (res: CreateUserResponse) => this.onCreate.emit(res),
                 (err: any) => this.onCreate.emit(err),
                 () => this.newUserForm.reset());
     }

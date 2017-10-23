@@ -4,6 +4,8 @@ import {  User } from '../models/user.model';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/from';
+import { CreateUserResponse } from '../models/server-response/create-user-response.model';
+import { LoginUserResponse } from '../models/server-response/login-user-response';
 
 @Injectable()
 export class UserService {
@@ -24,7 +26,7 @@ export class UserService {
             .map((res: Response) => res.json());
     }
 
-    createUser(user: User): Observable<any> {
+    createUser(user: User): Observable<CreateUserResponse> {
         return this.http
             .post(this.baseUrl, user)
             .map((res: Response) => res.json());
@@ -44,7 +46,7 @@ export class UserService {
             .map((res: Response) => res.json());
     }
 
-    loginUser(info: { email: string, password: string }): Observable<any> {
+    loginUser(info: { email: string, password: string }): Observable<LoginUserResponse> {
         const url = `${ this.baseUrl }/login`;
         return this.http
             .post(url, info)
