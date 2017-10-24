@@ -10,7 +10,6 @@ import { CarouselComponent } from './home/carousel/carousel.component';
 import {
     HashLocationStrategy, LocationStrategy
 } from '@angular/common';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { DetailComponent } from './projects/detail/detail.component';
 import { NodeService } from './shared/services/node.service';
@@ -34,7 +33,6 @@ import { WebserviceModalModule } from './webservice-config-menu/webservice-modal
         MainNavComponent,
         HomeComponent,
         CarouselComponent,
-        DashboardComponent,
         ProjectsComponent,
         DetailComponent,
         EditorComponent,
