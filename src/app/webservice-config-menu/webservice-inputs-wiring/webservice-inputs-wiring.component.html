@@ -1,14 +1,16 @@
-<form [formGroup]="parameterForm">
+<div class="row">
+  <h4 class="col-2">Parameters</h4>
+  <h4 class="col-10">Arguments</h4>
+</div>
 
-  <div class="row">
-    <h4 class="col-2">Parameters</h4>
-    <h4 class="col-10">Arguments</h4>
+<div class="row">
+  <div class="col-5">
+    <div *ngFor="let param of parameters">
+      <app-webservice-row [parameter]="param" [node]="node" [currentService]="service">
+      </app-webservice-row>
+    </div>
   </div>
-
-  <div class="" *ngFor="let param of parameters">
-    <app-webservice-row [parameter]="param" [serviceOptions]="serviceOptions"
-                        [currentService]="service" (onSelect)="onSelect($event)">
-    </app-webservice-row>
+  <div class="col-7">
+    <app-webservice-card [service]="service"></app-webservice-card>
   </div>
-
-</form>
+</div>

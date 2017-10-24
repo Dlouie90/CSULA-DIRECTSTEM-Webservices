@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
 import { IService } from '../../shared/models/service.interface';
+import { ParameterEntry } from '../../shared/models/parameter-entry.model';
+import { Node } from '../../shared/models/node.model';
 
 @Component({
     selector: 'app-webservice-row',
@@ -8,34 +9,47 @@ import { IService } from '../../shared/models/service.interface';
     styleUrls: ['./webservice-row.component.css']
 })
 export class WebserviceRowComponent implements OnInit {
-    @Input() serviceOptions: IService[] = [];
+    @Input() node: Node;
     @Input() parameter: string;
     @Input() currentService: IService;
-    @Output() onSelect = new EventEmitter<ParameterEntry>();
+    selectedOption: ParameterEntry;
 
-    selectedService: IService;
     constructor() { }
 
     ngOnInit(): void {
-        this.updateSelectedService();
+        this.loadOptionPreset();
     }
 
-    updateSelectedService(): void {
-        const id = this.currentService.id;
-        this.selectedService = this.serviceOptions
-            .find(service => service.id === id);
+    loadOptionPreset(): void {
+        this.selectedOption = this.node
+            .parameterEntries
+            .find((value: ParameterEntry) =>
+                value.targetServiceParameter === this.parameter);
     }
 
-    isSelected(service: IService): boolean {
-        return this.currentService.id === service.id;
+    isSelected(param: string): boolean {
+        const entry = this.node
+            .parameterEntries
+            .find((value: ParameterEntry) =>
+                value.targetServiceParameter === this.parameter && value.parameter === param);
+        return entry != null;
     }
 
-    onSelectId(stringId: string): void {
-        const numberId = parseInt(stringId, 10);
-        this.selectedService = this.serviceOptions.find(service => {
-            return service.id === numberId;
-        });
-        this.onSelect.emit({parameter: this.parameter, id: numberId});
+    onSelectOption(param: string): void {
+        const entry: ParameterEntry = {
+            parameter: param,
+            targetServiceId: this.currentService.id,
+            targetServiceParameter: this.parameter
+        };
+
+        // remove  and replace any entries whose target's is this.parameter,
+        // with the latest one, (entry);
+        const newEntries = this.node
+            .parameterEntries
+            .filter((value: ParameterEntry) =>
+                value.targetServiceParameter !== this.parameter);
+        newEntries.push(entry);
+        this.node.parameterEntries = newEntries;
     }
 }
 

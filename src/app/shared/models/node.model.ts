@@ -1,14 +1,13 @@
 import { IService } from './service.interface';
-import { IParameterMap } from './parameter-map.interface';
-import { ParameterEntry } from './parameter-entry.inteface';
+import { ParameterEntry } from './parameter-entry.model';
 
 export class Node {
     nodeTitle: string;
     description: string;
     url: string;
     service: IService;
-
-    parameterMap: IParameterMap = {};
+    parameters: string[] = [];
+    parameterEntries: ParameterEntry[] = [];
     neighbors: Node[] = [];
     children: Node[] = [];
     inputs: Node[] = [];
@@ -27,15 +26,6 @@ export class Node {
                 public x: number,
                 public y: number) {}
 
-    createDefaultParameterMap(): void {
-        const obj = {};
-        if (this.service) {
-            for (const param of this.serviceParameters) {
-                obj[param] = -1;
-            }
-        }
-        this.parameterMap = obj;
-    }
 
     get title(): string {
         return this.nodeTitle ? this.nodeTitle : `ID-${ this.id }`;
@@ -59,28 +49,5 @@ export class Node {
 
     get serviceParameters(): string[] {
         return (this.service && this.service.parameters) || [];
-    }
-
-    getIdOfParam(param: string): number {
-        if (!this.parameterMap[param]) { return -1; }
-        return this.parameterMap[param];
-    }
-
-    setIdToParam(entry: ParameterEntry): void {
-        if (!this.parameterMap) {
-            this.parameterMap = {};
-        }
-
-        this.parameterMap[entry.parameter] = entry.id;
-    }
-
-    get parameterEntries(): ParameterEntry[] {
-        const array = [];
-        for (const key in this.parameterMap) {
-            if (this.parameterMap.hasOwnProperty(key)) {
-                array.push({parameter: key, id: this.parameterMap[key]})
-            }
-        }
-        return array;
     }
 }

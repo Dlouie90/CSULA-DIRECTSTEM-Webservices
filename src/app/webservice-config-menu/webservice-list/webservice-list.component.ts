@@ -8,7 +8,7 @@ import { IService } from '../../shared/models/service.interface';
     selector: 'app-webservice-list',
     templateUrl: './webservice-list.component.html',
 })
-export class WebserviceListComponent implements OnChanges {
+export class WebserviceListComponent implements OnChanges, OnInit {
     @Input() serviceOptions: IService[];
     @Input() currentService: IService;
     @Output() onSelect = new EventEmitter<IService>();
@@ -16,6 +16,8 @@ export class WebserviceListComponent implements OnChanges {
     selectedService: IService;
 
     constructor() {}
+
+    ngOnInit(): void { }
 
     ngOnChanges(): void {
         this.selectedService = this.currentService;

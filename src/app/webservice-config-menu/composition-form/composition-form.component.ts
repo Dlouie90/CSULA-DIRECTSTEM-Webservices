@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Node } from '../../shared/models/node.model';
-import { ParameterEntry } from '../../shared/models/parameter-entry.inteface';
 
 @Component({
     selector: 'app-composition-form',
@@ -11,7 +10,6 @@ export class CompositionFormComponent implements OnChanges {
     @Input() node: Node;
     nodeForm: FormGroup;
     paramGroup: FormGroup;
-
 
     constructor(private formBuilder: FormBuilder) {}
 
@@ -33,8 +31,9 @@ export class CompositionFormComponent implements OnChanges {
     }
 
     private createParameterFormArray(node: Node): FormArray {
-        const paramControlArray = node.parameterEntries
-                .map((value: ParameterEntry) => this.formBuilder.group(value));
+        const paramControlArray = node
+            .parameters
+            .map((param: string) => this.formBuilder.control(param));
         return this.formBuilder.array(paramControlArray);
     }
 
@@ -43,11 +42,12 @@ export class CompositionFormComponent implements OnChanges {
     }
 
     addParameter(param: string): void {
-        const defaultParameterEntry: ParameterEntry = {
-            parameter: param,
-            id: -1
-        };
-        this.parameters.push(this.formBuilder.group(defaultParameterEntry));
-        this.node.setIdToParam(defaultParameterEntry);
+        this.parameters.push(this.formBuilder.control(param));
+        this.node.parameters.push(param);
+    }
+
+    saveText(): void {
+        this.node.nodeTitle = this.nodeForm.get('title').value;
+        this.node.description = this.nodeForm.get('description').value;
     }
 }

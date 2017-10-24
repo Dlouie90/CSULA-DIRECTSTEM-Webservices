@@ -27,10 +27,10 @@
       </ng-template>
     </ngb-tab>
     <!-- Inputs Wiring Tab-->
-    <ngb-tab id="tab-3" title="Configure Inputs" [disabled]="!selectedService">
+    <ngb-tab id="tab-3" title="Configure Service Inputs" [disabled]="!selectedService">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservice-inputs-wiring [service]="selectedService" [serviceOptions]="serviceInputs">
+          <app-webservice-inputs-wiring [service]="selectedService" [node]="node">
           </app-webservice-inputs-wiring>
         </div>
       </ng-template>

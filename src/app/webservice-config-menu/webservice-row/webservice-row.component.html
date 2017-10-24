@@ -1,18 +1,14 @@
-<section class="row">
+<div class="row">
   <label class="form-check-label col-2">{{ parameter }}</label>
 
-  <div class="col-3">
+  <div class="col-10">
     <select class="form-control" title="select service by title"
-            (change)="onSelectId($event.target.value)">
-      <option value="-1"></option>
-      <option *ngFor="let option of serviceOptions"
-              [value]="option.id" [selected]="isSelected(option)">
-        {{ option.title }}
+            (change)="onSelectOption($event.target.value)">
+      <option value=""></option>
+      <option *ngFor="let param of node.parameters"
+              [value]="param" [selected]="isSelected(param)">
+        {{ param }}
       </option>
     </select>
   </div>
-
-  <div class="col-7">
-    <app-webservice-card [service]="selectedService"></app-webservice-card>
-  </div>
-</section>
+</div>
