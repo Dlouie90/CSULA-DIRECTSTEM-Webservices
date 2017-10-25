@@ -8,7 +8,6 @@ import { Node } from '../../shared/models/node.model';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { View } from '../../shared/view.model';
 import { WebserviceConfigMenuComponent } from '../../webservice-config-menu/webservice-config-menu.component';
-import { IService } from '../../shared/models/service.interface';
 
 @Component({
     selector: 'app-editor',
@@ -16,15 +15,12 @@ import { IService } from '../../shared/models/service.interface';
     styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-    @Input() node: Node;
-
+    node: Node;
     rightPanelStyle: Object = {};
     mainSvg;
     graph: Graph;
     closeResult: string;
-
     views: View[];
-
     radioOptions: string;
 
     // Mouse Position, used to insert new nodes onto the coordinate.
@@ -43,9 +39,40 @@ export class EditorComponent implements OnInit {
     }
 
     /* *********************************************************************** */
-    /* *********************************************************************** */
+    /**
+     * Retrieve the node that correspond with the route param id value. If
+     * it is valid load up the graph of the node, otherwise navigate back to
+     * the project page.
+     */
+    initPage(): void {
+        let id;  // Route Param.
+        this.route.params
+            .switchMap((params: Params) => {
+                id = +params['id'];
+                return this.nodeService.getNode(id);
+            })
+            .subscribe((node: Node) => {
+                if (!node) {  // Route back to the project page if id doesn't exist.
+                    console.error(`There are no nodes with the id: ${id}!`);
+                    console.error('Returning to the project page');
+                    this.router.navigate(['../../']);
+                    return;
+                }
+                this.node = node;
+                this.initGraph(node);
+            });
+    }
 
-    /* *********************************************************************** */
+    /**
+     * Initialize the graph view with the corresponding node (single).
+     * Thus parentNode will be NULL and NO edge will be shown.
+     */
+    initGraph(node): void {
+        this.mainSvg = d3.select('div#d3-editor').append('svg');
+        this.graph = new Graph(this.mainSvg, [node], null);
+        this.views.push(new View([node], null));
+        this.graph.updateGraph();
+    }
 
     /** Create a composite node of the clicked nodes */
     compositeClickNodes(): void {
@@ -127,7 +154,6 @@ export class EditorComponent implements OnInit {
 
     drawCurrentView() {
         console.log('DRAW CURRENT VIEW');
-
         const recentView = _.last(this.views);
 
         /* Reset the svg and load up the previous state */
@@ -145,7 +171,6 @@ export class EditorComponent implements OnInit {
         this.closeContextMenu();
     }
 
-
     getDismissReason(reason: any): string {
         if (reason === ModalDismissReasons.ESC) {
             return 'by pressing ESC';
@@ -156,40 +181,6 @@ export class EditorComponent implements OnInit {
         }
     }
 
-    /**
-     * Initialize the graph view with the corresponding node (single).
-     * Thus parentNode will be NULL and NO edge will be shown.
-     */
-    initGraph(node): void {
-        this.mainSvg = d3.select('div#d3-editor').append('svg');
-        this.graph = new Graph(this.mainSvg, [node], null);
-        this.views.push(this.graph.currentView);
-        this.graph.updateGraph();
-    }
-
-    /**
-     * Retrieve the node that correspond with the route param id value. If
-     * it is valid load up the graph of the node, otherwise navigate back to
-     * the project page.
-     */
-    initPage(): void {
-        let id;  // Route Param.
-        this.route.params
-            .switchMap((params: Params) => {
-                id = +params['id'];
-                return this.nodeService.getNode(id);
-            })
-            .subscribe((node: Node) => {
-                if (!node) {  // Route back to the project page if id doesn't exist.
-                    console.error(`There are no nodes with the id: ${id}!`);
-                    console.error('Returning to the project page');
-                    this.router.navigate(['../../']);
-                    return;
-                }
-                this.initGraph(node);
-                return this.node = node;
-            });
-    }
 
     /** Insert a node onto the graph and updateToService nodeService.
      * Also add the node into its parent.children array. */
@@ -230,23 +221,23 @@ export class EditorComponent implements OnInit {
     openConfigModal() {
         const modalRef = this.modalService
             .open(WebserviceConfigMenuComponent, {size: 'lg'});
-        const inputs = this.getInputsToNode(this.selectedNode);
+        const inputNodes = this.getInputsToNode(this.selectedNode);
         modalRef.componentInstance.node = this.selectedNode;
-        modalRef.componentInstance.serviceInputs = inputs;
-
+        modalRef.componentInstance.inputNodes = inputNodes;
         modalRef.result
-            .then((result: any) => {
-                console.log('Closed with: ', result);
-            }, (reason: any) => {
-                console.log('Dismissed with', this.getDismissReason(reason));
-            });
+            .then(
+                (result: any) => this.drawCurrentView(),
+                (reason: any) => this.drawCurrentView()
+            );
     }
 
-    getInputsToNode(node: Node): IService[] {
-        const edges = this.graph.edges;
-        return edges
+    /* Return all the nodes that has an edge to the input node. ignores nodes
+    * that doesn't have a "service" */
+    getInputsToNode(node: Node): Node[] {
+        return this.graph
+            .edges
             .filter(edge => (edge.target.id === node.id) && edge.source.service)
-            .map(edge => edge.source.service);
+            .map(edge => edge.source);
     }
 
     openNoCompositionModal(content) {

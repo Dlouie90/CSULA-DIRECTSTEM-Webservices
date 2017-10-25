@@ -20,7 +20,6 @@
     <label for="node-title" class="col-3 col-form-label">Title</label>
     <div class="col-9">
       <input id="node-title" class="form-control" type="text"
-             (keydown)="saveText()"
              formControlName="title">
     </div>
   </div>
@@ -29,18 +28,23 @@
     <label for="node-description" class="col-3 col-form-label">Description</label>
     <div class="col-9">
     <textarea id="node-description" class="form-control" rows="8"
-              (keydown)="saveText()"
               formControlName="description"></textarea>
     </div>
   </div>
   <!-- Parameters -->
   <div formArrayName="parameters">
-    <div class="form-group row px-3" *ngFor="let _ of parameters.controls; let i=index" >
+    <div class="form-group row px-3" *ngFor="let _ of parameters.controls; let i=index">
       <label class="col-3">parameter #{{ i+1 }}</label>
       <div class="col-9">
         <input title="param#{{ i }}" class="form-control" type="text" readonly
                [formControlName]="i">
       </div>
+    </div>
+  </div>
+  <!-- TODO: Temporarily, should find a more elegant way to save fields (title, description) -->
+  <div class="from-group row px-3">
+    <div class="ml-auto col-9">
+      <button class="btn btn-outline-success" (click)="updateNode()">Update Text Fields</button>
     </div>
   </div>
 </form>

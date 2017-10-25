@@ -11,6 +11,8 @@ import { WebserviceConfigMenuComponent } from './webservice-config-menu.componen
 import { NodeService } from '../shared/services/node.service';
 import { CompositionFormComponent } from './composition-form/composition-form.component';
 import { ShareModule } from '../share.module';
+import { ConfigureCompositionComponent } from './configure-composition/configure-composition.component';
+import { ConfigureCompositionRowComponent } from './configure-composition/configure-composition-row/configure-composition-row.component';
 
 @NgModule({
     declarations: [
@@ -21,6 +23,8 @@ import { ShareModule } from '../share.module';
         WebserviceListComponent,
         WebserviceRowComponent,
         CompositionFormComponent,
+        ConfigureCompositionComponent,
+        ConfigureCompositionRowComponent
     ],
     imports: [
         ShareModule,

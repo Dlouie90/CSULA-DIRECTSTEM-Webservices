@@ -2,7 +2,7 @@ import { IService } from './service.interface';
 import { ParameterEntry } from './parameter-entry.model';
 
 export class Node {
-    nodeTitle: string;
+    title: string;
     description: string;
     url: string;
     service: IService;
@@ -12,6 +12,8 @@ export class Node {
     children: Node[] = [];
     inputs: Node[] = [];
     outputs: Node[] = [];
+    inputEntries: InputEntry[] = [];
+
 
     /** Return true if the node is neither a input or output node. */
     static isRegular(node) {
@@ -24,30 +26,14 @@ export class Node {
 
     constructor(public id: number,
                 public x: number,
-                public y: number) {}
-
-
-    get title(): string {
-        return this.nodeTitle ? this.nodeTitle : `ID-${ this.id }`;
+                public y: number) {
+        this.title = `NODE_${ id }`;
     }
+}
 
-    get serviceId(): number {
-        return this.service.id;
-    }
-
-    get serviceTitle(): string {
-        return this.service.title;
-    }
-
-    get serviceDescription(): string {
-        return this.service.description;
-    }
-
-    get serviceUrl(): string {
-        return this.service.url;
-    }
-
-    get serviceParameters(): string[] {
-        return (this.service && this.service.parameters) || [];
-    }
+/** Map a parameter to a "Node". This mean that the output, result, of the
+ * node should be feed to the "parameter" */
+export class InputEntry {
+    fromNode: Node;
+    toParameter: string;
 }
