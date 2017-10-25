@@ -13,7 +13,7 @@ export class WebserviceCardComponent {
     constructor() {}
 
     get title(): string {
-        return (this.service && this.service.title) || '';
+        return (this.service && this.service.title) || 'NO TITLE';
     }
 
     get id(): number {
@@ -21,11 +21,11 @@ export class WebserviceCardComponent {
     }
 
     get description(): string {
-        return (this.service && this.service.description) || '';
+        return (this.service && this.service.description) || 'NO DESCRIPTION';
     }
 
     get url(): string {
-        return (this.service && this.service.url) || '';
+        return (this.service && this.service.url) || 'NO URL';
     }
 
     get parameters(): string {

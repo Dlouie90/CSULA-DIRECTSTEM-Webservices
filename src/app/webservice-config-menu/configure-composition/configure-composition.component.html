@@ -1,0 +1,8 @@
+<div *ngFor="let param of node.parameters">
+  <app-configure-row [inputNodes]="inputNodes" [node]="node"
+                     [parameter]="param"></app-configure-row>
+</div>
+<div class="col-7" *ngIf="selectedNode">
+  <app-webservice-card [service]="selectedNode"
+                       [selected]="false"></app-webservice-card>
+</div>

@@ -12,6 +12,7 @@ export class Node {
     children: Node[] = [];
     inputs: Node[] = [];
     outputs: Node[] = [];
+    inputEntries: InputEntry[] = [];
 
     /** Return true if the node is neither a input or output node. */
     static isRegular(node) {
@@ -31,23 +32,14 @@ export class Node {
         return this.nodeTitle ? this.nodeTitle : `ID-${ this.id }`;
     }
 
-    get serviceId(): number {
-        return this.service.id;
+    set title(newTitle: string) {
+        this.nodeTitle = newTitle;
     }
+}
 
-    get serviceTitle(): string {
-        return this.service.title;
-    }
-
-    get serviceDescription(): string {
-        return this.service.description;
-    }
-
-    get serviceUrl(): string {
-        return this.service.url;
-    }
-
-    get serviceParameters(): string[] {
-        return (this.service && this.service.parameters) || [];
-    }
+/** Map a parameter to a "Node". This mean that the output, result, of the
+ * node should be feed to the "parameter" */
+export class InputEntry {
+    fromNode: Node;
+    toParameter: string;
 }

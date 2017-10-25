@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-6">
+    <div class="row">
+      <label class="form-check-label col-5">{{ parameter }}</label>
+      <div class="col-7">
+        <select class="form-control" title="configure service parameters"
+                (change)="onChange($event.target.value)">
+          <option value=""></option>
+          <option *ngFor="let entry of inputNodes" [value]="entry.id"
+                  [selected]="isSelected(entry)">
+            {{ entry.title }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6" *ngIf="selectedInputEntry">
+    <app-webservice-card [selected]="false" [service]="selectedInputEntry.fromNode"></app-webservice-card>
+  </div>
+</div>
+

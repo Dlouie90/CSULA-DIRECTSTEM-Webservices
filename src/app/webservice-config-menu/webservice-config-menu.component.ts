@@ -10,6 +10,7 @@ import { Node } from '../shared/models/node.model';
 })
 export class WebserviceConfigMenuComponent implements OnInit, OnChanges {
     @Input() node: Node;
+    @Input() inputNodes: Node[] = [];
     services: IService[];
     selectedService: IService;
 
