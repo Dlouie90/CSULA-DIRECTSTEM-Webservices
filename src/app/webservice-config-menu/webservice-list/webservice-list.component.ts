@@ -2,6 +2,7 @@ import {
     Component, EventEmitter, Input, OnChanges, OnInit, Output
 } from '@angular/core';
 import { IService } from '../../shared/models/service.interface';
+import { NodeService } from '../../shared/services/node.service';
 
 
 @Component({

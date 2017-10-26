@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IService } from '../shared/models/service.interface';
 import { NodeService } from '../shared/services/node.service';
@@ -8,7 +8,7 @@ import { Node } from '../shared/models/node.model';
     selector: 'app-webservice-menu',
     templateUrl: './webservice-config-menu.component.html',
 })
-export class WebserviceConfigMenuComponent implements OnInit, OnChanges {
+export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestroy {
     @Input() node: Node;
     @Input() inputNodes: Node[] = [];
     services: IService[];
@@ -25,6 +25,10 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges {
 
     ngOnChanges(): void {
         this.selectedService = this.node.service;
+    }
+
+    ngOnDestroy(): void {
+        this.nodeService.updateNodeToService(this.node);
     }
 
     private getServices(): void {

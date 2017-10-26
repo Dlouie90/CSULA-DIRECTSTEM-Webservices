@@ -58,8 +58,6 @@ export class EditorComponent implements OnInit {
                     this.router.navigate(['../../']);
                     return;
                 }
-
-                console.log('root node:', node);
                 this.node = node;
                 this.initGraph(node);
             });
@@ -156,7 +154,6 @@ export class EditorComponent implements OnInit {
 
     drawCurrentView() {
         console.log('DRAW CURRENT VIEW');
-
         const recentView = _.last(this.views);
 
         /* Reset the svg and load up the previous state */
@@ -227,7 +224,6 @@ export class EditorComponent implements OnInit {
         const inputNodes = this.getInputsToNode(this.selectedNode);
         modalRef.componentInstance.node = this.selectedNode;
         modalRef.componentInstance.inputNodes = inputNodes;
-
         modalRef.result
             .then(
                 (result: any) => this.drawCurrentView(),

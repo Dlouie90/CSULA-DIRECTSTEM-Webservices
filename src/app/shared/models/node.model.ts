@@ -2,7 +2,7 @@ import { IService } from './service.interface';
 import { ParameterEntry } from './parameter-entry.model';
 
 export class Node {
-    nodeTitle: string;
+    title: string;
     description: string;
     url: string;
     service: IService;
@@ -25,15 +25,8 @@ export class Node {
 
     constructor(public id: number,
                 public x: number,
-                public y: number) {}
-
-
-    get title(): string {
-        return this.nodeTitle ? this.nodeTitle : `ID-${ this.id }`;
-    }
-
-    set title(newTitle: string) {
-        this.nodeTitle = newTitle;
+                public y: number) {
+        this.title = `NODE_${ id }`;
     }
 }
 
