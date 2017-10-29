@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 import {Node} from './models/node.model';
 import {View} from './view.model';
-import {NodeUtility} from './node-utility.model';
 
 const final = {
   /* --------------- NODE CONSTANTS --------------- */
@@ -588,7 +587,7 @@ export class Graph {
     newGs.append('text')
         .attr('text-anchor', 'middle')
         .text(function (d) {
-            return NodeUtility.title(d);
+            return Node.nodeTitle(d);
         });
     newGs.append('text')
         .classed('children', true)

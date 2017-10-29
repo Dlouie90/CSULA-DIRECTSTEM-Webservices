@@ -23,6 +23,10 @@ export class Node {
         return new Node(id, 300, 100);
     }
 
+    static nodeTitle(node: Node): string {
+        return node.title || `NODE-${ node.id }`
+    }
+
     constructor(public id: number,
                 public x: number,
                 public y: number) {

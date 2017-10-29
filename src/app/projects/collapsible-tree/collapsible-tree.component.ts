@@ -1,6 +1,5 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import * as d3 from 'd3';
-import {NodeUtility} from '../../shared/node-utility.model';
 import {Node} from '../../shared/models/node.model';
 
 /* based on https://bl.ocks.org/mbostock/4339083 */
@@ -102,7 +101,7 @@ export class CollapsibleTreeComponent implements OnInit {
           .attr('dy', '.35em')
           .attr('class', 'tree-text')
           .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
-          .text(d => NodeUtility.title(d));
+          .text(d => Node.nodeTitle(d));
 
       // Transition nodes to their new position.
       const nodeUpdate = node.transition()
@@ -185,7 +184,7 @@ export class CollapsibleTreeComponent implements OnInit {
 <dl>
 <div class="row">
 <dt class="col-sm-5">Title:</dt>
-<dd class="col-sm-7">${NodeUtility.title(d)}</dd>
+<dd class="col-sm-7">${Node.nodeTitle(d)}</dd>
 </div>
 
 <div class="row">

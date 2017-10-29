@@ -1,7 +1,6 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Node} from '../../shared/models/node.model';
 import * as d3 from 'd3';
-import {NodeUtility} from '../../shared/node-utility.model';
 import {Router} from '@angular/router';
 
 @Component({
@@ -108,7 +107,7 @@ export class VisualComponent implements OnInit {
 <dl>
 <div class="row">
 <dt class="col-sm-5">Title:</dt>
-<dd class="col-sm-7">${NodeUtility.title(d)}</dd>
+<dd class="col-sm-7">${Node.nodeTitle(d)}</dd>
 </div>
 
 <div class="row">
