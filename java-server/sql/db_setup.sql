@@ -26,7 +26,7 @@ VALUES ('Ervin', 'Howell', 'ervin', 'ervin@howell.com');
 
 
 CREATE TABLE nodes (
-	id int NOT NULL,
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	description varchar(255),
 	composition boolean,
 	service int,
@@ -34,7 +34,7 @@ CREATE TABLE nodes (
 	outp varchar(255)
 );
 CREATE TABLE services (
-	id int NOT NULL,
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	url varchar(255),
 	title varchar(255),
 	description varchar(255),
