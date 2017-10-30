@@ -53,4 +53,8 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
     onClose(reason: string): void {
         this.activeModal.close(reason);
     }
+
+    get isEmptyInputs(): boolean {
+        return this.inputNodes.length === 0;
+    }
 }

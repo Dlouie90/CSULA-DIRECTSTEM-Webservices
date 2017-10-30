@@ -28,7 +28,7 @@
       </ng-template>
     </ngb-tab>
     <!-- Composition Parameter Configure TAB-->
-    <ngb-tab id="tab-3" title="Configure Composition">
+    <ngb-tab id="tab-3" title="Configure Composition" [disabled]="isEmptyInputs">
       <ng-template ngbTabContent>
         <div class="p-3">
           <app-configure-composition [inputNodes]="inputNodes"

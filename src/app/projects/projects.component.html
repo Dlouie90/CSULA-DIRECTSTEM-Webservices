@@ -8,24 +8,28 @@
   <table class="table table-hover table-bordered">
     <thead>
     <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Parameters</th>
-      <th>Edit</th>
-      <th>Graph</th>
+      <th class="text-center">ID</th>
+      <th class="text-center">Title</th>
+      <th class="text-center">Parameters</th>
+      <th class="text-center">Edit</th>
+      <th class="text-center">Graph</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let node of nodes">
-      <td>{{ node.id }}</td>
-      <td>{{ node.title }}</td>
-      <td>{{ node.parameters }}</td>
-      <td>
+      <td class="text-center">{{ node.id }}</td>
+      <td class="text-center">{{ node.title }}</td>
+      <td class="text-center">{{ node.parameters }}</td>
+      <td class="text-center">
         <button class="btn btn-outline-info" (click)="navigateToDetail(node.id)">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </button>
       </td>
-      <td>xx</td>
+      <td class="text-center">
+        <button class="btn btn-outline-info" (click)="navigateToEditor(node.id)">
+          <i class="fa fa-picture-o" aria-hidden="true"></i>
+        </button>
+      </td>
     </tr>
     </tbody>
   </table>

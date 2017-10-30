@@ -40,4 +40,11 @@ export class ProjectsComponent implements OnInit {
             .then(_ => console.log('navigate was successful'))
             .catch(_ => console.log('navigate was not successful'));
     }
+
+    navigateToEditor(id: number): void {
+        this.router
+            .navigate(['projects', id, 'editor'])
+            .then(_ => console.log('navigating to editor\'s page'))
+            .catch(_ => console.log('can\'t navigate to editor\'s page'));
+    }
 }
