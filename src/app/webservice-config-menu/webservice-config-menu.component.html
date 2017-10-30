@@ -1,4 +1,4 @@
-<div class="modal-body">
+<div class="container modal-body">
   {{ inputNodes.length }}
   <ngb-tabset>
     <!-- Profile Tab-->
@@ -46,9 +46,9 @@
       </ng-template>
     </ngb-tab>
   </ngb-tabset>
-</div>
-<!-- Close Buttons-->
-<div class="modal-footer">
-  <button class="btn btn-success" (click)="onClose('save')">Save</button>
-  <button class="btn btn-danger" (click)="onClose('cancel')">Cancel</button>
+
+  <!-- Modal Close Buttons-->
+  <div class="modal-footer">
+    <button class="btn btn-success" (click)="onClose('close')">Close</button>
+  </div>
 </div>

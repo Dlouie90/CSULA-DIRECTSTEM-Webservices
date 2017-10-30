@@ -9,12 +9,13 @@ import * as _ from 'lodash';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/find';
 import 'rxjs/add/observable/from';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class NodeService {
     private baseUrl = 'http://localhost:8080/webservice/rest';
     private nodes: Node[] = [];
-
+    titleChangeSubject = new Subject<Node>();
 
     static sortServicesById(services: IService[]): IService[] {
         return _.sortBy(services, ['id']);
@@ -136,7 +137,6 @@ export class NodeService {
             this.removeNodeFromArray(node, n.children);
         });
     }
-
 
     private removeNodeFromArray(node: Node, array: Array<Node>): void {
         const index = array.findIndex((n: Node) => n.id === node.id);

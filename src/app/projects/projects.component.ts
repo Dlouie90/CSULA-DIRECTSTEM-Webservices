@@ -31,8 +31,12 @@ export class ProjectsComponent implements OnInit {
 
     createNewProject(): void {
         console.log('created new project');
-        const node = this.nodeService.createNew();
-        this.router.navigate(['projects', 'detail', node.id])
+        this.nodeService.createNew();
+    }
+
+    navigateToDetail(id: number): void {
+        this.router
+            .navigate(['projects', id, 'detail'])
             .then(_ => console.log('navigate was successful'))
             .catch(_ => console.log('navigate was not successful'));
     }

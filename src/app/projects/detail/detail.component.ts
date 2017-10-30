@@ -39,4 +39,8 @@ export class DetailComponent implements OnInit {
             this.router.navigate(['/projects', this.node.id, 'editor']);
         }
     }
+
+    goBack(): void {
+        this.router.navigate(['/projects']);
+    }
 }

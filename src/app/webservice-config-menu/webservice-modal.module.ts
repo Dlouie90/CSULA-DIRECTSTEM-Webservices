@@ -33,6 +33,7 @@ import { ConfigureCompositionRowComponent } from './configure-composition/config
         NgbModule.forRoot(),
     ],
     exports: [
+        CompositionFormComponent,
         WebserviceConfigMenuComponent,
     ],
     providers: [

@@ -4,3 +4,9 @@
 @import url(assets/css/graph.css);
 /* Font Awesome CSS ICON library: http://fontawesome.io/ */
 @import url(vendor/font-awesome-4.7.0/css/font-awesome.css);
+
+label {
+    font-family: 'monospace', 'Times New Roman';
+    font-weight: bolder;
+    text-transform: uppercase;
+}

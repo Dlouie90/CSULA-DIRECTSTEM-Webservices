@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Node } from '../../shared/models/node.model';
 import { NodeService } from '../../shared/services/node.service';
@@ -7,7 +7,7 @@ import { NodeService } from '../../shared/services/node.service';
     selector: 'app-composition-form',
     templateUrl: './composition-form.component.html'
 })
-export class CompositionFormComponent implements OnChanges {
+export class CompositionFormComponent implements OnChanges, OnDestroy {
     @Input() node: Node;
     nodeForm: FormGroup;
     paramGroup: FormGroup;
@@ -20,6 +20,10 @@ export class CompositionFormComponent implements OnChanges {
 
         this.nodeForm = this.createFormGroup(this.node);
         this.paramGroup = this.formBuilder.group({});
+    }
+
+    ngOnDestroy(): void {
+        this.saveChange();
     }
 
     private createFormGroup(node: Node): FormGroup {
@@ -48,9 +52,7 @@ export class CompositionFormComponent implements OnChanges {
         this.node.parameters.push(param);
     }
 
-    /* Save node (title, description).
-    * TODO: later should be used to saved the other fields (ex: parameters) */
-    updateNode(): void {
+    saveChange(): void {
         this.node.title = this.nodeForm.get('title').value;
         this.node.description = this.nodeForm.get('description').value;
         this.nodeService.updateNodeToService(this.node);

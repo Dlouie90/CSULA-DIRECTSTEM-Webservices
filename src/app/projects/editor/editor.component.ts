@@ -165,7 +165,6 @@ export class EditorComponent implements OnInit {
 
     edit(): void {
         if (this.graph.state.selectedNode) {
-            // this.openQuickEditModal(content);
             this.openConfigModal();
         }
         this.closeContextMenu();
@@ -226,8 +225,14 @@ export class EditorComponent implements OnInit {
         modalRef.componentInstance.inputNodes = inputNodes;
         modalRef.result
             .then(
-                (result: any) => this.drawCurrentView(),
-                (reason: any) => this.drawCurrentView()
+                (result: any) => {
+                    this.syncNode(this.selectedNode);
+                    this.drawCurrentView()
+                },
+                (reason: any) => {
+                    this.syncNode(this.selectedNode);
+                    this.drawCurrentView();
+                }
             );
     }
 
@@ -238,6 +243,26 @@ export class EditorComponent implements OnInit {
             .edges
             .filter(edge => (edge.target.id === node.id) && edge.source.service)
             .map(edge => edge.source);
+    }
+
+    /* Ensure that the parent.children (nodes) and view.nodes are in sync.
+     * they could be out of sync if the user update the title/description */
+    syncNode(node: Node): void {
+        this.syncParentChild(node);
+        this.syncViewNode(node);
+    }
+
+    syncParentChild(node: Node): void {
+        const childToUpdate = this.graph.parentNode.children
+            .find((n: Node) => n.id === node.id);
+        Object.assign(childToUpdate, node);
+    }
+
+    syncViewNode(node: Node): void {
+        const viewNode = this.lastView
+            .nodes
+            .find((n: Node) => n.id === node.id);
+        Object.assign(viewNode, node);
     }
 
     openNoCompositionModal(content) {

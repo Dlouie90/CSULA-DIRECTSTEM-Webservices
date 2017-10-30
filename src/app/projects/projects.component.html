@@ -1,20 +1,32 @@
-<div class="container row mx-3">
-  <!--col-2-->
-  <div class="col-3 text-center">
+<div class="container">
+  <div>
     <button class="btn btn-success mb-3" type="button" (click)="createNewProject()">
       <i class="fa fa-plus-square-o" aria-hidden="true"></i> Create New Project
     </button>
-    <ul class="list-group">
-      <li class="list-group-item"
-          *ngFor="let node of nodes"
-          [routerLink]="['detail', node.id]" routerLinkActive="active">
-        {{ node.title }}
-      </li>
-    </ul>
-  </div>
-  <!--col-10-->
-  <div class="col-9">
-    <router-outlet></router-outlet>
   </div>
 
+  <table class="table table-hover table-bordered">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Parameters</th>
+      <th>Edit</th>
+      <th>Graph</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let node of nodes">
+      <td>{{ node.id }}</td>
+      <td>{{ node.title }}</td>
+      <td>{{ node.parameters }}</td>
+      <td>
+        <button class="btn btn-outline-info" (click)="navigateToDetail(node.id)">
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </button>
+      </td>
+      <td>xx</td>
+    </tr>
+    </tbody>
+  </table>
 </div>

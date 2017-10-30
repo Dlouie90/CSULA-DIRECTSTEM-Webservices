@@ -1,12 +1,12 @@
 <!-- Enable form editing checkbox -->
-<div class="form-group row">
-  <div class="ml-auto col-9">
-    <div class="form-check form-check-inline">
+<div class="container">
+  <div class="row">
+    <div class="ml-auto col-7 mb-3">
+      <button class="btn btn-outline-secondary" (click)="goBack()">Back</button>
       <button class="btn btn-outline-primary" (click)="gotoEditor(false)">
         Graph Editor
       </button>
     </div>
   </div>
+  <app-composition-form [node]="node"></app-composition-form>
 </div>
-
-<app-webservice-menu [node]="node"></app-webservice-menu>
