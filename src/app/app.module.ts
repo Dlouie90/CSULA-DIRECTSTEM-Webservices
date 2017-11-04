@@ -15,7 +15,6 @@ import { DetailComponent } from './projects/detail/detail.component';
 import { NodeService } from './shared/services/node.service';
 import { EditorComponent } from './projects/editor/editor.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { QuickEditComponent } from './projects/editor/quick-edit/quick-edit.component';
 import { BreadcrumbComponent } from './projects/editor/breadcrumb/breadcrumb.component';
 import { DebugComponent } from './debug/debug.component';
 import { VisualComponent } from './projects/visual/visual.component';
@@ -36,7 +35,6 @@ import { WebserviceModalModule } from './webservice-config-menu/webservice-modal
         ProjectsComponent,
         DetailComponent,
         EditorComponent,
-        QuickEditComponent,
         BreadcrumbComponent,
         DebugComponent,
         VisualComponent,

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { UserService } from '../../../../shared/services/user.service';
-import { User } from '../../../../shared/models/user.model';
+import { GetUserByIdResponse } from '../../../../shared/models/server-response/get-user-by-id-response';
 
 @Component({
     selector: 'app-user-by-id-form',
@@ -15,9 +15,14 @@ export class UserByIdFormComponent {
     getUserById(id: string): void {
         const idNumber = parseInt(id, 10);
         this.userService.getUserById(idNumber)
-            .subscribe((user: User) => {
-                console.log('user:', user);
-                this.onGetUser.emit(user);
+            .subscribe((res: GetUserByIdResponse) => {
+                if (res.success) {
+                    const user = res.user;
+                    console.log('user:', user);
+                    this.onGetUser.emit(user);
+                } else {
+                    console.log(`Get user by id ${ id } failed.`);
+                }
             });
     }
 }

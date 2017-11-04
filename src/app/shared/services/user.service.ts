@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/from';
 import { CreateUserResponse } from '../models/server-response/create-user-response.model';
 import { LoginUserResponse } from '../models/server-response/login-user-response';
+import { GetUserByIdResponse } from '../models/server-response/get-user-by-id-response';
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,9 @@ export class UserService {
     currentUser: User;
 
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+        this.updateCurrentUserWithSessionStorage()
+    }
 
     getUsers(): Observable<any> {
         return this.http
@@ -21,7 +24,7 @@ export class UserService {
             .map((res: Response) => res.json())
     }
 
-    getUserById(id: number): Observable<any> {
+    getUserById(id: number): Observable<GetUserByIdResponse> {
         const url = `${ this.baseUrl }/${ id }`;
         return this.http
             .get(url)
@@ -55,12 +58,41 @@ export class UserService {
             .map((res: Response) => res.json());
     }
 
+    updateCurrentUserWithSessionStorage(): void {
+        const userId = sessionStorage.getItem('userId');
+        // check if the value, 'id', is a number.
+        const isValidId = !isNaN(parseInt(userId, 10));
+        console.log('userId:', userId);
+        if (isValidId) {
+            const userIdAsNumber = parseInt(userId, 10);
+            this.getUserById(userIdAsNumber)
+                .subscribe((res: GetUserByIdResponse) => {
+                    if (res.success) {
+                        this.currentUser = res.user;
+                        console.log('current user:', this.currentUser);
+                    } else {
+                        this.currentUser = null;
+                        console.log('error with retrieving session user. user set to null');
+                    }
+                })
+        } else {
+            console.log('no user stored in session');
+        }
+    }
+
     setCurrentUser(user: User): void {
         if (user == null) { return; }
+        const userIdString = user.id.toString();
         this.currentUser = user;
+        this.setSessionUserId(userIdString);
+    }
+
+    setSessionUserId(id: string): void {
+        sessionStorage.setItem('userId', id);
     }
 
     logout(): void {
         this.currentUser = null;
+        this.setSessionUserId(null);
     }
 }

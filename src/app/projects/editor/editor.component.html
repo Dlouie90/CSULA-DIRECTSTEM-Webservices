@@ -63,17 +63,6 @@
 <!------------------ Modals -------------------------->
 <!---------------------------------------------------->
 
-<!-- Quick Edit Modal -->
-<ng-template #content
-          let-close="close"
-          let-dismiss="dismiss">
-
-  <app-quick-edit [node]="graph.state.selectedNode"
-                  [closeFunction]="close"></app-quick-edit>
-  <div class="modal-footer">
-  </div>
-</ng-template>
-
 <!-- Performance chart -->
 <ng-template #chartModal
           let-c="close"
