@@ -32,7 +32,8 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
             title: node.title,
             description: node.description,
             url: node.url,
-            parameters: this.createParameterFormArray(node)
+            parameters: this.createParameterFormArray(node),
+            demoInputs: this.createDemoInputsFormsArray(node.parameters)
         });
     }
 
@@ -47,8 +48,27 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
         return this.nodeForm.get('parameters') as FormArray;
     }
 
+    private createDemoInputsFormsArray(parameters: string[]): FormArray {
+        const inputs = parameters
+            .map(_ => this.formBuilder.control(''));
+        return this.formBuilder.array(inputs);
+    }
+
+    get demoInputs(): FormArray {
+        return this.nodeForm.get('demoInputs') as FormArray;
+    }
+
+    testService(): void {
+        alert('not implemented yet');
+    }
+
+    removeParameter(): void {
+        alert('not implemented yet');
+    }
+
     addParameter(param: string): void {
         this.parameters.push(this.formBuilder.control(param));
+        this.demoInputs.push(this.formBuilder.control(''));
         this.node.parameters.push(param);
     }
 
