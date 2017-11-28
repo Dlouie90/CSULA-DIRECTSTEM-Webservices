@@ -1,0 +1,28 @@
+<div class="adduser">
+    <div class="ui raised segment container">
+        <h2 class="ui header aligned center">Add User</h2>
+        <hr>
+        <form class="ui form ng-untouched ng-pristine ng-valid">
+            <div class="field">
+                <label for="firstName">First Name:</label>
+                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter Your First Name" name="firstName" #newfirstName>
+                <br>
+                <label for="lastName">Last Name:</label>
+                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter Your Last Name" name="lastName" #newlastName>
+                <br>
+                <label for="email">Email:</label>
+                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter your Email" name="email" #newemail>
+                <br>
+                <label for="password">Password:</label>
+                <input class="ng-untouched ng-pristine ng-valid" type="password" placeholder="Enter your Password" name="password" #newpassword>
+                <br>
+                <br>
+                <div class="btnGrp">
+                    <a [routerLink]="['/demo']" class="ui button cancel">Cancel</a>
+                    <button (click)="addUser(newfirstName, newlastName, newemail, newpassword)" class="ui button save">Add User
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

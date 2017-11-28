@@ -19,7 +19,8 @@ export class MainNavComponent {
             {title: 'Home', url: 'home'},
             {title: 'Projects', url: 'projects'},
             {title: 'Debug', url: 'debug'},
-            {title: 'Demo', url: 'demo'}
+            {title: 'Demo', url: 'demo'},
+            {title: 'Admin', url: 'admin'}
         ];
     }
 

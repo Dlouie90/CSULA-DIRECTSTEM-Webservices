@@ -5,6 +5,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { DetailComponent } from './projects/detail/detail.component';
 import { EditorComponent } from './projects/editor/editor.component';
 import { DebugComponent } from './debug/debug.component';
+import {AdminComponent} from './admin/admin.component';
 
 const routes: Routes = [
     {
@@ -36,6 +37,10 @@ const routes: Routes = [
     {
         path: '**',
         component: HomeComponent
+    },
+    {
+        path: 'admin',
+        component: AdminComponent
     }
 ];
 

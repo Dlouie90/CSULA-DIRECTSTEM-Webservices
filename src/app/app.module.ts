@@ -25,6 +25,7 @@ import { SplitPanelLoginModule } from './split-panel-login/split-panel-login.mod
 import { UserService } from './shared/services/user.service';
 import { ShareModule } from './share.module';
 import { WebserviceModalModule } from './webservice-config-menu/webservice-modal.module';
+import {AdminModule} from './admin/admin.module';
 
 @NgModule({
     declarations: [
@@ -52,6 +53,7 @@ import { WebserviceModalModule } from './webservice-config-menu/webservice-modal
         AppRoutingModule,
         SplitPanelLoginModule,
         WebserviceModalModule,
+        AdminModule
     ],
 
     providers: [
