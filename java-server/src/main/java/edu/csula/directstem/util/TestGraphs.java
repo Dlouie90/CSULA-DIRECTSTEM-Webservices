@@ -13,12 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import edu.csula.directstem.model.Edge;
-import edu.csula.directstem.model.RealEdge;
-import edu.csula.directstem.model.Graph;
-import edu.csula.directstem.model.Node;
-import edu.csula.directstem.model.ServiceNode;
-
 public class TestGraphs {
 	public static void main( String args[] ) {
 		String someJson = "";
@@ -42,9 +36,6 @@ public class TestGraphs {
 		Gson gson = new Gson();
 		JsonObject o = parser.parse(someJson).getAsJsonObject();
 		try {
-			Graph g = new Graph(o,null);
-			System.out.println(g.toJson());
-			System.out.println(gson.toJson(g.getResult()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
