@@ -1,47 +1,50 @@
-import { Component, Input } from '@angular/core';
-import { IService } from '../../shared/models/service.interface';
+import {Component,
+        Input} from '@angular/core';
+import {IService} from '../../shared/models/service.interface';
 
 
 @Component({
-    selector: 'app-webservice-card',
-    templateUrl: './webservice-card.component.html'
+  selector: 'app-webservice-card',
+  templateUrl: './webservice-card.component.html'
 })
 export class WebserviceCardComponent {
-    @Input() service: IService;
-    @Input() selected: boolean;
+  @Input()
+  service: IService;
+  @Input()
+  selected: boolean;
 
-    constructor() {}
+  constructor() {}
 
-    get title(): string {
-        return (this.service && this.service.title) || 'NO TITLE';
+  get title(): string {
+    return (this.service && this.service.title) || 'NO TITLE';
+  }
+
+  get id(): number {
+    return (this.service && this.service.id) || null;
+  }
+
+  get description(): string {
+    return (this.service && this.service.description) || 'NO DESCRIPTION';
+  }
+
+  get url(): string {
+    return (this.service && this.service.url) || 'NO URL';
+  }
+
+  get parameters(): string {
+    if (!this.service) {
+      return '';
     }
+    return this.service.parameters.join(', ');
+  }
 
-    get id(): number {
-        return (this.service && this.service.id) || null;
+  get selectedStyles(): any {
+    return {
+      'text-white': this.selected, 'bg-success': this.selected
     }
+  }
 
-    get description(): string {
-        return (this.service && this.service.description) || 'NO DESCRIPTION';
-    }
-
-    get url(): string {
-        return (this.service && this.service.url) || 'NO URL';
-    }
-
-    get parameters(): string {
-        if (!this.service) {
-            return '';
-        }
-        return this.service.parameters.join(', ');
-    }
-
-    get selectedStyles(): any {
-        return {'text-white': this.selected, 'bg-success': this.selected}
-    }
-
-    get subtitleStyle(): any {
-        return {'text-muted': !this.selected, 'text-light': this.selected};
-    }
+  get subtitleStyle(): any {
+    return {'text-muted': !this.selected, 'text-light': this.selected};
+  }
 }
-
-

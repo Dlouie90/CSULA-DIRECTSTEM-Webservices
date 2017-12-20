@@ -1,6 +1,5 @@
-import { User } from '../user.model';
+import {User} from '../user.model';
 
 export class CreateUserResponse {
-    constructor(public user: User,
-                public successful: boolean) {}
+  constructor(public user: User, public successful: boolean) {}
 }

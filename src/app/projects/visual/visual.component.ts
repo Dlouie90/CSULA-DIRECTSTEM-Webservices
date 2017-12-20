@@ -1,15 +1,18 @@
-import {Component, ElementRef, Input, OnInit} from '@angular/core';
-import {Node} from '../../shared/models/node.model';
-import * as d3 from 'd3';
+import {Component,
+        ElementRef,
+        Input,
+        OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import * as d3 from 'd3';
+
+import {Node} from '../../shared/models/node.model';
 
 @Component({
-  selector   : 'app-visual',
+  selector: 'app-visual',
   templateUrl: './visual.component.html',
-  styleUrls  : ['./visual.component.css']
+  styleUrls: ['./visual.component.css']
 })
 export class VisualComponent implements OnInit {
-
   @Input()
   node: Node;
 
@@ -18,11 +21,9 @@ export class VisualComponent implements OnInit {
 
   selectedNode: Node;
 
-  constructor(private element: ElementRef,
-              private router: Router) {
-
+  constructor(private element: ElementRef, private router: Router) {
     this.htmlElement = this.element.nativeElement;
-    this.host        = d3.select(this.element.nativeElement);
+    this.host = d3.select(this.element.nativeElement);
   }
 
   ngOnInit(): void {
@@ -35,48 +36,48 @@ export class VisualComponent implements OnInit {
 
   initTree(node: Node): void {
     // visual class width = 1000px, thus 500 is the center
-    const center     = 500;
+    const center = 500;
     const nodeRadius = 25;
     const tooltipDiv = this.host.append('div')
-        .classed('tooltip', true)
-        .style('opacity', 0);
-    const mainDiv    = this.host.append('div').classed('container', true);
-    const svg        = mainDiv.append('svg').attr('class', 'visual');
-    const mainGroup  = svg.append('g')
-        .attr('transform', `translate(${center},${center})`);
+                           .classed('tooltip', true)
+                           .style('opacity', 0);
+    const mainDiv = this.host.append('div').classed('container', true);
+    const svg = mainDiv.append('svg').attr('class', 'visual');
+    const mainGroup = svg.append('g')
+                          .attr('transform', `translate(${center},${center})`);
 
     const cluster = d3.layout.cluster()
-        .size([360, center / 1.5]);
+                        .size([360, center / 1.5]);
 
     const nodes = cluster.nodes(node);
     const links = cluster.links(nodes);
 
     const diagonal = d3.svg.diagonal.radial()
-        .projection(function (d) {
-          return [
-            d.y,
-            d.x / 180 * Math.PI
-          ];
-        });
+                         .projection(function(d) {
+                           return [
+                             d.y,
+                             d.x / 180 * Math.PI
+                           ];
+                         });
 
     mainGroup.selectAll('path')
         .data(links)
         .enter()
         .append('path')
         .attr({
-          d             : diagonal,
-          fill          : 'none',
-          stroke        : '#ccc',
+          d: diagonal,
+          fill: 'none',
+          stroke: '#ccc',
           'stroke-width': 2.5
         });
 
     const nodeGroups = mainGroup.selectAll('g')
-        .data(nodes)
-        .enter()
-        .append('g')
-        .attr('transform', function (d) {
-          return `rotate(${d.x - 90})translate(${d.y})`;
-        });
+                           .data(nodes)
+                           .enter()
+                           .append('g')
+                           .attr('transform', function(d) {
+                             return `rotate(${d.x - 90})translate(${d.y})`;
+                           });
 
     nodeGroups.append('circle')
         .attr('r', (d: Node) => {
@@ -123,7 +124,7 @@ export class VisualComponent implements OnInit {
               .style('left', (d3.event as any).pageX + 'px')
               .style('top', (d3.event as any).pageY + 'px');
         })
-        .on('mouseout', function (d) {
+        .on('mouseout', function(d) {
           tooltipDiv.transition()
               .duration(500)
               .style('opacity', 0);
@@ -132,25 +133,25 @@ export class VisualComponent implements OnInit {
     nodeGroups.append('text')
         .attr('class', 'tree-text')
         .attr({
-          dy           : '.51em',
-          'text-anchor': function (d) {
+          dy: '.51em',
+          'text-anchor': function(d) {
             return d.x < 180 ? 'start' : 'end';
           },
-          transform    : (d: Node) => {
+          transform: (d: Node) => {
             if (d.id === this.node.id) {
               return d.x < 180 ?
                   'translate(' + (nodeRadius * 3.0) + ')' :
                   'rotate(180)' +
-                  'translate(' + (-nodeRadius * 3.0) + ')';
+                      'translate(' + (-nodeRadius * 3.0) + ')';
             } else {
               return d.x < 180 ?
                   'translate(' + (nodeRadius * 1.50) + ')' :
                   'rotate(180)' +
-                  'translate(' + (-nodeRadius * 1.50) + ')';
+                      'translate(' + (-nodeRadius * 1.50) + ')';
             }
           }
         })
-        .text(function (d: Node) {
+        .text(function(d: Node) {
           return `id-${d.id}`;
         });
   }
@@ -161,4 +162,3 @@ export class VisualComponent implements OnInit {
     }
   }
 }
-

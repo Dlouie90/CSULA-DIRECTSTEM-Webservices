@@ -1,80 +1,87 @@
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Node } from '../../shared/models/node.model';
-import { NodeService } from '../../shared/services/node.service';
+import {Component,
+        Input,
+        OnChanges,
+        OnDestroy} from '@angular/core';
+import {FormArray,
+        FormBuilder,
+        FormGroup} from '@angular/forms';
+import {Node} from '../../shared/models/node.model';
+import {NodeService} from '../../shared/services/node.service';
 
 @Component({
-    selector: 'app-composition-form',
-    templateUrl: './composition-form.component.html'
+  selector: 'app-composition-form',
+  templateUrl: './composition-form.component.html'
 })
 export class CompositionFormComponent implements OnChanges, OnDestroy {
-    @Input() node: Node;
-    nodeForm: FormGroup;
-    paramGroup: FormGroup;
+  @Input()
+  node: Node;
+  nodeForm: FormGroup;
+  paramGroup: FormGroup;
 
-    constructor(private formBuilder: FormBuilder,
-                private nodeService: NodeService) {}
+  constructor(private formBuilder: FormBuilder, private nodeService: NodeService) {}
 
-    ngOnChanges(): void {
-        if (!this.node) { return; }
-
-        this.nodeForm = this.createFormGroup(this.node);
-        this.paramGroup = this.formBuilder.group({});
+  ngOnChanges(): void {
+    if (!this.node) {
+      return;
     }
 
-    ngOnDestroy(): void {
-        this.saveChange();
-    }
+    this.nodeForm = this.createFormGroup(this.node);
+    this.paramGroup = this.formBuilder.group({});
+  }
 
-    private createFormGroup(node: Node): FormGroup {
-        return this.formBuilder.group({
-            id: node.id,
-            title: node.title,
-            description: node.description,
-            url: node.url,
-            parameters: this.createParameterFormArray(node),
-            demoInputs: this.createDemoInputsFormsArray(node.parameters)
-        });
-    }
+  ngOnDestroy(): void {
+    this.saveChange();
+  }
 
-    private createParameterFormArray(node: Node): FormArray {
-        const paramControlArray = node
-            .parameters
-            .map((param: string) => this.formBuilder.control(param));
-        return this.formBuilder.array(paramControlArray);
-    }
+  private createFormGroup(node: Node): FormGroup {
+    return this.formBuilder.group({
+      id: node.id,
+      title: node.title,
+      description: node.description,
+      url: node.url,
+      parameters: this.createParameterFormArray(node),
+      demoInputs: this.createDemoInputsFormsArray(node.parameters)
+    });
+  }
 
-    get parameters(): FormArray {
-        return this.nodeForm.get('parameters') as FormArray;
-    }
+  private createParameterFormArray(node: Node): FormArray {
+    const paramControlArray = node
+                                  .parameters
+                                  .map((param: string) => this.formBuilder.control(param));
+    return this.formBuilder.array(paramControlArray);
+  }
 
-    private createDemoInputsFormsArray(parameters: string[]): FormArray {
-        const inputs = parameters
-            .map(_ => this.formBuilder.control(''));
-        return this.formBuilder.array(inputs);
-    }
+  get parameters(): FormArray {
+    return this.nodeForm.get('parameters') as FormArray;
+  }
 
-    get demoInputs(): FormArray {
-        return this.nodeForm.get('demoInputs') as FormArray;
-    }
+  private createDemoInputsFormsArray(parameters: string[]): FormArray {
+    const inputs = parameters
+                       .map(_ => this.formBuilder.control(''));
+    return this.formBuilder.array(inputs);
+  }
 
-    testService(): void {
-        alert('not implemented yet');
-    }
+  get demoInputs(): FormArray {
+    return this.nodeForm.get('demoInputs') as FormArray;
+  }
 
-    removeParameter(): void {
-        alert('not implemented yet');
-    }
+  testService(): void {
+    alert('not implemented yet');
+  }
 
-    addParameter(param: string): void {
-        this.parameters.push(this.formBuilder.control(param));
-        this.demoInputs.push(this.formBuilder.control(''));
-        this.node.parameters.push(param);
-    }
+  removeParameter(): void {
+    alert('not implemented yet');
+  }
 
-    saveChange(): void {
-        this.node.title = this.nodeForm.get('title').value;
-        this.node.description = this.nodeForm.get('description').value;
-        this.nodeService.updateNodeToService(this.node);
-    }
+  addParameter(param: string): void {
+    this.parameters.push(this.formBuilder.control(param));
+    this.demoInputs.push(this.formBuilder.control(''));
+    this.node.parameters.push(param);
+  }
+
+  saveChange(): void {
+    this.node.title = this.nodeForm.get('title').value;
+    this.node.description = this.nodeForm.get('description').value;
+    this.nodeService.updateNodeToService(this.node);
+  }
 }
