@@ -8,7 +8,7 @@ export class View {
   parentNode: Node;
 
   constructor(nodes: Node[] = [], parentNode = null) {
-    this.nodes      = nodes;
+    this.nodes = nodes;
     this.parentNode = parentNode;
   }
 }
