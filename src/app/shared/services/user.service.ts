@@ -13,7 +13,7 @@ import {User} from '../models/user.model';
 
 @Injectable()
 export class UserService {
-  baseUrl = 'http://localhost:8080/webservice/rest/users';
+  baseUrl = '/webservice/rest/users';
   currentUser: User;
 
 
@@ -21,10 +21,11 @@ export class UserService {
     this.updateCurrentUserWithSessionStorage()
   }
 
-  getUsers(): Observable<any>{
-      return this.http
-          .get(this.baseUrl)
-          .map((res: Response) => res.json())}
+  getUsers(): Observable<any> {
+    return this.http
+        .get(this.baseUrl)
+        .map((res: Response) => res.json());
+  }
 
   getUserById(id: number): Observable<GetUserByIdResponse> {
     const url = `${this.baseUrl}/${id}`;
