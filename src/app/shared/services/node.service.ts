@@ -16,7 +16,7 @@ import {View} from '../view.model';
 
 @Injectable()
 export class NodeService {
-  private baseUrl = 'http://localhost:8080/webservice/rest';
+  private baseUrl = '/webservice/rest';
   private nodes: Node[] = [];
   titleChangeSubject = new Subject<Node>();
 
