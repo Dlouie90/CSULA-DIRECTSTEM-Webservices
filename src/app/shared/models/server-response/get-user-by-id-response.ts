@@ -1,7 +1,7 @@
-import { User } from '../user.model';
+import {User} from '../user.model';
 
 export class GetUserByIdResponse {
-    id: number;
-    user: User;
-    success: boolean;
+  id: number;
+  user: User;
+  success: boolean;
 }
