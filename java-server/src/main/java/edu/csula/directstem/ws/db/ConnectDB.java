@@ -8,7 +8,7 @@ public class ConnectDB {
     if (con != null)
       return con;
     // get db, user, pass from settings file
-    return getConnection("directstem", "root", "directstem");
+    return getConnection("directstem", "root", "1234");
   }
 
   private static Connection getConnection(String db_name, String user_name, String password) {
