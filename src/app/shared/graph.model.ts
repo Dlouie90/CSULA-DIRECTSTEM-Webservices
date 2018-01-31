@@ -7,12 +7,15 @@ const final = {
   NODE_RADIUS: 60,
 
   /* --------------- KEY CODES --------------- */
-  BACK_SPACE_KEY: 8, DELETE_KEY: 46,
+  BACK_SPACE_KEY: 8,
+  DELETE_KEY: 46,
 
   /* ---------------  CSS CLASS --------------- */
-  SELECTED_CLASS: 'selected', CONNECTED_NODE_CLASS: 'connect-node',
-  CIRCLE_G_CLASS: 'conceptG', GRAPH_CLASS: 'graph',
-  CLICKED_NODE  : 'clicked-node'
+  SELECTED_CLASS: 'selected',
+  CONNECTED_NODE_CLASS: 'connect-node',
+  CIRCLE_G_CLASS: 'conceptG',
+  GRAPH_CLASS: 'graph',
+  CLICKED_NODE: 'clicked-node'
 };
 
 export class Graph {
@@ -35,24 +38,22 @@ export class Graph {
     // Display edges only if it is a "composition view", if parentNode exist.
     // If no parentNode exist, we only want to display the node as a independent
     // node. nodesIn should only contain 1 element if no parentNode exist.
-    const nodeEdgeData = parentNode
-        ? parseData(nodesIn)
-        : {edges: [], nodes: nodesIn};
+    const nodeEdgeData = parentNode ? parseData(nodesIn) : {edges: [], nodes: nodesIn};
 
     /* *** Graph variables *** */
-    this.svg        = svgIn;
-    this.nodes      = nodeEdgeData.nodes || [];
-    this.edges      = nodeEdgeData.edges || [];
-    this.stack      = [];
+    this.svg = svgIn;
+    this.nodes = nodeEdgeData.nodes || [];
+    this.edges = nodeEdgeData.edges || [];
+    this.stack = [];
     this.parentNode = parentNode;
 
     // View of the graph (selected nodes, links, etc..)
     this.state = {
-      selectedNode  : null,
-      clickNodes    : [],
-      selectedEdge  : null,
-      mouseDownNode : null,
-      shiftNodeDrag : false,
+      selectedNode: null,
+      clickNodes: [],
+      selectedEdge: null,
+      mouseDownNode: null,
+      shiftNodeDrag: false,
       graphMouseDown: false
     };
 
@@ -82,16 +83,16 @@ export class Graph {
 
     // the main container for all <circle> <path> elements
     thisGraph.svgG = svgIn.append('g')
-        .classed(final.GRAPH_CLASS, true);
+                         .classed(final.GRAPH_CLASS, true);
 
     // For convenience (typing thisGraph.svgG is tedious)
     const svgG = thisGraph.svgG;
 
     // displayed when dragging between nodes
     this.dragLine = svgG.append('svg:path')
-        .attr('class', 'link dragline hidden')
-        .attr('d', 'M0,0L0,0')
-        .style('marker-end', 'url(#mark-end-arrow)');
+                        .attr('class', 'link dragline hidden')
+                        .attr('d', 'M0,0L0,0')
+                        .style('marker-end', 'url(#mark-end-arrow)');
 
     // a Selection of all <g> in the graph for <paths>
     thisGraph.paths = svgG.append('g').attr('class', 'pathG').selectAll('g');
@@ -101,18 +102,18 @@ export class Graph {
 
     // Define Graph drag behavior
     thisGraph.drag = d3.behavior.drag()
-        .origin(function (d: any) {
-          return {x: d.x, y: d.y};
-        })
-        .on('drag', function (args) {
-          thisGraph.dragmove.call(thisGraph, args);
-        });
+                         .origin(function(d: any) {
+                           return {x: d.x, y: d.y};
+                         })
+                         .on('drag', function(args) {
+                           thisGraph.dragmove.call(thisGraph, args);
+                         });
 
     // insert a new node based on the cursor's location
-    svgIn.on('mousedown', function (d) {
+    svgIn.on('mousedown', function(d) {
       thisGraph.svgMouseDown.call(thisGraph, d);
     });
-    svgIn.on('mouseup', function (d) {
+    svgIn.on('mouseup', function(d) {
       thisGraph.svgMouseUp.call(thisGraph, d);
     });
   }
@@ -120,7 +121,7 @@ export class Graph {
   /**
    * Drag the node or, if the shift key is held, drag the "drag line"
    */
-  dragmove = function (d) {
+  dragmove = function(d) {
     const thisGraph = this;
     if (thisGraph.state.shiftNodeDrag) {
       thisGraph.dragLine.attr('d', 'M' + d.x + ',' + d.y + 'L' + d3.mouse(thisGraph.svgG.node())[0] + ',' + d3.mouse(this.svgG.node())[1]);
@@ -165,7 +166,7 @@ export class Graph {
     });
 
     // Add the clickNodes as children to the input node.
-    node.children   = this.clickNodes;
+    node.children = this.clickNodes;
     this.clickNodes = [];
     this.insertNode(node);
   }
@@ -180,8 +181,8 @@ export class Graph {
       return;
     }
     const thisGraph = this;
-    const state     = thisGraph.state;
-    const prevEdge  = state.selectedEdge;
+    const state = thisGraph.state;
+    const prevEdge = state.selectedEdge;
 
     (d3.event as any).stopPropagation();
 
@@ -217,14 +218,15 @@ export class Graph {
 
   /** Remove the select highlighting css from the selectedEdge
    */
-  removeSelectFromEdge = function () {
+  removeSelectFromEdge = function() {
     const thisGraph = this;
 
     // Find the path that is the selectedEdge (should be only 1) and remove
     // the selected highlighting css
-    thisGraph.paths.filter(function (cd) {
-      return cd === thisGraph.state.selectedEdge;
-    }).classed(final.SELECTED_CLASS, false);
+    thisGraph.paths.filter(function(cd) {
+                     return cd === thisGraph.state.selectedEdge;
+                   })
+        .classed(final.SELECTED_CLASS, false);
 
     // reset the state
     thisGraph.state.selectedEdge = null;
@@ -239,7 +241,7 @@ export class Graph {
    */
   circleMouseDown(d3node, d) {
     const thisGraph = this;
-    const state     = thisGraph.state;
+    const state = thisGraph.state;
 
     (d3.event as any).stopPropagation();
 
@@ -262,7 +264,7 @@ export class Graph {
     }
 
     const thisGraph = this;
-    const state     = thisGraph.state;
+    const state = thisGraph.state;
 
     // reset the states
     state.shiftNodeDrag = false;
@@ -281,7 +283,7 @@ export class Graph {
       const newEdge = {source: mouseDownNode, target: d};
 
       // Get all the edges from the graph that is the same as newEdge
-      const filtRes = thisGraph.paths.filter(function (_d) {
+      const filtRes = thisGraph.paths.filter(function(_d) {
 
         // // if the reversed edge exist (a->b & b->a), replace the previous one
         // if (d.source === newEdge.target && d.target === newEdge.source) {
@@ -346,9 +348,10 @@ export class Graph {
   removeSelectFromNode() {
     const thisGraph = this;
 
-    thisGraph.circles.filter(function (cd) {
-      return cd.id === thisGraph.state.selectedNode.id;
-    }).classed(final.SELECTED_CLASS, false);
+    thisGraph.circles.filter(function(cd) {
+                       return cd.id === thisGraph.state.selectedNode.id;
+                     })
+        .classed(final.SELECTED_CLASS, false);
 
     thisGraph.state.selectedNode = null;
   }
@@ -358,7 +361,7 @@ export class Graph {
 
   removeSelectedNode(): void {
     const thisGraph = this;
-    const state     = thisGraph.state;
+    const state = thisGraph.state;
 
     const selectedNode = state.selectedNode;
 
@@ -377,7 +380,7 @@ export class Graph {
 
   removeSelectedEdge(): void {
     const thisGraph = this;
-    const state     = thisGraph.state;
+    const state = thisGraph.state;
 
     const selectedEdge = state.selectedEdge;
 
@@ -399,7 +402,7 @@ export class Graph {
     /* This is the source node that is in the nodes array. */
     const node = nodes.filter(currentNode => {
       return currentNode.id === edge.source.id;
-    }) [0];
+    })[0];
 
     /* Remove the target node from the node neighbors field. */
     node.neighbors = node.neighbors.filter(currentNode => {
@@ -443,7 +446,7 @@ export class Graph {
   }
 
   // mousedown on main svg
-  svgMouseDown = function () {
+  svgMouseDown = function() {
     this.state.graphMouseDown = true;
   };
 
@@ -453,7 +456,7 @@ export class Graph {
    */
   svgMouseUp() {
     const thisGraph = this;
-    const state     = thisGraph.state;
+    const state = thisGraph.state;
 
     if (state.shiftNodeDrag) {
       // hide the "drag line": the line that display when you are trying
@@ -499,24 +502,24 @@ export class Graph {
   updateGraph() {
     // for convinces
     const thisGraph = this;
-    const state     = this.state;
+    const state = this.state;
 
 
     // update the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
-        .data(thisGraph.edges, function (d) {
-          return d.source.id + '+' + d.target.id;
-        });
+                          .data(thisGraph.edges, function(d) {
+                            return d.source.id + '+' + d.target.id;
+                          });
 
     // For convinces: the updateToService selection
     const paths = thisGraph.paths;
 
     // Update existing paths (notice no enter() or exit())
     paths.style('marker-end', 'url(#end-arrow)')
-        .classed(final.SELECTED_CLASS, function (d) {
+        .classed(final.SELECTED_CLASS, function(d) {
           return d === state.selectedEdge;
         })
-        .attr('d', function (d) {
+        .attr('d', function(d) {
           return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
         });
 
@@ -525,10 +528,10 @@ export class Graph {
         .append('path')
         .style('marker-end', 'url(#end-arrow)')
         .classed('link', true)
-        .attr('d', function (d) {
+        .attr('d', function(d) {
           return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
         })
-        .on('mousedown', function (d) {
+        .on('mousedown', function(d) {
           thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
         });
 
@@ -538,43 +541,43 @@ export class Graph {
 
     // update the circle selection
     thisGraph.circles = thisGraph.circles
-        .data(thisGraph.nodes, function (d) {
-          return String(d.id);
-        });
+                            .data(thisGraph.nodes, function(d) {
+                              return String(d.id);
+                            });
 
     // update all current circles on the graph
     thisGraph.circles
-        .attr('transform', function (d) {
+        .attr('transform', function(d) {
           return 'translate(' + d.x + ',' + d.y + ')';
         })
         // Enable/disable clickNodes css
-        .classed(final.CLICKED_NODE, function (d) {
+        .classed(final.CLICKED_NODE, function(d) {
           return thisGraph.clickNodes.findIndex((n: Node) => n.id === d.id) !== -1;
         });
 
     // add new circles to the graph(they are wrapped in <g>)
     const newGs = thisGraph.circles.enter()
-        .append('g');
+                      .append('g');
 
     newGs.classed(final.CIRCLE_G_CLASS, true)
-        .attr('transform', function (d) {
+        .attr('transform', function(d) {
           return 'translate(' + d.x + ',' + d.y + ')';
         })
-        .on('click', function (d: Node) {
+        .on('click', function(d: Node) {
           thisGraph.toggleClickNodes(d);
         })
-        .on('mouseover', function (d) {
+        .on('mouseover', function(d) {
           if (state.shiftNodeDrag) {
             d3.select(this).classed(final.CONNECTED_NODE_CLASS, true);
           }
         })
-        .on('mouseout', function (d) {
+        .on('mouseout', function(d) {
           d3.select(this).classed(final.CONNECTED_NODE_CLASS, false);
         })
-        .on('mousedown', function (d) {
+        .on('mousedown', function(d) {
           thisGraph.circleMouseDown.call(thisGraph, d3.select(this), d);
         })
-        .on('mouseup', function (d) {
+        .on('mouseup', function(d) {
           thisGraph.circleMouseUp.call(thisGraph, d3.select(this), d);
         })
         .call(thisGraph.drag);
@@ -586,8 +589,8 @@ export class Graph {
 
     newGs.append('text')
         .attr('text-anchor', 'middle')
-        .text(function (d) {
-            return Node.nodeTitle(d);
+        .text(function(d) {
+          return Node.nodeTitle(d);
         });
     newGs.append('text')
         .classed('children', true)
@@ -608,7 +611,6 @@ export class Graph {
 /** Given a list nodes, return an object with the nodes and its edges.
  * Each node will be "clone". */
 function parseData(nodeArray) {
-
   /*   Need to clone for d3.js to work properly.
    *  Javascript and d3.js equate object based on their memory location(?).
    *  But because we identify and organize our node based on ID, some node
@@ -641,4 +643,3 @@ function findNeighbor(nodes: Node[], neighbor: Node) {
     }
   }
 }
-

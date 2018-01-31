@@ -8,6 +8,7 @@ import {SplitPanelLoginComponent} from './split-panel-login.component';
 import {RegistrationFormComponent} from './registration-form/registration-form.component';
 import {LoginFormComponent} from './login-form/login-form.component';
 
+
 @NgModule({
     declarations: [
         SplitPanelLoginComponent,
@@ -30,5 +31,7 @@ import {LoginFormComponent} from './login-form/login-form.component';
         SplitPanelLoginComponent
     ]
 })
+
 export class SplitPanelLoginModule {
 }
+

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { Path } from '../shared/models/path.interface';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SplitPanelLoginComponent } from '../split-panel-login/split-panel-login.component';
-import { User } from '../shared/models/user.model';
-import { UserService } from '../shared/services/user.service';
+import {Component} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
+import {Path} from '../shared/models/path.interface';
+import {User} from '../shared/models/user.model';
+import {UserService} from '../shared/services/user.service';
+import {SplitPanelLoginComponent} from '../split-panel-login/split-panel-login.component';
 
 @Component({
     selector: 'app-main-nav',
