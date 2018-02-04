@@ -59,13 +59,13 @@ public class UserDatabase {
     String lastName = resultSet.getString(UserEntry.LAST_NAME);
     String email = resultSet.getString(UserEntry.EMAIL);
     String password = resultSet.getString(UserEntry.PASSWORD);
-    String description = resultSet.getString(UserEntry.DESCRIPTION);
+    String description = resultSet.getString(UserEntry.USERNAME);
     return new User(id, firstName, lastName, email, password, description);
   }
 
   //Create user
   public static CreateUserResult createUser(User user) {
-    String sql = "INSERT INTO users (firstname, lastname, email, password, description)"
+    String sql = "INSERT INTO users (firstname, lastname, email, username, password)"
         + " VALUES(?, ?, ?, ?, ?);";
     int rowCount = 0;
     PreparedStatement statement;
@@ -74,8 +74,8 @@ public class UserDatabase {
       statement.setString(1, user.getFirstName());
       statement.setString(2, user.getLastName());
       statement.setString(3, user.getEmail());
-      statement.setString(4, user.getPassword());
-      statement.setString(5, user.getDescription());
+      statement.setString(4, user.getUsername());
+      statement.setString(5, user.getPassword());
       rowCount = statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -98,13 +98,13 @@ public class UserDatabase {
   }
 
   public static UpdateUserResult updateUser(User user, int id) {
-    String sql = "UPDATE users SET firstname = ?, lastname=?, description=? WHERE id = ?";
+    String sql = "UPDATE users SET firstname = ?, lastname=?, username=? WHERE id = ?";
     int rowsUpdated = 0;
     try {
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setString(1, user.getFirstName());
       statement.setString(2, user.getLastName());
-      statement.setString(3, user.getDescription());
+      statement.setString(3, user.getUsername());
       statement.setInt(4, user.getId());
       rowsUpdated = statement.executeUpdate();
 
