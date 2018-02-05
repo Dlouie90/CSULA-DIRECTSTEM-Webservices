@@ -1,6 +1,7 @@
 import {Component,
         Input} from '@angular/core';
 import {Node} from '../../shared/models/node.model';
+import {Project} from '../../shared/models/project.model';
 
 @Component({
   selector: 'app-configure-composition',
@@ -9,10 +10,10 @@ import {Node} from '../../shared/models/node.model';
 })
 export class ConfigureCompositionComponent {
   @Input()
-  node: Node;
+  project: Project;
   @Input()
-  inputNodes: Node[];
-  selectedNode: Node;
+  inputProjects: Project[];
+  selectedProject: Project;
 
   /* TODO: Implement onChange */
   onChange(value: any): void {}

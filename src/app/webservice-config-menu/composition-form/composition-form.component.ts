@@ -7,6 +7,8 @@ import {FormArray,
         FormGroup} from '@angular/forms';
 import {Node} from '../../shared/models/node.model';
 import {NodeService} from '../../shared/services/node.service';
+import {Project} from '../../shared/models/project.model';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
   selector: 'app-composition-form',
@@ -14,18 +16,18 @@ import {NodeService} from '../../shared/services/node.service';
 })
 export class CompositionFormComponent implements OnChanges, OnDestroy {
   @Input()
-  node: Node;
-  nodeForm: FormGroup;
+  project: Project;
+  projectForm: FormGroup;
   paramGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private nodeService: NodeService) {}
+  constructor(private formBuilder: FormBuilder, private projectService: ProjectService) {}
 
   ngOnChanges(): void {
-    if (!this.node) {
+    if (!this.project) {
       return;
     }
 
-    this.nodeForm = this.createFormGroup(this.node);
+    this.projectForm = this.createFormGroup(this.project);
     this.paramGroup = this.formBuilder.group({});
   }
 
@@ -33,26 +35,26 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
     this.saveChange();
   }
 
-  private createFormGroup(node: Node): FormGroup {
+  private createFormGroup(project: Project): FormGroup {
     return this.formBuilder.group({
-      id: node.id,
-      title: node.title,
-      description: node.description,
-      url: node.url,
-      parameters: this.createParameterFormArray(node),
-      demoInputs: this.createDemoInputsFormsArray(node.parameters)
+      id: project.id,
+      title: project.title,
+      description: project.description,
+      url: project.url,
+      parameters: this.createParameterFormArray(project),
+      demoInputs: this.createDemoInputsFormsArray(project.parameters)
     });
   }
 
-  private createParameterFormArray(node: Node): FormArray {
-    const paramControlArray = node
+  private createParameterFormArray(project: Project): FormArray {
+    const paramControlArray = project
                                   .parameters
                                   .map((param: string) => this.formBuilder.control(param));
     return this.formBuilder.array(paramControlArray);
   }
 
   get parameters(): FormArray {
-    return this.nodeForm.get('parameters') as FormArray;
+    return this.projectForm.get('parameters') as FormArray;
   }
 
   private createDemoInputsFormsArray(parameters: string[]): FormArray {
@@ -62,7 +64,7 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
   }
 
   get demoInputs(): FormArray {
-    return this.nodeForm.get('demoInputs') as FormArray;
+    return this.projectForm.get('demoInputs') as FormArray;
   }
 
   testService(): void {
@@ -76,12 +78,12 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
   addParameter(param: string): void {
     this.parameters.push(this.formBuilder.control(param));
     this.demoInputs.push(this.formBuilder.control(''));
-    this.node.parameters.push(param);
+    this.project.parameters.push(param);
   }
 
   saveChange(): void {
-    this.node.title = this.nodeForm.get('title').value;
-    this.node.description = this.nodeForm.get('description').value;
-    this.nodeService.updateNodeToService(this.node);
+    this.project.title = this.projectForm.get('title').value;
+    this.project.description = this.projectForm.get('description').value;
+    this.projectService.updateProjectToService(this.project);
   }
 }

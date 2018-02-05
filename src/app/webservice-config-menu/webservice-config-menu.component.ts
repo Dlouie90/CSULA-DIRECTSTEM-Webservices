@@ -6,8 +6,10 @@ import {Component,
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {Node} from '../shared/models/node.model';
+import {Project} from '../shared/models/project.model';
 import {IService} from '../shared/models/service.interface';
 import {NodeService} from '../shared/services/node.service';
+import {ProjectService} from '../shared/services/project.service';
 
 @Component({
   selector: 'app-webservice-menu',
@@ -15,30 +17,30 @@ import {NodeService} from '../shared/services/node.service';
 })
 export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  node: Node;
+  project: Project;
   @Input()
-  inputNodes: Node[] = [];
+  inputProjects: Project[] = [];
   services: IService[];
   selectedService: IService;
 
-  constructor(private nodeService: NodeService, public activeModal: NgbActiveModal) {
+  constructor(private projectService: ProjectService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit(): void {
     this.getServices();
-    this.selectedService = this.node.service;
+    this.selectedService = this.project.service;
   }
 
   ngOnChanges(): void {
-    this.selectedService = this.node.service;
+    this.selectedService = this.project.service;
   }
 
   ngOnDestroy(): void {
-    this.nodeService.updateNodeToService(this.node);
+    this.projectService.updateProjectToService(this.project);
   }
 
   private getServices(): void {
-    this.nodeService.getServices()
+    this.projectService.getServices()
         .subscribe(
             (services: IService[]) => {
               this.services = services;
@@ -51,8 +53,8 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
 
   onSelectService(service: IService): void {
     this.selectedService = service;
-    this.node.service = service;
-    this.node.parameterEntries = [];
+    this.project.service = service;
+    this.project.parameterEntries = [];
   }
 
   onClose(reason: string): void {
@@ -60,6 +62,6 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   }
 
   get isEmptyInputs(): boolean {
-    return this.inputNodes.length === 0;
+    return this.inputProjects.length === 0;
   }
 }

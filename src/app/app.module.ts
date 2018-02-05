@@ -24,6 +24,7 @@ import {ProjectsComponent} from './projects/projects.component';
 import {VisualComponent} from './projects/visual/visual.component';
 import {ShareModule} from './share.module';
 import {NodeService} from './shared/services/node.service';
+import {ProjectService} from './shared/services/project.service';
 import {UserService} from './shared/services/user.service';
 import {SplitPanelLoginModule} from './split-panel-login/split-panel-login.module';
 import {WebserviceModalModule} from './webservice-config-menu/webservice-modal.module';
@@ -58,7 +59,7 @@ import {WebserviceModalModule} from './webservice-config-menu/webservice-modal.m
 
   providers: [
     UserService,
-    NodeService,
+    ProjectService,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
   ],
 

@@ -120,8 +120,8 @@ export class NodeService {
   }
 
   updateViewToService(view: View): void {
-    this.updateNodesToService(view.nodes);
-    this.updateNodeToService(view.parentNode);
+    this.updateNodesToService(view.currentProject.nodes);
+    this.updateNodeToService(view.currentProject.headNode);
   }
 
   /**
