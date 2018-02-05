@@ -6,17 +6,25 @@ public class User {
   private String lastName;
   private String email;
   private String username;
-  private String password;
+  private String passwordHash;
 
 
   public User(int id, String firstName, String lastName,
-      String email, String username, String password) {
+      String email, String username, String passwordHash) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    this.password = password;
+    this.passwordHash = passwordHash;
     this.username = username;
+  }
+  
+  public void setPassword(String password) {
+    this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+  }
+  
+  public boolean isPasswordValid(String password) {
+    return BCrypt.checkpw(password, this.passwordHash);
   }
 
   public int getId() {
@@ -51,12 +59,8 @@ public class User {
     this.email = email;
   }
 
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
+  public String getPasswordHash() {
+    return passwordHash;
   }
 
   public String getUsername() {
