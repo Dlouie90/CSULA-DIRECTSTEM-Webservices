@@ -46,6 +46,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-# Database Password File
-/java-server/src/main/java/edu/csula/directstem/ws/db/ConnectDB.java
