@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import {Node} from './models/node.model';
+import {Edge} from './models/edge.model';
 import {View} from './view.model';
 
 const final = {
@@ -31,21 +32,23 @@ export class Graph {
   parentNode;
   state;
 
-  constructor(svgIn: any, nodesIn: Node[], parentNode?: Node) {
+  constructor(svgIn: any, nodes: Node[], edges: Edge[]) {
     // for clarity: typing this over and over can be confusing
     const thisGraph = this;
 
     // Display edges only if it is a "composition view", if parentNode exist.
     // If no parentNode exist, we only want to display the node as a independent
     // node. nodesIn should only contain 1 element if no parentNode exist.
-    const nodeEdgeData = parentNode ? parseData(nodesIn) : {edges: [], nodes: nodesIn};
+    // const nodeEdgeData = parentNode ? parseData(nodesIn) : {edges: [], nodes: nodesIn};
+    const nodeEdgeData = {edges: edges, nodes: nodes};
 
     /* *** Graph variables *** */
     this.svg = svgIn;
     this.nodes = nodeEdgeData.nodes || [];
     this.edges = nodeEdgeData.edges || [];
     this.stack = [];
-    this.parentNode = parentNode;
+    //this.parentNode = parentNode;
+    this.parentNode = [];
 
     // View of the graph (selected nodes, links, etc..)
     this.state = {
@@ -115,6 +118,16 @@ export class Graph {
     });
     svgIn.on('mouseup', function(d) {
       thisGraph.svgMouseUp.call(thisGraph, d);
+    });
+
+    //this.updateAllEdges();
+  }
+
+  updateAllEdges() {
+    const thisGraph = this;
+    this.edges.forEach((e:Edge) => {
+      //let source = thisGraph.svG.node
+      //thisGraph.dragLine.attr('d', 'M' + e.source.x + ',' + e.source.y + 'L' + e.target.x + ',' + e.target.y);
     });
   }
 

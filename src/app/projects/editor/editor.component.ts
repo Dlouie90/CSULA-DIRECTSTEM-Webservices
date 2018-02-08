@@ -67,23 +67,6 @@ export class EditorComponent implements OnInit {
           this.project = project;
           this.initGraph(project);
         });
-    /*
-    this.route.params
-        .switchMap((params: Params) => {
-          id = +params['id'];
-          return this.nodeService.getNode(id);
-        })
-        .subscribe((node: Node) => {
-          if (!node) {  // Route back to the project page if id doesn't exist.
-            console.error(`There are no nodes with the id: ${id}!`);
-            console.error('Returning to the project page');
-            this.router.navigate(['../../']);
-            return;
-          }
-          this.node = node;
-          this.initGraph(node);
-        });
-    */
   }
 
   /**
@@ -92,7 +75,7 @@ export class EditorComponent implements OnInit {
      */
   initGraph(project): void {
     this.mainSvg = d3.select('div#d3-editor').append('svg');
-    this.graph = new Graph(this.mainSvg, project.nodes, null);
+    this.graph = new Graph(this.mainSvg, project.nodes, project.edges);
     this.views.push(new View([project], project));
     this.graph.updateGraph();
   }
@@ -163,21 +146,14 @@ export class EditorComponent implements OnInit {
   detectShiftLMouseUp($event): void {
     if ($event.shiftKey && $event.which === 1) {
       console.log('SHIFT LEFT-MOUSE UP');
+      console.log("number of init edges: " + this.project.edges.length);
 
       const currentView = _.last(this.views);  // the view before edge;
       const updatedView = this.currentView;    // the view after edge;
 
-      /*
-      // Add the new node as a child of parentNode.
-      if (currentView.parentNode) {
-        currentView.parentNode.children = updatedView.nodes;
-        this.nodeService.updateNodeToService(currentView.parentNode);
-      }
+      this.project.edges = this.graph.edges; // update edges
 
-      // Update the current view nodes and inform nodeService of the new node
-      currentView.nodes = updatedView.nodes;
-      this.updateNodesToService(currentView.nodes);
-      */
+      console.log("number of edges: " + this.project.edges.length);
 
       currentView.projects = updatedView.projects;
       this.updateProjectsToService(currentView.projects);
@@ -203,7 +179,7 @@ export class EditorComponent implements OnInit {
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
     this.graph = new Graph(
-        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.headNode);
+        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.edges);
     this.graph.updateGraph();
   }
 
@@ -480,6 +456,8 @@ export class EditorComponent implements OnInit {
       }
 
       //this.updateNodeFromService(this.selectedNode);
+      // TODO: make this display the sub project
+      /*
       this.updateProjectFromService(this.project);
 
       this.mainSvg.selectAll('*').remove();
@@ -487,6 +465,7 @@ export class EditorComponent implements OnInit {
           this.mainSvg, this.selectedNode.children, this.selectedNode);
       this.graph.updateGraph();
       this.views.push(this.graph.currentView);
+      */
     }
     this.closeContextMenu();
   }
