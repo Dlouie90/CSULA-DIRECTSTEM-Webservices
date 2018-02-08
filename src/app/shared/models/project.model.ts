@@ -1,6 +1,7 @@
 import {ParameterEntry} from './parameter-entry.model';
 import {IService} from './service.interface';
 import {Node} from './node.model';
+import {Edge} from './edge.model';
 
 export class Project {
   title: string;
@@ -11,21 +12,12 @@ export class Project {
   parameterEntries: ParameterEntry[] = [];
   headNode: Node;
   nodes: Node[] = [];
-  /*inputEntries: InputEntry[] = [];*/
-
-  /** Return true if the node is neither a input or output node.
-  static isRegular(node) {
-    return !(node.isInput || node.isOutput);
-  }
-  */
+  edges: Edge[] = [];
 
   static create(id: number) {
     return new Project(id);
   }
 
-  /*static nodeTitle(node: Node): string{
-    return node.title || `NODE-${node.id}`
-  }*/
   static projectTitle(project: Project): string {
     return project.title || `PROJECT_${project.id}`
   }
@@ -34,11 +26,3 @@ export class Project {
     this.title = `PROJECT_${id}`;
   }
 }
-
-/** Map a parameter to a "Node". This mean that the output, result, of the
- * node should be feed to the "parameter"
-export class InputEntry {
-  fromNode: Node;
-  toParameter: string;
-}
-*/
