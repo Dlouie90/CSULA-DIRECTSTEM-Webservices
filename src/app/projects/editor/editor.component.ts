@@ -10,8 +10,10 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 
 import {Graph} from '../../shared/graph.model';
+import {Project} from '../../shared/models/project.model';
+import {ProjectService} from '../../shared/services/project.service';
 import {Node} from '../../shared/models/node.model';
-import {NodeService} from '../../shared/services/node.service';
+//import {NodeService} from '../../shared/services/node.service';
 import {View} from '../../shared/view.model';
 import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webservice-config-menu.component';
 
@@ -21,6 +23,7 @@ import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webser
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
+  project: Project;
   node: Node;
   rightPanelStyle: Object = {};
   mainSvg;
@@ -32,7 +35,7 @@ export class EditorComponent implements OnInit {
   // Mouse Position, used to insert new nodes onto the coordinate.
   rightClickPos: {x: number, y: number};
 
-  constructor(private nodeService: NodeService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router) {
+  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router) {
   }
 
   ngOnInit() {
@@ -52,6 +55,22 @@ export class EditorComponent implements OnInit {
     this.route.params
         .switchMap((params: Params) => {
           id = +params['id'];
+          return this.projectService.getProject(id);
+        })
+        .subscribe((project: Project) => {
+          if (!project) {  // Route back to the project page if id doesn't exist.
+            console.error(`There are no projects with the id: ${id}!`);
+            console.error('Returning to the project page');
+            this.router.navigate(['../../']);
+            return;
+          }
+          this.project = project;
+          this.initGraph(project);
+        });
+    /*
+    this.route.params
+        .switchMap((params: Params) => {
+          id = +params['id'];
           return this.nodeService.getNode(id);
         })
         .subscribe((node: Node) => {
@@ -64,16 +83,17 @@ export class EditorComponent implements OnInit {
           this.node = node;
           this.initGraph(node);
         });
+    */
   }
 
   /**
      * Initialize the graph view with the corresponding node (single).
      * Thus parentNode will be NULL and NO edge will be shown.
      */
-  initGraph(node): void {
+  initGraph(project): void {
     this.mainSvg = d3.select('div#d3-editor').append('svg');
-    this.graph = new Graph(this.mainSvg, [node], null);
-    this.views.push(new View([node], null));
+    this.graph = new Graph(this.mainSvg, project.nodes, null);
+    this.views.push(new View([project], project));
     this.graph.updateGraph();
   }
 
@@ -82,10 +102,16 @@ export class EditorComponent implements OnInit {
     console.log('COMPOSITE CLICKED NODES');
 
     const OFFSET = -120;
+    /*
     const node = this.nodeService.createNew({
       x: this.rightClickPos.x,
       y: this.rightClickPos.y + OFFSET
     });
+    */
+    // TODO: get this id directly from the db
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
+                          this.rightClickPos.x, this.rightClickPos.y);
 
     // Add the clickedNodes as children of this node.
     this.graph.compositeClickNodes(node);
@@ -94,15 +120,25 @@ export class EditorComponent implements OnInit {
     const currentView = this.currentView;  // the view after composition;
 
     // Add the new node as a child of parentNode.
+    /*
     if (oldView.parentNode) {
       oldView.parentNode.children = currentView.nodes;
       this.nodeService.updateNodeToService(oldView.parentNode);
     }
+    */
 
     // Update the current view nodes and inform nodeService of the new node
     this.replaceRecentView(currentView);
+
+    /*
     this.nodeService.add(node);
     this.updateNodesToService(currentView.nodes);
+    */
+
+    // update the project in current view
+    this.addNodeToProject(currentView.currentProject, node);
+    this.updateProjectToService(currentView.currentProject);
+    this.updateProjectsToService(currentView.projects);
 
     this.closeContextMenu();
   }
@@ -131,6 +167,7 @@ export class EditorComponent implements OnInit {
       const currentView = _.last(this.views);  // the view before edge;
       const updatedView = this.currentView;    // the view after edge;
 
+      /*
       // Add the new node as a child of parentNode.
       if (currentView.parentNode) {
         currentView.parentNode.children = updatedView.nodes;
@@ -140,6 +177,10 @@ export class EditorComponent implements OnInit {
       // Update the current view nodes and inform nodeService of the new node
       currentView.nodes = updatedView.nodes;
       this.updateNodesToService(currentView.nodes);
+      */
+
+      currentView.projects = updatedView.projects;
+      this.updateProjectsToService(currentView.projects);
     }
   }
 
@@ -162,7 +203,7 @@ export class EditorComponent implements OnInit {
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
     this.graph = new Graph(
-        this.mainSvg, recentView.nodes, recentView.parentNode);
+        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.headNode);
     this.graph.updateGraph();
   }
 
@@ -187,20 +228,39 @@ export class EditorComponent implements OnInit {
   /** Insert a node onto the graph and updateToService nodeService.
      * Also add the node into its parent.children array. */
   insertNode(): void {
+    console.log('adding a new node');
     const OFFSET = -120;
+    /*
     const node = this.nodeService.createNew({
       x: this.rightClickPos.x,
       y: this.rightClickPos.y + OFFSET
     });
+    */
+    // TODO: get this id directly from the db
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
+                          this.rightClickPos.x, this.rightClickPos.y);
 
     /* Update the view to include the new node. */
     const recentView = _.last(this.views);
+
+    /*
     if (recentView.parentNode) {
       recentView.parentNode.children.push(node);
       this.nodeService.updateNodeToService(recentView.parentNode);
     }
     recentView.nodes.push(node);
     this.nodeService.add(node);
+    */
+
+    if(recentView.currentProject)
+      recentView.currentProject.nodes.push(node);
+
+    // update the project in current view
+    this.addNodeToProject(recentView.currentProject, node);
+    this.updateProjectToService(recentView.currentProject);
+    this.updateProjectsToService(recentView.projects);
+
     this.graph.insertNode(node);
 
     this.closeContextMenu();
@@ -223,6 +283,7 @@ export class EditorComponent implements OnInit {
     const modalRef = this.modalService
                          .open(WebserviceConfigMenuComponent, {size: 'lg'});
     const inputNodes = this.getInputsToNode(this.selectedNode);
+    modalRef.componentInstance.project = this.project;
     modalRef.componentInstance.node = this.selectedNode;
     modalRef.componentInstance.inputNodes = inputNodes;
     modalRef.result
@@ -261,6 +322,7 @@ export class EditorComponent implements OnInit {
 
   syncViewNode(node: Node): void {
     const viewNode = this.lastView
+                         .currentProject
                          .nodes
                          .find((n: Node) => n.id === node.id);
     Object.assign(viewNode, node);
@@ -274,13 +336,15 @@ export class EditorComponent implements OnInit {
     return _.cloneDeep(this.node);
   }
 
+  /*
   removeNodeFromService(node: Node): void {
     return this.nodeService.removeNode(node);
   }
+  */
 
   removeNode(): void {
     console.log('REMOVING NODE');
-    this.removeNodeFromService(this.selectedNode);
+    //this.removeNodeFromService(this.selectedNode);
     this.graph.removeSelectedNode();
     this.closeContextMenu();
   }
@@ -289,9 +353,13 @@ export class EditorComponent implements OnInit {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
     const currentView = this.currentView;
+
+    /*
     if (currentView.parentNode) {
       currentView.parentNode.children = currentView.nodes;
     }
+    */
+
     this.replaceRecentView(currentView);
     this.updateViewToService(currentView);
     this.closeContextMenu();
@@ -336,10 +404,29 @@ export class EditorComponent implements OnInit {
     return this.graph.state.selectedNode;
   }
 
+  addNodeToProject(project: Project, node: Node): void {
+    if (!project.nodes.findIndex((n: Node) => n.id === node.id)) {
+      project.nodes.push(node);
+    }
+  }
+
+  /**
+     * Update the nodes with the latest changes. This should be called
+     * after navigating to composition view because the user could insert,
+     * add children, to a node and thus it would need to be updated. */
+  updateProjectsFromService(projects: Array<Project>): void {
+    this.projectService.updateProjectsFromService(projects);
+  }
+
+  updateProjectFromService(project: Project): void {
+    this.projectService.updateProjectFromService(project);
+  }
+
   /**
      * Update the  nodes with the latest changes. This should be called
      * after navigating to composition view because the user could insert,
      * add children, to a node and thus it would needs to be updated. .*/
+  /*
   updateNodesFromService(nodes: Array<Node>): void {
     this.nodeService.updateNodesFromService(nodes);
   }
@@ -347,16 +434,31 @@ export class EditorComponent implements OnInit {
   updateNodeFromService(node: Node): void {
     this.nodeService.updateNodeFromService(node);
   }
+  */
 
   updateViewFromService(view: View): void {
-    this.updateNodesFromService(view.nodes);
-    this.updateNodeFromService(view.parentNode);
+    this.updateProjectsFromService(view.projects);
+    this.updateProjectFromService(view.currentProject);
+    //this.updateNodesFromService(view.nodes);
+    //this.updateNodeFromService(view.parentNode);
   }
 
   updateViewToService(view: View): void {
-    this.nodeService.updateViewToService(view);
+    this.projectService.updateViewToService(view);
+    //this.nodeService.updateViewToService(view);
   }
 
+  updateProjectToService(project: Project): void {
+    this.projectService.updateProjectToService(project);
+  }
+
+  updateProjectsToService(projects: Array<Project>): void {
+    projects.forEach((p: Project) => {
+      this.projectService.updateProjectToService(p);
+    })
+  }
+
+  /*
   updateNodeToService(node: Node): void {
     this.nodeService.updateNodeToService(node);
   }
@@ -366,6 +468,7 @@ export class EditorComponent implements OnInit {
       this.nodeService.updateNodeToService(n);
     });
   }
+  */
 
   viewComposition(content): void {
     if (this.selectedNode) {
@@ -376,7 +479,8 @@ export class EditorComponent implements OnInit {
         this.openNoCompositionModal(content);
       }
 
-      this.updateNodeFromService(this.selectedNode);
+      //this.updateNodeFromService(this.selectedNode);
+      this.updateProjectFromService(this.project);
 
       this.mainSvg.selectAll('*').remove();
       this.graph = new Graph(

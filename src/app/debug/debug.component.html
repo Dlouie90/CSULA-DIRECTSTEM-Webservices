@@ -1,7 +1,7 @@
-<div class="container" *ngIf="nodes">
+<div class="container" *ngIf="projects">
 
   <div class="card card-outline-primary "
-       *ngFor="let node of nodes">
-    <pre>{{ node | json}}</pre>
+       *ngFor="let project of projects">
+    <pre>{{ project | json}}</pre>
   </div>
 </div>

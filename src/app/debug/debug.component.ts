@@ -1,7 +1,10 @@
 import {Component,
         OnInit} from '@angular/core';
+
 import {Node} from '../shared/models/node.model';
 import {NodeService} from '../shared/services/node.service';
+import {Project} from '../shared/models/project.model';
+import {ProjectService} from '../shared/services/project.service';
 
 @Component({
   selector: 'app-debug',
@@ -9,13 +12,13 @@ import {NodeService} from '../shared/services/node.service';
   styleUrls: ['./debug.component.css']
 })
 export class DebugComponent implements OnInit {
-  nodes: Node[];
+  projects: Project[];
 
-  constructor(private nodeService: NodeService) {}
+  constructor(private projectService: ProjectService) {}
 
   ngOnInit() {
-    this.nodeService
-        .getNodes()
-        .subscribe((nodes: Node[]) => this.nodes = nodes);
+    this.projectService
+        .getProjects()
+        .subscribe((projects: Project[]) => this.projects = projects);
   }
 }

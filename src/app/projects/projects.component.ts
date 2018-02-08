@@ -2,8 +2,10 @@ import {Component,
         OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {Node} from '../shared/models/node.model';
-import {NodeService} from '../shared/services/node.service';
+import {Project} from '../shared/models/project.model';
+import {ProjectService} from '../shared/services/project.service';
+//import {Node} from '../shared/models/node.model';
+//import {NodeService} from '../shared/services/node.service';
 
 @Component({
   selector: 'app-projects',
@@ -11,28 +13,30 @@ import {NodeService} from '../shared/services/node.service';
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-  nodes: Node[];
+  projects: Project[];
+  /*nodes: Node[];*/
 
-  constructor(private nodeService: NodeService, private router: Router) {
+  constructor(private projectService: ProjectService, private router: Router) {
   }
 
   ngOnInit() {
-    this.getNodes();
+    console.log('loading projects');
+    this.getProjects();
   }
 
-  private getNodes(): void {
-    this.nodeService.getNodes()
+  private getProjects(): void {
+    this.projectService.getProjects()
         .subscribe(
-            (nodes: Node[]) => this.nodes = nodes,
+            (projects: Project[]) => this.projects = projects,
             () => {
-              this.nodes = [];
-              console.log('failed to load nodes, defaulting to empty :', []);
+              this.projects = [];
+              console.log('failed to load projects, defaulting to empty :', []);
             });
   }
 
   createNewProject(): void {
     console.log('created new project');
-    this.nodeService.createNew();
+    this.projectService.createNew();
   }
 
   navigateToDetail(id: number): void {

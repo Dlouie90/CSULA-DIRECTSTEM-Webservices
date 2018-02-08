@@ -1,11 +1,11 @@
 <div class="container modal-body">
-  <code>{{ inputNodes.length }}</code>
+  <code>{{ inputProjects.length }}</code>
   <ngb-tabset>
     <!-- Profile Tab-->
     <ngb-tab id="tab-0" title="Composition">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-composition-form [node]="node"></app-composition-form>
+          <app-composition-form [project]="project" [node]="node"></app-composition-form>
         </div>
       </ng-template>
     </ngb-tab>
@@ -31,8 +31,8 @@
     <ngb-tab id="tab-3" title="Configure Composition" [disabled]="isEmptyInputs">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-configure-composition [inputNodes]="inputNodes"
-                                     [node]="node"></app-configure-composition>
+          <app-configure-composition [inputProjects]="inputProjects"
+                                     [project]="project"></app-configure-composition>
         </div>
       </ng-template>
     </ngb-tab>
