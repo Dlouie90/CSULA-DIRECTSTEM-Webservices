@@ -290,7 +290,7 @@ export class EditorComponent implements OnInit {
         .then(
             (result: any) => {
               this.syncNode(this.selectedNode);
-              this.drawCurrentView()
+              this.drawCurrentView();
             },
             (reason: any) => {
               this.syncNode(this.selectedNode);
@@ -310,7 +310,7 @@ export class EditorComponent implements OnInit {
   /* Ensure that the parent.children (nodes) and view.nodes are in sync.
      * they could be out of sync if the user update the title/description */
   syncNode(node: Node): void {
-    this.syncParentChild(node);
+    //this.syncParentChild(node);
     this.syncViewNode(node);
   }
 
