@@ -19,11 +19,14 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   @Input()
   project: Project;
   @Input()
+  node: Node;
+  @Input()
   inputProjects: Project[] = [];
+  inputNodes: Node[] = [];
   services: IService[];
   selectedService: IService;
 
-  constructor(private projectService: ProjectService, public activeModal: NgbActiveModal) {
+  constructor(private projectService: ProjectService, private nodeService: NodeService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit(): void {
@@ -40,8 +43,10 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   }
 
   private getServices(): void {
-    this.projectService.getServices()
-        .subscribe(
+    if(!this.node) {
+      console.log("Displaying Project details");
+      this.projectService.getServices()
+          .subscribe(
             (services: IService[]) => {
               this.services = services;
             },
@@ -49,6 +54,19 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
               this.services = [];
               console.error(error);
             });
+    }
+    else {
+      console.log("Displaying Node details");
+      this.nodeService.getServices()
+          .subscribe(
+            (services: IService[]) => {
+              this.services = services;
+            },
+            (error: any) => {
+              this.services = [];
+              console.error(error);
+            });
+    }
   }
 
   onSelectService(service: IService): void {

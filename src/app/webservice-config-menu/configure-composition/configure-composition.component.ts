@@ -11,9 +11,12 @@ import {Project} from '../../shared/models/project.model';
 export class ConfigureCompositionComponent {
   @Input()
   project: Project;
+  node: Node;
   @Input()
   inputProjects: Project[];
+  inputNodes: Node[];
   selectedProject: Project;
+  selectedNode: Node;
 
   /* TODO: Implement onChange */
   onChange(value: any): void {}

@@ -109,7 +109,8 @@ export class EditorComponent implements OnInit {
     });
     */
     // TODO: get this id directly from the db
-    const node = new Node(Math.trunc(Math.random() * 999999999) + 1, 
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
                           this.rightClickPos.x, this.rightClickPos.y);
 
     // Add the clickedNodes as children of this node.
@@ -236,7 +237,8 @@ export class EditorComponent implements OnInit {
     });
     */
     // TODO: get this id directly from the db
-    const node = new Node(Math.trunc(Math.random() * 999999999) + 1, 
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
                           this.rightClickPos.x, this.rightClickPos.y);
 
     /* Update the view to include the new node. */
@@ -281,6 +283,7 @@ export class EditorComponent implements OnInit {
     const modalRef = this.modalService
                          .open(WebserviceConfigMenuComponent, {size: 'lg'});
     const inputNodes = this.getInputsToNode(this.selectedNode);
+    modalRef.componentInstance.project = this.project;
     modalRef.componentInstance.node = this.selectedNode;
     modalRef.componentInstance.inputNodes = inputNodes;
     modalRef.result

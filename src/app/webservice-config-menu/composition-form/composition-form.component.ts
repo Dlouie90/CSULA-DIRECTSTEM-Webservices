@@ -17,17 +17,26 @@ import {ProjectService} from '../../shared/services/project.service';
 export class CompositionFormComponent implements OnChanges, OnDestroy {
   @Input()
   project: Project;
+  @Input()
+  node: Node;
   projectForm: FormGroup;
   paramGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private projectService: ProjectService) {}
 
   ngOnChanges(): void {
-    if (!this.project) {
+    if (!this.project && !this.node) {
       return;
     }
 
-    this.projectForm = this.createFormGroup(this.project);
+    if(!this.node) {
+      console.log("displaying project");
+      this.projectForm = this.createFormGroup(this.project);
+    }
+    else {
+      console.log("displaying node");
+      this.projectForm = this.createFormGroup(this.node);
+    }
     this.paramGroup = this.formBuilder.group({});
   }
 
@@ -35,21 +44,21 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
     this.saveChange();
   }
 
-  private createFormGroup(project: Project): FormGroup {
+  private createFormGroup(data): FormGroup {
     return this.formBuilder.group({
-      id: project.id,
-      title: project.title,
-      description: project.description,
-      url: project.url,
-      parameters: this.createParameterFormArray(project),
-      demoInputs: this.createDemoInputsFormsArray(project.parameters)
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      url: data.url,
+      parameters: this.createParameterFormArray(data),
+      demoInputs: this.createDemoInputsFormsArray(data.parameters)
     });
   }
 
-  private createParameterFormArray(project: Project): FormArray {
-    const paramControlArray = project
-                                  .parameters
-                                  .map((param: string) => this.formBuilder.control(param));
+  private createParameterFormArray(data): FormArray {
+    const paramControlArray = data
+                              .parameters
+                              .map((param: string) => this.formBuilder.control(param));
     return this.formBuilder.array(paramControlArray);
   }
 
@@ -78,12 +87,33 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
   addParameter(param: string): void {
     this.parameters.push(this.formBuilder.control(param));
     this.demoInputs.push(this.formBuilder.control(''));
-    this.project.parameters.push(param);
+    if(!this.node)
+      this.project.parameters.push(param);
+    else {
+      // search for the right node to update
+      this.project.nodes.forEach((n: Node) => {
+        if(n.id == this.node.id)
+          n.parameters.push(param);
+      });
+    }
   }
 
   saveChange(): void {
-    this.project.title = this.projectForm.get('title').value;
-    this.project.description = this.projectForm.get('description').value;
+    if(!this.node) {
+      //this.project.parameters.push(param);
+      this.project.title = this.projectForm.get('title').value;
+      this.project.description = this.projectForm.get('description').value;
+    }
+    else {
+      // search for the right node to update
+      this.project.nodes.forEach((n: Node) => {
+        if(n.id == this.node.id) {
+          n.title = this.projectForm.get('title').value;
+          n.description = this.projectForm.get('description').value;
+        }
+      });
+    }
+    
     this.projectService.updateProjectToService(this.project);
   }
 }
