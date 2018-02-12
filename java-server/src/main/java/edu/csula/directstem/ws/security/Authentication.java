@@ -2,9 +2,13 @@ package edu.csula.directstem.ws.security;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -63,7 +67,7 @@ public class Authentication {
     }
     Connection conn = ConnectDB.getConnection();
     PreparedStatement p;
-    p = conn.prepareStatement("select count(email) from Users where email=? and password=?;");
+    p = conn.prepareStatement("select count(email) from users where email=? and password=?;");
     p.setString(1, username);
     p.setString(2, password);
     ResultSet rs = p.executeQuery();
@@ -75,10 +79,17 @@ public class Authentication {
     }
   }
 
-  private String issueToken(String username, String validUntil) throws NoSuchAlgorithmException { //should never throw but you never know. anyway, it'd be caught by the general 403.
-    MessageDigest digest = MessageDigest.getInstance("MD5"); //NOTE: MD5 is bad and we should not use it long-term, but it comes with the default MessageDigest class.
-    String saltedData = username + validUntil + "T3mP0rarypR1v@tekeY!"; //this is probably also not ideal, but yeah.
-    String hashedData = new String(Base64.base64Encode(digest.digest(saltedData.getBytes())));
-    return hashedData;
+  private String issueToken(int id) { 
+    Random random = new SecureRandom();
+    String expire = new SimpleDateFormat("yyyyMMddHHmm").format(new Date(System.currentTimeMillis()));
+    String token = expire + (new BigInteger(213, random).toString(52));
+    Connection conn = ConnectDB.getConnection();
+    PreparedStatement p;
+    p = conn.prepareStatement("UPDATE users SET token=? WHERE id=?");
+    p.setString(1, token);
+    p.setInt(2, id);
+    p.executeQuery();
+    p.close();
+    return token;
   }
 }

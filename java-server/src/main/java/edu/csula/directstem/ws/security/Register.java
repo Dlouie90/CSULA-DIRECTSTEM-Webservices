@@ -6,6 +6,8 @@ import java.sql.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import edu.csula.directstem.ws.db.ConnectDB;
 
 @Path("/register")
@@ -18,7 +20,7 @@ public class Register {
     try {
       p = conn.prepareStatement("insert into Users values (?,?);");
       p.setString(1, credentials.getUsername());
-      p.setString(2, credentials.getPassword());
+      p.setString(2, BCrypt.hashpw(credentials.getPassword(), BCrypt.gensalt(12)));
       p.executeUpdate();
       return Response.ok().build();
     } catch (SQLException e) {
