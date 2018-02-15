@@ -20,7 +20,7 @@ interface DemoQueryParam {
   styleUrls: ['./demo-app.component.css']
 })
 export class DemoAppComponent implements OnInit {
-  demoNode = new Node(-1, -1, -1);
+  demoNode = new Node(`NODE`, -1, -1, -1);
 
   paths: DemoQueryParam[];
   index = 1;

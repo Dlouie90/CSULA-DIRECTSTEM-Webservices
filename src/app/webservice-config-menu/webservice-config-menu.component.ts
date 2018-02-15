@@ -25,6 +25,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   inputNodes: Node[] = [];
   services: IService[];
   selectedService: IService;
+  showNode: boolean = false;
 
   constructor(private projectService: ProjectService, private nodeService: NodeService, public activeModal: NgbActiveModal) {
   }
@@ -45,6 +46,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   private getServices(): void {
     if(!this.node) {
       console.log("Displaying Project details");
+      this.showNode = false;
       this.projectService.getServices()
           .subscribe(
             (services: IService[]) => {
@@ -57,6 +59,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
     }
     else {
       console.log("Displaying Node details");
+      this.showNode = true;
       this.nodeService.getServices()
           .subscribe(
             (services: IService[]) => {
@@ -78,7 +81,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   onClose(reason: string): void {
     this.activeModal.close(reason);
   }
-
+  
   get isEmptyInputs(): boolean {
     return this.inputProjects.length === 0;
   }
