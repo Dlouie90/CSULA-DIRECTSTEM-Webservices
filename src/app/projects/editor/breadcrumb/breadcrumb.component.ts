@@ -25,7 +25,14 @@ export class BreadcrumbComponent implements OnInit {
   /** Return the parentNode title. If the parentNode is null then
      * it is a root view, return "root view" instead. */
   getViewTitle(view: View): string {
-    return view.currentProject ? Project.projectTitle(view.currentProject) : 'root-view';
+    var title = view.currentProject ? Project.projectTitle(view.currentProject) : 'root-view';
+    if(this.controller.views.indexOf(view) == 0)
+      title += ' (ROOT)';
+    return title;
     //return view.parentNode ? Node.nodeTitle(view.parentNode) : 'root-view';
+  }
+
+  isCurrent(view):boolean {
+    return view.currentProject.id == this.controller.project.id;
   }
 }

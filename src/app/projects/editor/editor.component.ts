@@ -142,7 +142,7 @@ export class EditorComponent implements OnInit {
 
     this.graph.insertNode(node);
 
-    this.graph.selectNode(node);
+    //this.graph.selectNode(node);
     this.node = node;
     this.compositeMake(content);
   }
