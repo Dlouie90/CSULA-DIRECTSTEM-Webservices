@@ -13,7 +13,8 @@ import {View} from '../../../shared/view.model';
 })
 export class BreadcrumbComponent implements OnInit {
   @Input()
-  views: Array<View>;
+  controller;
+  //views: Array<View>;
 
   constructor() {
   }

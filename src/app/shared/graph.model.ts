@@ -119,16 +119,6 @@ export class Graph {
     svgIn.on('mouseup', function(d) {
       thisGraph.svgMouseUp.call(thisGraph, d);
     });
-
-    //this.updateAllEdges();
-  }
-
-  updateAllEdges() {
-    const thisGraph = this;
-    this.edges.forEach((e:Edge) => {
-      //let source = thisGraph.svG.node
-      //thisGraph.dragLine.attr('d', 'M' + e.source.x + ',' + e.source.y + 'L' + e.target.x + ',' + e.target.y);
-    });
   }
 
   /**
@@ -352,10 +342,16 @@ export class Graph {
 
     d3Node.classed(final.SELECTED_CLASS, true);
 
+    this.selectNode(nodeData);
+  }
+
+  selectNode(node) {
+    const thisGraph = this;
+
     if (thisGraph.state.selectedNode) {
       thisGraph.removeSelectFromNode();
     }
-    thisGraph.state.selectedNode = nodeData;
+    thisGraph.state.selectedNode = node;
   }
 
   removeSelectFromNode() {

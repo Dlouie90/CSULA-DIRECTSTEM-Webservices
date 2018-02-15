@@ -48,7 +48,7 @@
   </ngb-tabset>
 
   <!-- Modal Close Buttons-->
-  <div class="modal-footer">
+  <div *ngIf="showNode" class="modal-footer">
     <button class="btn btn-success" (click)="onClose('close')">Close</button>
   </div>
 </div>

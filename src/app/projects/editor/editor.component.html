@@ -1,3 +1,40 @@
+<ng-template #compositeModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Composite Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Please choose a project to link to:&hellip;</p>
+    <table class="table table-hover table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center">ID</th>
+        <th class="text-center">Title</th>
+        <th class="text-center">Parameters</th>
+        <th class="text-center">Link</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let project of projects">
+        <td class="text-center">{{ project.id }}</td>
+        <td class="text-center">{{ project.title }}</td>
+        <td class="text-center">{{ project.parameters }}</td>
+        <td class="text-center">
+          <button class="btn btn-outline-info" (click)="compositeLink(project.id)">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>
+
 <!-- Radio: switch from editor to graph view -->
 <div class="my-center text-center">
   <div class="form-check form-check-inline">
@@ -39,7 +76,7 @@
 <!-- Editor View -->
 <div [hidden]="radioOptions !== 'editor'">
   <!-- Navigate through composition levels -->
-  <app-breadcrumb [views]="views"></app-breadcrumb>
+  <app-breadcrumb [controller]="this"></app-breadcrumb>
 
   <!-- The Visual Graph -->
   <div id="d3-editor"
@@ -138,31 +175,43 @@
 
   <!-- INSERT -->
   <a class="dropdown-item"
+     *ngIf="!graph.state.selectedNode"
      (click)="insertNode()">
     <i class="fa fa-plus-circle"
        aria-hidden="true"></i>&nbsp;Insert</a>
-  <!-- DELETE-->
-  <a class="dropdown-item"
-     (click)="removeSelected()">
-    <i class="fa fa-trash"
-       aria-hidden="true"></i>&nbsp;Delete</a>
   <!-- EDIT-->
   <a class="dropdown-item"
+     *ngIf="graph.state.selectedNode"
      (click)="edit()">
     <i class="fa fa-pencil"
        aria-hidden="true"></i>&nbsp;Edit</a>
+  <!-- DELETE-->
+  <a class="dropdown-item"
+     *ngIf="graph.state.selectedNode"
+     (click)="removeSelected()">
+    <i class="fa fa-trash"
+       aria-hidden="true"></i>&nbsp;Delete</a>
   <!-- COMPOSITE -->
   <a class="dropdown-item"
-     (click)="compositeClickNodes()">
+     *ngIf="!graph.state.selectedNode"
+     (click)="compositeCreate(compositeModal)">
     <i class="fa fa-plus-square-o"
        aria-hidden="true"></i>&nbsp;Composite</a>
+  <!-- Make -->
+  <a class="dropdown-item"
+     *ngIf="graph.state.selectedNode && !graph.state.selectedNode.composite_id"
+     (click)="compositeMake(compositeModal)">
+    <i class="fa fa-plus-square-o"
+       aria-hidden="true"></i>&nbsp;Make Composite</a>
   <!-- View -->
   <a class="dropdown-item"
-     (click)="viewComposition(emptyCompositionModal)">
+     *ngIf="graph.state.selectedNode && graph.state.selectedNode.composite_id"
+     (click)="compositeView(graph.state.selectedNode.composite_id)">
     <i class="fa fa-info-circle"
        aria-hidden="true"></i>&nbsp;Composition</a>
   <!-- Performance -->
   <a class="dropdown-item"
+     *ngIf="graph.state.selectedNode"
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>

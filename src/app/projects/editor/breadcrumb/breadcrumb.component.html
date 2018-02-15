@@ -1,7 +1,8 @@
 <div class="container">
   <nav class="breadcrumb">
     <button class="btn btn-outline-primary"
-            *ngFor="let view of views">
+            *ngFor="let view of controller.views"
+            (click)="controller.breadcrumbClick(view)">
       {{getViewTitle(view) | uppercase}}
     </button>
   </nav>

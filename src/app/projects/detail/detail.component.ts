@@ -17,7 +17,6 @@ import {ProjectService} from '../../shared/services/project.service';
 })
 export class DetailComponent implements OnInit {
   project: Project;
-
   constructor(private projectService: ProjectService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
