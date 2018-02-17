@@ -139,8 +139,7 @@ export class EditorComponent implements OnInit {
     const node = new Node(node_id,
                           this.rightClickPos.x, this.rightClickPos.y);
 
-    const oldView = _.last(this.views);    // the view before composition
-    const currentView = this.currentView;  // the view after composition;
+    const oldView = this.views[this.viewIndex];    // the view before composition
 
     if(oldView.currentProject)
       oldView.currentProject.nodes.push(node);
