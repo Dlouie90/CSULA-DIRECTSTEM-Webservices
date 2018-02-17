@@ -54,7 +54,7 @@ export class NodeService {
 
   createNew(pos?: {x: number, y: number}): Node {
     if (pos) {
-      const node = new Node("NODE", NodeService.generateTempId(), pos.x, pos.y);
+      const node = new Node(NodeService.generateTempId(), pos.x, pos.y);
       this.nodes.push(node);
       return node;
     } else {

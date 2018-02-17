@@ -31,6 +31,7 @@ export class EditorComponent implements OnInit {
   graph: Graph;
   closeResult: string;
   views: View[];
+  viewIndex;
   radioOptions: string;
   modal;
 
@@ -94,8 +95,14 @@ export class EditorComponent implements OnInit {
     this.graph = new Graph(this.mainSvg, project.nodes, project.edges);
 
     const project_index = this.views.findIndex((v:View) => v.currentProject.id == project.id);
-    if(project_index < 0 || project_index >= this.views.length)
+    if(project_index < 0 || project_index >= this.views.length) {
+      if(this.viewIndex < this.views.length - 1)
+        this.views.splice(this.viewIndex + 1, this.views.length - this.viewIndex - 1);
       this.views.push(new View([project], project));
+      this.viewIndex = this.views.length - 1;
+    }
+    else
+      this.viewIndex = project_index;
     this.graph.updateGraph();
   }
 
@@ -109,6 +116,9 @@ export class EditorComponent implements OnInit {
     // remove the current project from the list of projects
     var index = this.projects.indexOf(this.project);
     this.projects.splice(index, 1);
+
+    if(!this.node)
+      this.node = this.graph.state.selectedNode;
 
     this.modal = this.modalService.open(content);
 
@@ -126,11 +136,10 @@ export class EditorComponent implements OnInit {
     
     // TODO: get this id directly from the db
     let node_id = Math.trunc(Math.random() * 999999999) + 1;
-    const node = new Node(`COMP`, node_id,
+    const node = new Node(node_id,
                           this.rightClickPos.x, this.rightClickPos.y);
 
-    const oldView = _.last(this.views);    // the view before composition
-    const currentView = this.currentView;  // the view after composition;
+    const oldView = this.views[this.viewIndex];    // the view before composition
 
     if(oldView.currentProject)
       oldView.currentProject.nodes.push(node);
@@ -150,8 +159,15 @@ export class EditorComponent implements OnInit {
   compositeLink(project_id): void {
     console.log('LINKING A COMPOSITE NODE');
     if(this.node) {
+      var project_index = this.projects.findIndex((p:Project) => p.id == project_id);
+      var project = this.projects[project_index];
       this.node.composite_id = project_id;
+      this.node.title = project.title;
       this.updateProjectToService(this.project);
+      
+      // update the title of the current node on display (different from the one in the data cache)
+      this.syncNode(this.node);
+      this.drawCurrentView();
 
       if(this.modal != null)
         this.modal.close('confirmed');
@@ -248,7 +264,7 @@ export class EditorComponent implements OnInit {
 
   drawCurrentView() {
     console.log('DRAW CURRENT VIEW');
-    const recentView = _.last(this.views);
+    const recentView = this.views[this.viewIndex];
 
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
@@ -288,11 +304,11 @@ export class EditorComponent implements OnInit {
     */
     // TODO: get this id directly from the db
     let node_id = Math.trunc(Math.random() * 999999999) + 1;
-    const node = new Node(`NODE`, node_id,
+    const node = new Node(node_id,
                           this.rightClickPos.x, this.rightClickPos.y);
 
     /* Update the view to include the new node. */
-    const recentView = _.last(this.views);
+    const recentView = this.views[this.viewIndex];
 
     /*
     if (recentView.parentNode) {
@@ -303,8 +319,8 @@ export class EditorComponent implements OnInit {
     this.nodeService.add(node);
     */
 
-    if(recentView.currentProject)
-      recentView.currentProject.nodes.push(node);
+    //if(recentView.currentProject)
+      //recentView.currentProject.nodes.push(node);
 
     // update the project in current view
     this.addNodeToProject(recentView.currentProject, node);
@@ -371,7 +387,7 @@ export class EditorComponent implements OnInit {
   }
 
   syncViewNode(node: Node): void {
-    const viewNode = this.lastView
+    const viewNode = this.views[this.viewIndex]
                          .currentProject
                          .nodes
                          .find((n: Node) => n.id === node.id);
@@ -519,30 +535,6 @@ export class EditorComponent implements OnInit {
     });
   }
   */
-
-  viewComposition(content): void {
-    if (this.selectedNode) {
-      console.log('VIEWING COMPOSITION');
-
-      /* Alert the users with a modal that this view has no composition nodes */
-      if (this.selectedNode.children.length === 0) {
-        this.openNoCompositionModal(content);
-      }
-
-      //this.updateNodeFromService(this.selectedNode);
-      // TODO: make this display the sub project
-      /*
-      this.updateProjectFromService(this.project);
-
-      this.mainSvg.selectAll('*').remove();
-      this.graph = new Graph(
-          this.mainSvg, this.selectedNode.children, this.selectedNode);
-      this.graph.updateGraph();
-      this.views.push(this.graph.currentView);
-      */
-    }
-    this.closeContextMenu();
-  }
 
   viewPerformance(modal): void {
     this.openQuickEditModal(modal);

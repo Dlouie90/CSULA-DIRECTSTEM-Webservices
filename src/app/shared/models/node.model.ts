@@ -21,14 +21,14 @@ export class Node {
   }
 
   static create(id: number) {
-    return new Node(`NODE`, id, 300, 100);
+    return new Node(id, 300, 100);
   }
 
   static nodeTitle(node: Node): string{
       return node.title || `NODE-${node.id}`}
 
-  constructor(public pre: string, public id: number, public x: number, public y: number) {
-    this.title = pre + `_${id}`;
+  constructor(public id: number, public x: number, public y: number) {
+    this.title = `NODE_${id}`;
   }
 }
 
