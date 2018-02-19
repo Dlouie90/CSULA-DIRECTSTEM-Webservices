@@ -84,10 +84,10 @@ create table users (
     id              integer auto_increment,
     firstname       varchar(255),
     lastname		varchar(255),
+    email         varchar(255),
     username        varchar(255),
     passwordHash        varchar(255),
-    email         varchar(255),
-    token char(64),
+    token varchar(255),
     primary key(id)
 );
 
