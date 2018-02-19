@@ -4,9 +4,11 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpModule} from '@angular/http';
 import {ProjectDemoComponent} from './project-demo.component';
+import {GetAllProjectsComponent} from './forms/get-all-projects/get-all-projects.component';
 
 @NgModule({
-    declarations: [ProjectDemoComponent],
+    declarations: [ProjectDemoComponent,
+        GetAllProjectsComponent],
     imports: [NgbModule,
         BrowserModule,
         ReactiveFormsModule,

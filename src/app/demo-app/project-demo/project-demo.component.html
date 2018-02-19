@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-6">
+        <ngb-accordion #acc="ngbAccordion" activeIds="0">
+
+            <ngb-panel title="Get All Projects" id="0">
+                <ng-template ngbPanelContent>
+                    <app-get-all-projects (onGetAllProject)="onResult($event)"></app-get-all-projects>
+                </ng-template>
+            </ngb-panel>
+
+            <ngb-panel title="Get Project By ID" id="1">
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+
+            <ngb-panel title="Create Project" id="2">
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+
+            <ngb-panel title="Delete Project By ID" id="3">
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+
+            <ngb-panel title="Update Project By ID" id="4">
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+
+            <ngb-panel title="" id="5">
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+
+        </ngb-accordion>
+    </div>
+    <div class="card col-6">
+        <h2 class="card-header">Result</h2>
+        <div class="card-block">
+            <pre>
+                {{requestResult | json}}
+            </pre>
+        </div>
+    </div>
+</div>

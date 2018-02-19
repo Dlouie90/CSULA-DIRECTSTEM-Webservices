@@ -28,26 +28,15 @@ CREATE TABLE Node (
   PRIMARY KEY (ID)
 );
 
-CREATE TABLE Input (
-  maID INT(11) DEFAULT NULL,
-  inID INT(11) DEFAULT NULL,
-  KEY maID (maID),
-  KEY inID (inID),
-  FOREIGN KEY (maID) REFERENCES Node (ID)
+CREATE TABLE EDGES (
+  ID       INT(11) NOT NULL AUTO_INCREMENT,
+  sourceID INT(11) NOT NULL,
+  destID   INT(11) NOT NULL,
+  FOREIGN KEY (sourceID) REFERENCES Node (ID)
     ON DELETE CASCADE,
-  FOREIGN KEY (inID) REFERENCES Node (ID)
-    ON DELETE CASCADE
-);
-
-CREATE TABLE Output (
-  maID  INT(11) DEFAULT NULL,
-  outID INT(11) DEFAULT NULL,
-  KEY maID (maID),
-  KEY outID (outID),
-  FOREIGN KEY (maID) REFERENCES Node (ID)
+  FOREIGN KEY (destID) REFERENCES Node (ID)
     ON DELETE CASCADE,
-  FOREIGN KEY (outID) REFERENCES Node (ID)
-    ON DELETE CASCADE
+  PRIMARY KEY (ID)
 );
 
 CREATE TABLE RefServiceXNode (
@@ -58,25 +47,6 @@ CREATE TABLE RefServiceXNode (
   FOREIGN KEY (nID) REFERENCES Node (ID)
     ON DELETE CASCADE,
   FOREIGN KEY (sID) REFERENCES Service (ID)
-    ON DELETE CASCADE
-);
-
-CREATE TABLE RefChildrenNodes (
-  pID INT(11) DEFAULT NULL,
-  cID INT(11) DEFAULT NULL,
-  UNIQUE KEY cID (cID),
-  FOREIGN KEY (pID) REFERENCES Node (ID)
-    ON DELETE RESTRICT,
-  FOREIGN KEY (cID) REFERENCES Node (ID)
-    ON DELETE CASCADE
-);
-
-CREATE TABLE RefNeighbors (
-  maID INT(11) DEFAULT NULL,
-  neID INT(11) DEFAULT NULL,
-  FOREIGN KEY (maID) REFERENCES Node (ID)
-    ON DELETE CASCADE,
-  FOREIGN KEY (neID) REFERENCES Node (ID)
     ON DELETE CASCADE
 );
 
@@ -121,35 +91,20 @@ INSERT INTO RefServicexNode (nID, sID) VALUES (1, 2);
 INSERT INTO RefServicexNode (nID, sID) VALUES (3, 1);
 INSERT INTO RefServicexNode (nID, sID) VALUES (2, 3);
 
-INSERT INTO RefChildrenNodes (pID, cID) VALUES (1, 2);
-INSERT INTO RefChildrenNodes (pID, cID) VALUES (1, 3);
-INSERT INTO Refchildrennodes (pID, cID) VALUES (1, 4);
-
-INSERT INTO RefNeighbors (maID, neID) VALUES (1, 5);
-INSERT INTO RefNeighbors (maID, neID) VALUES (1, 6);
-INSERT INTO RefNeighbors (maID, neID) VALUES (5, 1);
-INSERT INTO RefNeighbors (maID, neID) VALUES (5, 6);
-INSERT INTO RefNeighbors (maID, neID) VALUES (6, 1);
-INSERT INTO RefNeighbors (maID, neID) VALUES (6, 5);
-
-INSERT INTO RefNeighbors (maID, neID) VALUES (2, 3);
-INSERT INTO RefNeighbors (maID, neID) VALUES (2, 4);
-INSERT INTO RefNeighbors (maID, neID) VALUES (3, 2);
-INSERT INTO RefNeighbors (maID, neID) VALUES (3, 4);
-INSERT INTO RefNeighbors (maID, neID) VALUES (4, 2);
-INSERT INTO RefNeighbors (maID, neID) VALUES (4, 3);
-
-INSERT INTO Input (maID, inID) VALUES (2, 3);
-INSERT INTO Input (maID, inID) VALUES (2, 4);
-
-INSERT INTO Output (maID, outID) VALUES (4, 2);
-INSERT INTO Output (maID, outID) VALUES (3, 2);
-
 INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Shay', 'Nguyen', 'shay', '1234', 'shay@nguyen.com');
-
+VALUES ('Bob', 'Dole', 'bob1337', '1234', 'bob@gmail.com');
 INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Leanne', 'Graham', 'leanne', '1234', 'leanne@graham.com');
-
+VALUES ('Hongsuk', 'Choi', 'choi', '1234', 'choi@gmail.com');
 INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Ervin', 'Howell', 'ervin', '1234', 'ervin@howell.com');
+VALUES ('Ice', 'Bear', 'icebear', '1234', 'icebear@gmail.com');
+
+INSERT INTO PROJECTS (title, description)
+VALUES ('Project 101', 'A cool project');
+INSERT INTO PROJECTS (title, description)
+VALUES ('Project 555', 'Has 5 stuff');
+INSERT INTO PROJECTS (title, description)
+VALUES ('Project 911', 'Call 911');
+INSERT INTO PROJECTS (title, description)
+VALUES ('Project 1337', 'Leet Project');
+INSERT INTO PROJECTS (title, description)
+VALUES ('Project 666', 'The devil''s project');
