@@ -9,20 +9,22 @@ public class User {
   private String email;
   private String username;
   private String passwordHash;
+  private String token;
 
 
   public User(int id, String firstName, String lastName,
-      String email, String username, String passwordHash) {
+      String email, String username, String passwordHash, String token) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.passwordHash = passwordHash;
     this.username = username;
+    this.token = token;
   }
   
   public void setPassword(String password) {
-    this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+    this.passwordHash = hashPassword(password);
   }
   
   public boolean isPasswordValid(String password) {
@@ -71,5 +73,17 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+  
+  public String getToken() {
+    return this.token;
+  }
+  
+  public void setToken(String token) {
+    this.token = token;
+  }
+  
+  public static String hashPassword(String password) {
+    return BCrypt.hashpw(password, BCrypt.gensalt(12));
   }
 }
