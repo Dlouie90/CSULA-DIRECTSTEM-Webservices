@@ -6,14 +6,8 @@ export class Node {
   description: string;
   url: string;
   composite_id: number;
-  service: IService;
   parameters: string[] = [];
   parameterEntries: ParameterEntry[] = [];
-  neighbors: Node[] = [];
-  children: Node[] = [];
-  inputs: Node[] = [];
-  outputs: Node[] = [];
-  inputEntries: InputEntry[] = [];
 
   /** Return true if the node is neither a input or output node. */
   static isRegular(node) {

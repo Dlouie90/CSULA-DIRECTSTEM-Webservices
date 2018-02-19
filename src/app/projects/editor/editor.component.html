@@ -175,51 +175,46 @@
 
   <!-- INSERT -->
   <a class="dropdown-item"
-     *ngIf="!graph.state.selectedNode"
+     *ngIf="!graph.state.selectedNode && !graph.state.selectedEdge"
      (click)="insertNode()">
     <i class="fa fa-plus-circle"
        aria-hidden="true"></i>&nbsp;Insert</a>
   <!-- EDIT-->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode"
+     *ngIf="graph.state.selectedNode && !graph.state.selectedEdge"
      (click)="edit()">
     <i class="fa fa-pencil"
        aria-hidden="true"></i>&nbsp;Edit</a>
   <!-- DELETE-->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode"
+     *ngIf="graph.state.selectedNode || graph.state.selectedEdge"
      (click)="removeSelected()">
     <i class="fa fa-trash"
        aria-hidden="true"></i>&nbsp;Delete</a>
   <!-- COMPOSITE -->
   <a class="dropdown-item"
-     *ngIf="!graph.state.selectedNode"
+     *ngIf="!graph.state.selectedNode && !graph.state.selectedEdge"
      (click)="compositeCreate(compositeModal)">
     <i class="fa fa-plus-square-o"
        aria-hidden="true"></i>&nbsp;Composite</a>
   <!-- Make -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && !graph.state.selectedNode.composite_id"
+     *ngIf="graph.state.selectedNode && !graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
      (click)="compositeMake(compositeModal)">
     <i class="fa fa-plus-square-o"
        aria-hidden="true"></i>&nbsp;Make Composite</a>
   <!-- View -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && graph.state.selectedNode.composite_id"
+     *ngIf="graph.state.selectedNode && graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
      (click)="compositeView(graph.state.selectedNode.composite_id)">
-    <i class="fa fa-info-circle"
+    <i class="fa fa-sitemap"
        aria-hidden="true"></i>&nbsp;Composition</a>
   <!-- Performance -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode"
+     *ngIf="graph.state.selectedNode && !graph.state.selectedEdge"
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>
-  <!-- RETURN TO PARENT -->
-  <a class="dropdown-item"
-     (click)="returnToParent()">
-    <i class="fa fa-step-backward"
-       aria-hidden="true"></i>&nbsp;&nbsp;Back</a>
   <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--<a class="dropdown-item"-->
   <!--(click)="debugNode(debugModal)">-->

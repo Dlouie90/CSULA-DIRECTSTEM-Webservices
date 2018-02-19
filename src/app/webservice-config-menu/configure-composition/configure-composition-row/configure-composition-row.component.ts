@@ -26,9 +26,10 @@ export class ConfigureCompositionRowComponent implements OnInit, OnChanges {
   ngOnChanges(): void {}
 
   private loadPreset(): void {
+    /*
     this.selectedInputEntry = this.node
                                   .inputEntries
-                                  .find((value: InputEntry) => value.toParameter === this.parameter);
+                                  .find((value: InputEntry) => value.toParameter === this.parameter);*/
   }
 
   isSelected(inputNode: Node): boolean {
@@ -41,20 +42,22 @@ export class ConfigureCompositionRowComponent implements OnInit, OnChanges {
 
   onChange(stringId: string): void {
     const id = parseInt(stringId, 10);
+    /*
     const selectedInputNode = this.inputNodes
-                                  .find((value: Node) => value.id === id);
+                                  .find((value: Node) => value.id === id);*/
 
-    const entry: InputEntry = {
+    /*const entry: InputEntry = {
       fromNode: selectedInputNode,
       toParameter: this.parameter
-    };
+    };*/
 
+    /*
     const newEntries = this.node
                            .inputEntries
-                           .filter((value: InputEntry) => value.toParameter !== this.parameter);
+                           .filter((value: InputEntry) => value.toParameter !== this.parameter);*/
 
-    newEntries.push(entry);
-    this.node.inputEntries = newEntries;
-    this.selectedInputEntry = entry;
+    //newEntries.push(entry);
+    //this.node.inputEntries = newEntries;
+    //this.selectedInputEntry = entry;
   }
 }

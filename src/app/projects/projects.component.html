@@ -24,6 +24,9 @@
         <button class="btn btn-outline-info" (click)="navigateToDetail(project.id)">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </button>
+        <button class="btn btn-outline-danger" (click)="deleteProject(project.id)">
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
       </td>
       <td class="text-center">
         <button class="btn btn-outline-info" (click)="navigateToEditor(project.id)">

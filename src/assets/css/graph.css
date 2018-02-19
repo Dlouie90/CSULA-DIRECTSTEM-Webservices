@@ -16,6 +16,22 @@ g.conceptG circle {
   stroke-width : 4px;
 }
 
+g.node-composite circle {
+  fill         : rgb(255, 238, 200);
+  stroke       : rgb(240, 210, 185);
+  stroke-width : 4px;
+}
+
+g.node-composite-selected circle {
+  stroke       : rgb(245, 188, 51) !important;
+  stroke-width : 5px;
+}
+
+g.node-selected circle {
+  stroke       : rgb(51, 108, 215) !important;
+  stroke-width : 5px;
+}
+
 div#d3-editor text {
   fill        : rgb(34, 34, 35);
   font-size   : 20px;
@@ -31,11 +47,6 @@ text.tree-text {
   /*fill   : rgb(255, 245, 117);*/
   /*stroke : rgb(235, 225, 97) !important;*/
 /*}*/
-
-.selected circle {
-  stroke       : rgb(51, 108, 215) !important;
-  stroke-width : 15px;
-}
 
 g.clicked-node circle {
   fill : pink !important;

@@ -5,7 +5,6 @@ import {NgbActiveModal,
         NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {ShareModule} from '../share.module';
-import {NodeService} from '../shared/services/node.service';
 
 import {CompositionFormComponent} from './composition-form/composition-form.component';
 import {ConfigureCompositionRowComponent} from './configure-composition/configure-composition-row/configure-composition-row.component';
@@ -41,7 +40,6 @@ import {WebserviceRowComponent} from './webservice-row/webservice-row.component'
   ],
   providers: [
     NgbActiveModal,
-    NodeService,
   ],
   entryComponents: [],
 })
