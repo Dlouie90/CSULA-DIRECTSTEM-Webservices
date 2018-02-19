@@ -12,9 +12,14 @@ const final = {
   DELETE_KEY: 46,
 
   /* ---------------  CSS CLASS --------------- */
-  SELECTED_CLASS: 'selected',
+  /*
+   | CSS file located in /src/assets/css
+   */
+  SELECTED_CLASS: 'node-selected',
   CONNECTED_NODE_CLASS: 'connect-node',
   CIRCLE_G_CLASS: 'conceptG',
+  NODE_COMPOSITE_CLASS: 'node-composite',
+  NODE_COMPOSITE_SELECTED_CLASS: 'node-composite-selected',
   GRAPH_CLASS: 'graph',
   CLICKED_NODE: 'clicked-node'
 };
@@ -164,12 +169,12 @@ export class Graph {
       this.spliceLinksFormNode(n);
       // Remove the node from all neighbors field
       // but not if its is associated with a clickNodes
-      this.removeNeighborsToClickNodes();
-      this.removeNonClickNeighbors();
+      //this.removeNeighborsToClickNodes();
+      //this.removeNonClickNeighbors();
     });
 
     // Add the clickNodes as children to the input node.
-    node.children = this.clickNodes;
+    //node.children = this.clickNodes;
     this.clickNodes = [];
     this.insertNode(node);
   }
@@ -298,7 +303,7 @@ export class Graph {
 
       // if the edge is not a duplicate, add it to the graph
       if (!filtRes[0].length) {
-        mouseDownNode.neighbors.push(d);
+        // mouseDownNode.neighbors.push(d);
         thisGraph.edges.push(newEdge);
         thisGraph.updateGraph();
       }
@@ -340,7 +345,16 @@ export class Graph {
   replaceSelectNode(d3Node, nodeData) {
     const thisGraph = this;
 
-    d3Node.classed(final.SELECTED_CLASS, true);
+    console.log("replacing select on node");
+
+    if(nodeData.composite_id == null) {
+      console.log("REGULAR NODE")
+      d3Node.classed(final.SELECTED_CLASS, true);
+    }
+    else {
+      console.log("COMPOSITE NODE");
+      d3Node.classed(final.NODE_COMPOSITE_SELECTED_CLASS, true);
+    }
 
     this.selectNode(nodeData);
   }
@@ -358,9 +372,13 @@ export class Graph {
     const thisGraph = this;
 
     thisGraph.circles.filter(function(cd) {
-                       return cd.id === thisGraph.state.selectedNode.id;
+                       return cd.id === thisGraph.state.selectedNode.id && cd.composite_id == null;
                      })
         .classed(final.SELECTED_CLASS, false);
+    thisGraph.circles.filter(function(d) {
+                       return d.id === thisGraph.state.selectedNode.id && d.composite_id != null;
+                     })
+        .classed(final.NODE_COMPOSITE_SELECTED_CLASS, false);
 
     thisGraph.state.selectedNode = null;
   }
@@ -381,7 +399,7 @@ export class Graph {
       /* Remove all edges originating from this node. */
       thisGraph.spliceLinksFormNode(selectedNode);
       /* Remove the node from all neighbors field */
-      this.removeFromNeighbor(selectedNode);
+      //this.removeFromNeighbor(selectedNode);
       state.selectedNode = null;
       thisGraph.updateGraph();
     }
@@ -414,12 +432,15 @@ export class Graph {
     })[0];
 
     /* Remove the target node from the node neighbors field. */
+    /*
     node.neighbors = node.neighbors.filter(currentNode => {
       return currentNode.id !== edge.target.id;
     });
+    */
   }
 
   /** Remove the nodeToRemove from all nodes.neighbor field */
+  /*
   removeFromNeighbor(nodeToRemove) {
     this.nodes.forEach(node => {
       node.neighbors.forEach((neighbor, index) => {
@@ -429,7 +450,9 @@ export class Graph {
       });
     });
   }
+  */
 
+  /*
   removeNonClickNeighbors(): void {
     this.clickNodes.forEach((n: Node) => {
       n.neighbors.forEach((neighbor, index) => {
@@ -439,7 +462,9 @@ export class Graph {
       });
     });
   }
+  */
 
+  /*
   removeNeighborsToClickNodes(): void {
     this.nodes.forEach((n: Node) => {
       n.neighbors.forEach((neighbor, index) => {
@@ -449,6 +474,7 @@ export class Graph {
       });
     });
   }
+  */
 
   isClickNode(node: Node): boolean {
     return this.clickNodes.findIndex((n: Node) => n.id === node.id) !== -1;
@@ -558,11 +584,13 @@ export class Graph {
     thisGraph.circles
         .attr('transform', function(d) {
           return 'translate(' + d.x + ',' + d.y + ')';
-        })
+        });
         // Enable/disable clickNodes css
+        /*
         .classed(final.CLICKED_NODE, function(d) {
           return thisGraph.clickNodes.findIndex((n: Node) => n.id === d.id) !== -1;
         });
+        */
 
     // add new circles to the graph(they are wrapped in <g>)
     const newGs = thisGraph.circles.enter()
@@ -571,6 +599,9 @@ export class Graph {
     newGs.classed(final.CIRCLE_G_CLASS, true)
         .attr('transform', function(d) {
           return 'translate(' + d.x + ',' + d.y + ')';
+        })
+        .classed(final.NODE_COMPOSITE_CLASS, function(d) {
+          return d.composite_id != null;
         })
         .on('click', function(d: Node) {
           thisGraph.toggleClickNodes(d);
@@ -601,6 +632,7 @@ export class Graph {
         .text(function(d) {
           return Node.nodeTitle(d);
         });
+    /*
     newGs.append('text')
         .classed('children', true)
         .attr('text-anchor', 'middle')
@@ -609,7 +641,7 @@ export class Graph {
           if (d.children.length > 0) {
             return `(${d.children.length})`;
           }
-        });
+        });*/
 
     // remove old nodes;
     thisGraph.circles.exit().remove();

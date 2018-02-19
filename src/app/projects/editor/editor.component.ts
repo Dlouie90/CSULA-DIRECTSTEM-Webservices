@@ -117,9 +117,6 @@ export class EditorComponent implements OnInit {
     var index = this.projects.indexOf(this.project);
     this.projects.splice(index, 1);
 
-    if(!this.node)
-      this.node = this.graph.state.selectedNode;
-
     this.modal = this.modalService.open(content);
 
     this.modal.result.then((result) => {
@@ -151,22 +148,22 @@ export class EditorComponent implements OnInit {
 
     this.graph.insertNode(node);
 
-    //this.graph.selectNode(node);
-    this.node = node;
+    this.graph.selectNode(node);
     this.compositeMake(content);
   }
 
   compositeLink(project_id): void {
     console.log('LINKING A COMPOSITE NODE');
-    if(this.node) {
+    if(this.graph.state.selectedNode) {
+      var node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == this.graph.state.selectedNode.id)];
       var project_index = this.projects.findIndex((p:Project) => p.id == project_id);
       var project = this.projects[project_index];
-      this.node.composite_id = project_id;
-      this.node.title = project.title;
+      node.composite_id = project_id;
+      node.title = project.title;
       this.updateProjectToService(this.project);
       
       // update the title of the current node on display (different from the one in the data cache)
-      this.syncNode(this.node);
+      this.syncNode(node);
       this.drawCurrentView();
 
       if(this.modal != null)
@@ -179,9 +176,11 @@ export class EditorComponent implements OnInit {
     console.log('ID   : ' + project_id);
 
     this.closeContextMenu();
-    this.node = this.graph.state.selectedNode
+    var node = this.graph.state.selectedNode;
 
-    if(this.node) {
+    if(node) {
+      var s_node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == node.id)];
+
       this.getProjects();
 
       // remove the current project from the list of projects
@@ -192,8 +191,9 @@ export class EditorComponent implements OnInit {
       console.log('INDEX: ' + project_index);
       if(project_index < 0 || project_index >= this.projects.length) {
         console.log('COULD NOT FIND A PROJECT WITH THAT ID!');
-        this.node.composite_id = null;
+        s_node.composite_id = null;
         this.updateProjectToService(this.project);
+        this.initGraph(this.project);
         return;
       }
 
@@ -295,6 +295,7 @@ export class EditorComponent implements OnInit {
      * Also add the node into its parent.children array. */
   insertNode(): void {
     console.log('adding a new node');
+    this.closeContextMenu();
     const OFFSET = -120;
     /*
     const node = this.nodeService.createNew({
@@ -328,8 +329,6 @@ export class EditorComponent implements OnInit {
     this.updateProjectsToService(recentView.projects);
 
     this.graph.insertNode(node);
-
-    this.closeContextMenu();
   }
 
   get lastView(): View {

@@ -39,6 +39,15 @@ export class ProjectsComponent implements OnInit {
     this.projectService.createNew();
   }
 
+  deleteProject(project_id: number):void {
+    var index = this.projects.findIndex((p:Project) => p.id == project_id);
+    if (index < 0) {
+      console.log("ERROR: COULD NOT FIND PROJECT WITH ID=" + project_id);
+    }
+    var project = this.projects[index];
+    this.projectService.removeProject(project);
+  }
+
   navigateToDetail(id: number): void {
     this.router
         .navigate(['projects', id, 'detail'])
