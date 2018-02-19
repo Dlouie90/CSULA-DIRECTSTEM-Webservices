@@ -632,6 +632,7 @@ export class Graph {
         .text(function(d) {
           return Node.nodeTitle(d);
         });
+    /*
     newGs.append('text')
         .classed('children', true)
         .attr('text-anchor', 'middle')
@@ -640,7 +641,7 @@ export class Graph {
           if (d.children.length > 0) {
             return `(${d.children.length})`;
           }
-        });
+        });*/
 
     // remove old nodes;
     thisGraph.circles.exit().remove();
