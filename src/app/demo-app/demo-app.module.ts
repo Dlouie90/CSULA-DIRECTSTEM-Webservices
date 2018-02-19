@@ -10,24 +10,27 @@ import {WebserviceModalModule} from '../webservice-config-menu/webservice-modal.
 import {DemoAppRoutingModule} from './demo-app-routing.module';
 import {DemoAppComponent} from './demo-app.component';
 import {UserDemoModule} from './user-demo/user-demo.module';
+import {ProjectDemoModule} from './project-demo/project-demo.module';
 
 @NgModule({
-  declarations: [
-    DemoAppComponent,
-  ],
-  imports: [
-    BrowserModule,
-    HttpModule,
-    WebserviceModalModule,
-    DemoAppRoutingModule,
-    UserDemoModule,
-    SplitPanelLoginModule,
-    ServiceListModule,
-  ],
-  exports: [],
-  providers: [],
-  entryComponents: [
-    WebserviceConfigMenuComponent
-  ]
+    declarations: [
+        DemoAppComponent,
+    ],
+    imports: [
+        BrowserModule,
+        HttpModule,
+        WebserviceModalModule,
+        DemoAppRoutingModule,
+        UserDemoModule,
+        SplitPanelLoginModule,
+        ServiceListModule,
+        ProjectDemoModule
+    ],
+    exports: [],
+    providers: [],
+    entryComponents: [
+        WebserviceConfigMenuComponent
+    ]
 })
-export class DemoAppModule {}
+export class DemoAppModule {
+}

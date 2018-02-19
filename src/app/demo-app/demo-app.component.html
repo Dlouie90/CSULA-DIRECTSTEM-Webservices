@@ -1,28 +1,31 @@
 <div class="container-fluid mx-3">
-  <div class="row">
-    <nav class="nav flex-column col-2">
-      <a class="nav-link" *ngFor="let entry of paths"
-         routerLinkActive="active" [routerLink]="['/demo']" [queryParams]="entry.queryParams">
-        {{ entry.name }}</a>
-    </nav>
+    <div class="row">
+        <nav class="nav flex-column col-2">
+            <a class="nav-link" *ngFor="let entry of paths"
+               routerLinkActive="active" [routerLink]="['/demo']" [queryParams]="entry.queryParams">
+                {{ entry.name }}</a>
+        </nav>
 
-    <div class="col-10" [ngSwitch]="index">
-      <section *ngSwitchCase="1">
-        <app-service-list></app-service-list>
-      </section>
+        <div class="col-10" [ngSwitch]="index">
+            <section *ngSwitchCase="1">
+                <app-service-list></app-service-list>
+            </section>
 
-      <section *ngSwitchCase="2">
-        <button class="btn btn-outline-info" (click)="openConfigMenu()">Open Modal</button>
-      </section>
+            <section *ngSwitchCase="2">
+                <button class="btn btn-outline-info" (click)="openConfigMenu()">Open Modal</button>
+            </section>
 
-      <section *ngSwitchCase="3">
-        <app-user-demo></app-user-demo>
-      </section>
+            <section *ngSwitchCase="3">
+                <app-user-demo></app-user-demo>
+            </section>
 
-      <section *ngSwitchCase="4">
-        <button class="btn btn-outline-primary" (click)="openSplitPanel()">Open Split Panel Modal
-        </button>
-      </section>
+            <section *ngSwitchCase="4">
+                <button class="btn btn-outline-primary" (click)="openSplitPanel()">Open Split Panel Modal
+                </button>
+            </section>
+            <section *ngSwitchCase="5">
+
+            </section>
+        </div>
     </div>
-  </div>
 </div>
