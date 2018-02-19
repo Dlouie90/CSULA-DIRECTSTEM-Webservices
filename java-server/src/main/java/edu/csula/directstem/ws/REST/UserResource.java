@@ -77,20 +77,4 @@ public class UserResource {
         .entity(new Gson().toJson(result))
         .build();
   }
-
-  @POST
-  @Path("/login")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response loginUser(String user) {
-    System.out.println("POST - /user/login");
-
-    /* will definitely contains email & password for logging in*/
-    User potentialUser = new Gson().fromJson(user, User.class);
-    LoginUserResult result = UserDatabase.loginUser(potentialUser);
-    return Response
-        .status(Response.Status.OK)
-        .entity(new Gson().toJson(result))
-        .build();
-  }
 }
