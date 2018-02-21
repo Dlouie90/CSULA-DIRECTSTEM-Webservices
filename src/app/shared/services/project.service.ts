@@ -15,6 +15,9 @@ import {Subject} from 'rxjs/Subject';
 import {Project} from '../models/project.model';
 import {IService} from '../models/service.interface';
 import {View} from '../view.model';
+import {CreateProjectResponse} from '../models/server-response/create-project-response.model';
+import {GetUserByIdResponse} from '../models/server-response/get-user-by-id-response';
+import {GetProjectByIdResponse} from '../models/server-response/get-project-by-id-response';
 
 @Injectable()
 export class ProjectService {
@@ -61,10 +64,6 @@ export class ProjectService {
 
     getProjects(): Observable<Project[]> {
         return Observable.of(this.projects);
-    }
-
-    getProjectsDb(): Observable<any> {
-        return this.http.get(this.baseUrl).map((res: Response) => res.json());
     }
 
     getProject(id: number): Observable<Project> {
@@ -147,5 +146,39 @@ export class ProjectService {
         if (index !== -1) {
             array.splice(index, 1);
         }
+    }
+
+    /**
+     *  Database Methods Below
+     */
+    getProjectsDb(): Observable<any> {
+        return this.http.get(this.baseUrl).map((res: Response) => res.json());
+    }
+
+    getProjectByIdDb(id: number): Observable<GetProjectByIdResponse> {
+        const url = `${this.baseUrl}/${id}`;
+        return this.http
+            .get(url)
+            .map((res: Response) => res.json());
+    }
+
+    createProjectDb(project: Project): Observable<CreateProjectResponse> {
+        return this.http
+            .post(this.baseUrl, project)
+            .map((res: Response) => res.json());
+    }
+
+    deleteProjectById(id: number): Observable<any> {
+        const url = `${this.baseUrl}/${id}`;
+        return this.http
+            .delete(url)
+            .map((res: Response) => res.json());
+    }
+
+    updateProjectById(id: number, project: Project): Observable<any> {
+        const url = `${this.baseUrl}/${id}`;
+        return this.http
+            .put(url, project)
+            .map((res: Response) => res.json());
     }
 }

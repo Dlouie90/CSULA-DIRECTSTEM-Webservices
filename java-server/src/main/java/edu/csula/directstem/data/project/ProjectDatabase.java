@@ -1,7 +1,7 @@
 package edu.csula.directstem.data.project;
 
 import edu.csula.directstem.model.Project;
-import edu.csula.directstem.results.GetProjectResult;
+import edu.csula.directstem.results.project.*;
 import edu.csula.directstem.ws.db.ConnectDB;
 import edu.csula.directstem.data.project.ProjectContract.ProjectEntry;
 
@@ -34,11 +34,71 @@ public class ProjectDatabase {
         return new GetProjectResult(projects, success);
     }
 
+    public static GetProjectByIdResult getProjectById(int id) {
+        String sql = "SELECT * FROM users WHERE id=? ORDER BY id;";
+        Project project = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                project = toProject(resultSet);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new GetProjectByIdResult(id, project);
+    }
+
     public static Project toProject(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt(ProjectEntry.ID);
-        String title = resultSet.getString(ProjectEntry.TITLE);
-        String description = resultSet.getString(ProjectEntry.DESCRIPTION);
-        return new Project(id, title, description);
+        String data = resultSet.getString(ProjectEntry.DATA);
+        return new Project(id, data);
+    }
+
+    public static CreateProjectResult createProject(Project project) {
+        String sql = "INSERT INTO projects (data) VALUES(?);";
+        int rowCount = 0;
+        PreparedStatement statement;
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, project.getData());
+            rowCount = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        boolean successful = rowCount >= 1;
+        return new CreateProjectResult(project, successful);
+    }
+
+    public static DeleteProjectByIdResult deleteProject(int id) {
+        String sql = "DELETE FROM projects WHERE id = ?";
+        int rowDeleted = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, "" + id);
+            rowDeleted = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new DeleteProjectByIdResult(id, rowDeleted > 0);
+    }
+
+    public static UpdateProjectResult updateUser(Project project, int id) {
+        String sql = "UPDATE projects SET data = ? WHERE id = ?";
+        int rowsUpdated = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, project.getData());
+            statement.setInt(2, project.getId());
+            rowsUpdated = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new UpdateProjectResult(id, project, rowsUpdated > 0);
     }
 
 }

@@ -1,16 +1,16 @@
-package edu.csula.directstem.results;
+package edu.csula.directstem.results.user;
 
 import edu.csula.directstem.model.User;
 
-public class UpdateUserResult {
+public class GetUserByIdResult {
   private int id;
   private User user;
-  private boolean successful;
+  private boolean success;
 
-  public UpdateUserResult(int id, User user, boolean successful) {
+  public GetUserByIdResult(int id, User user) {
     this.id = id;
     this.user = user;
-    this.successful = successful;
+    this.success = user != null;
   }
 
   public int getId() {
@@ -29,11 +29,11 @@ public class UpdateUserResult {
     this.user = user;
   }
 
-  public boolean isSuccessful() {
-    return successful;
+  public boolean isSuccess() {
+    return success;
   }
 
-  public void setSuccessful(boolean successful) {
-    this.successful = successful;
+  public void setSuccess(boolean success) {
+    this.success = success;
   }
 }

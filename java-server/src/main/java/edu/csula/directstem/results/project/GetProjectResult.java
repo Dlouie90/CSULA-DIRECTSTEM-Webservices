@@ -1,4 +1,4 @@
-package edu.csula.directstem.results;
+package edu.csula.directstem.results.project;
 
 import edu.csula.directstem.model.Project;
 
