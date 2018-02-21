@@ -1,15 +1,15 @@
 <form class="p-3" [formGroup]="newProjectForm" (submit)="createProject()">
     <!-- project title -->
     <div class="form-group row">
+        <label class="col-4">Title: </label>
         <div class="col-8">
-            <label class="col-4">Title: </label>
             <input class="form-control" [formControl]="newProjectForm.controls['title']">
         </div>
     </div>
     <!-- project description -->
     <div class="form-group row">
+        <label class="col-4">Description: </label>
         <div class="col-8">
-            <label class="col-4">Description: </label>
             <input class="form-control" [formControl]="newProjectForm.controls['description']">
         </div>
     </div>
