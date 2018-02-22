@@ -16,7 +16,6 @@ import {Project} from '../models/project.model';
 import {IService} from '../models/service.interface';
 import {View} from '../view.model';
 import {CreateProjectResponse} from '../models/server-response/create-project-response.model';
-import {GetUserByIdResponse} from '../models/server-response/get-user-by-id-response';
 import {GetProjectByIdResponse} from '../models/server-response/get-project-by-id-response';
 
 @Injectable()

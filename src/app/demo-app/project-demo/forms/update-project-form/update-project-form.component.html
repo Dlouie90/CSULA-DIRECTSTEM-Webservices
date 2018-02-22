@@ -1,0 +1,27 @@
+<form [formGroup]="updateForm" class="p-3" (submit)="updateProject()">
+
+    <div class="form-group row">
+        <label for="updateProjectIdInput" class="col-4 col-form-label">Project ID:</label>
+        <div class="col-8">
+            <input id="updateProjectIdInput" class="form-control" type="number"
+                   [formControl]="updateForm.controls['id']">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="updateDataInput" class="col-4 col-form-label">Data: </label>
+        <div class="col-8">
+            <input id="updateDataInput" class="form-control" type="text"
+                   [formControl]="updateForm.controls['data']">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="ml-auto col-8">
+            <button class="btn btn-block btn-outline-primary" type="submit">Update
+            </button>
+        </div>
+    </div>
+
+</form>
+

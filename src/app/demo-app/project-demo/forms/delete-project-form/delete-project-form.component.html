@@ -1,0 +1,14 @@
+<div class="form-group row">
+    <label for="deletedProjectIdInput" class="form-control-label col-4">Project ID: </label>
+    <div class="col-8">
+        <input id="deletedProjectIdInput" class="form-control" type="number" #deleteInput>
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="ml-auto col-8">
+        <button class="btn btn-block btn-outline-primary" type="button"
+                (click)="deleteProject(deleteInput.value); deleteInput.value='';">Delete
+        </button>
+    </div>
+</div>
