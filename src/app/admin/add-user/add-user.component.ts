@@ -1,6 +1,6 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {Router} from '@angular/router';
-import {User} from '../../shared/models/user.model';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {CreateUserResponse} from '../../shared/models/server-response/create-user-response.model';
 import {UserService} from '../../shared/services/user.service';
 
 @Component({
@@ -8,30 +8,26 @@ import {UserService} from '../../shared/services/user.service';
     templateUrl: './add-user.component.html',
     styleUrls: ['./add-user.component.css']
 })
-export class AddUserComponent implements OnInit {
-    @Input() name: string; // Added Input annotation
-    counter = 20;
+export class AddUserComponent {
+    @Output()
+    onAdd = new EventEmitter<any>();
+    newAddUserForm: FormGroup;
 
-    constructor(private userService: UserService,
-                private router: Router) {
-
-    }
-
-    ngOnInit() {
-    }
-
-    // Add user function that saves input
-    addUser(firstName: HTMLInputElement, lastName: HTMLInputElement, email: HTMLInputElement, password: HTMLInputElement): void {
-        // console.log(`Adding firstname: ${firstName.value}, lastname: ${lastName.value},
-        // Email: ${email.value}, Password: ${password.value}`);
-        const newUser = new User({
-            id: this.counter,
-            firstName: `${firstName.value}`,
-            lastName: `${lastName.value}`,
-            email: `${email.value}`,
-            password: `${password.value}`
+    constructor(private userService: UserService, private formBuilder: FormBuilder) {
+        this.newAddUserForm = formBuilder.group({
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            description: '',
         });
-        // console.log(newUser);
-        this.router.navigate(['/demo']);
+    }
+
+    createUser(): void {
+        this.userService.createUser(this.newAddUserForm.value)
+            .subscribe(
+                (res: CreateUserResponse) => this.onAdd.emit(res),
+                (err: any) => this.onAdd.emit(err),
+                () => this.newAddUserForm.reset());
     }
 }

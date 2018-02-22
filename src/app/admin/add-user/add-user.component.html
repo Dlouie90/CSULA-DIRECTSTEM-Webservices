@@ -2,25 +2,50 @@
     <div class="ui raised segment container">
         <h2 class="ui header aligned center">Add User</h2>
         <hr>
-        <form class="ui form ng-untouched ng-pristine ng-valid">
-            <div class="field">
-                <label for="firstName">First Name:</label>
-                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter Your First Name" name="firstName" #newfirstName>
-                <br>
-                <label for="lastName">Last Name:</label>
-                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter Your Last Name" name="lastName" #newlastName>
-                <br>
-                <label for="email">Email:</label>
-                <input class="ng-untouched ng-pristine ng-valid" placeholder="Enter your Email" name="email" #newemail>
-                <br>
-                <label for="password">Password:</label>
-                <input class="ng-untouched ng-pristine ng-valid" type="password" placeholder="Enter your Password" name="password" #newpassword>
-                <br>
-                <br>
-                <div class="btnGrp">
-                    <!--<a [routerLink]="['admin']" class="ui button cancel">Cancel</a> -->
-                    <button (click)="addUser(newfirstName, newlastName, newemail, newpassword)" class="ui button save">Add User
-                    </button>
+        <form class="p-3" [formGroup]="newAddUserForm" (submit)="createUser()">
+            <!-- first name-->
+            <div class="form-group row">
+                <label for="newUserFirstNameInput" class="col-4">First Name: </label>
+                <div class="col-8">
+                    <input id="newUserFirstNameInput" class="form-control"
+                           [formControl]="newAddUserForm.controls['firstName']">
+                </div>
+            </div>
+            <!-- last name-->
+            <div class="form-group row">
+                <label for="newUserLastNameInput" class="col-4">Last Name: </label>
+                <div class="col-8">
+                    <input id="newUserLastNameInput" class="form-control"
+                           [formControl]="newAddUserForm.controls['lastName']">
+                </div>
+            </div>
+            <!-- email -->
+            <div class="form-group row">
+                <label for="newUserEmailInput" class="col-4">Email: </label>
+                <div class="col-8">
+                    <input id="newUserEmailInput" class="form-control" type="email"
+                           [formControl]="newAddUserForm.controls['email']">
+                </div>
+            </div>
+            <!-- password-->
+            <div class="form-group row">
+                <label for="newUserPasswordInput" class="col-4">Password: </label>
+                <div class="col-8">
+                    <input id="newUserPasswordInput" class="form-control"
+                           [formControl]="newAddUserForm.controls['password']">
+                </div>
+            </div>
+            <!-- description -->
+            <div class="form-group row">
+                <label for="newUserUsernameInput" class="col-4">Description: </label>
+                <div class="col-8">
+                <textarea id="newUserUsernameInput" class="form-control" rows="8"
+                [formControl]="newAddUserForm.controls['description']"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="ml-auto col-8">
+                    <button class="btn btn-block btn-outline-primary" type="submit">Save</button>
                 </div>
             </div>
         </form>
