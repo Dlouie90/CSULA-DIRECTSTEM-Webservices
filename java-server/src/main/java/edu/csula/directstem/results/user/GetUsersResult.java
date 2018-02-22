@@ -1,4 +1,4 @@
-package edu.csula.directstem.results;
+package edu.csula.directstem.results.user;
 
 import edu.csula.directstem.model.User;
 
