@@ -1,6 +1,7 @@
 import {Component,
         Input,
-        OnInit} from '@angular/core';
+        OnInit,
+        OnDestroy} from '@angular/core';
 import {ActivatedRoute,
         Params,
         Router} from '@angular/router';
@@ -45,6 +46,11 @@ export class EditorComponent implements OnInit {
     this.views = [];
     this.initPage();
     this.radioOptions = 'editor';
+  }
+
+  ngOnDestroy() {
+    if(this.projects != null && this.projects != [])
+      this.updateProjectsToService(this.projects);
   }
 
   /* *********************************************************************** */
@@ -92,7 +98,7 @@ export class EditorComponent implements OnInit {
       this.mainSvg = d3.select('div#d3-editor').append('svg');
     else
       this.mainSvg.selectAll('*').remove();
-    this.graph = new Graph(this.mainSvg, project.nodes, project.edges);
+    this.graph = new Graph(this.mainSvg, project.nodes, project.edges, project, this.projectService);
 
     const project_index = this.views.findIndex((v:View) => v.currentProject.id == project.id);
     if(project_index < 0 || project_index >= this.views.length) {
@@ -269,7 +275,7 @@ export class EditorComponent implements OnInit {
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
     this.graph = new Graph(
-        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.edges);
+        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.edges, recentView.currentProject, this.projectService);
     this.graph.updateGraph();
   }
 
@@ -325,8 +331,9 @@ export class EditorComponent implements OnInit {
 
     // update the project in current view
     this.addNodeToProject(recentView.currentProject, node);
+    console.log(JSON.stringify(recentView.currentProject));
     this.updateProjectToService(recentView.currentProject);
-    this.updateProjectsToService(recentView.projects);
+    //this.updateProjectsToService(recentView.projects);
 
     this.graph.insertNode(node);
   }
@@ -470,9 +477,18 @@ export class EditorComponent implements OnInit {
   }
 
   addNodeToProject(project: Project, node: Node): void {
-    if (!project.nodes.findIndex((n: Node) => n.id === node.id)) {
+    console.log("Trying to insert node");
+    console.log(JSON.stringify(node));
+    if (project.nodes.findIndex((n: Node) => n.id === node.id) < 0) {
+      console.log("Couldn't find Node, so adding!");
       project.nodes.push(node);
     }
+    else {
+      console.log("What da fuq? Node found!");
+      var i = project.nodes.findIndex((n:Node) => n.id == node.id);
+      console.log(i);
+    }
+    console.log(JSON.stringify(project));
   }
 
   /**

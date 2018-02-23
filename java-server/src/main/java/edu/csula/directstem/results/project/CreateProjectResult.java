@@ -6,9 +6,9 @@ public class CreateProjectResult {
     private Project project;
     private boolean successful;
 
-    public CreateProjectResult(Project project, boolean successful) {
+    public CreateProjectResult(int id, Project project, boolean successful) {
         this.project = project;
-        this.project.setId(-1);
+        this.project.setId(id);
         this.successful = successful;
     }
 

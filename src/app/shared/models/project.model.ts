@@ -4,6 +4,7 @@ import {Node} from './node.model';
 import {Edge} from './edge.model';
 
 export class Project {
+    dbId: number;
     title: string;
     description: string;
     url: string;

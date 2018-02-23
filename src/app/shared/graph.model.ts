@@ -1,4 +1,6 @@
 import * as d3 from 'd3';
+import {Project} from './models/project.model';
+import {ProjectService} from './services/project.service'
 import {Node} from './models/node.model';
 import {Edge} from './models/edge.model';
 import {View} from './view.model';
@@ -36,8 +38,11 @@ export class Graph {
   stack;
   parentNode;
   state;
+  project;
+  projectService;
+  dragged;
 
-  constructor(svgIn: any, nodes: Node[], edges: Edge[]) {
+  constructor(svgIn: any, nodes: Node[], edges: Edge[], project: Project, projectService: ProjectService) {
     // for clarity: typing this over and over can be confusing
     const thisGraph = this;
 
@@ -54,6 +59,10 @@ export class Graph {
     this.stack = [];
     //this.parentNode = parentNode;
     this.parentNode = [];
+    this.project = project; // for callbacks
+    this.projectService = projectService;
+
+    this.dragged = false;
 
     // View of the graph (selected nodes, links, etc..)
     this.state = {
@@ -134,6 +143,7 @@ export class Graph {
     if (thisGraph.state.shiftNodeDrag) {
       thisGraph.dragLine.attr('d', 'M' + d.x + ',' + d.y + 'L' + d3.mouse(thisGraph.svgG.node())[0] + ',' + d3.mouse(this.svgG.node())[1]);
     } else {
+      this.dragged = true;
       d.x += (d3.event as any).dx;
       d.y += (d3.event as any).dy;
       thisGraph.updateGraph();
@@ -306,6 +316,9 @@ export class Graph {
         // mouseDownNode.neighbors.push(d);
         thisGraph.edges.push(newEdge);
         thisGraph.updateGraph();
+
+        // callback to the project and try to update/save it with the new edge
+        this.projectService.updateProjectToService(this.project);
       }
 
     } else {
@@ -319,6 +332,13 @@ export class Graph {
         thisGraph.replaceSelectNode(d3node, d);
       } else {
         thisGraph.removeSelectFromNode();
+      }
+
+      if(this.dragged) {
+        this.dragged = false;
+
+        // callback to the project and try to update/save it
+        this.projectService.updateProjectToService(this.project);
       }
     }
 
@@ -402,6 +422,9 @@ export class Graph {
       //this.removeFromNeighbor(selectedNode);
       state.selectedNode = null;
       thisGraph.updateGraph();
+
+      // callback to the project and try to update/save it
+      this.projectService.updateProjectToService(this.project);
     }
   }
 
