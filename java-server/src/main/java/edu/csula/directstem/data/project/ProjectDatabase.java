@@ -58,18 +58,31 @@ public class ProjectDatabase {
     }
 
     public static CreateProjectResult createProject(Project project) {
-        String sql = "INSERT INTO projects (data) VALUES(?);";
-        int rowCount = 0;
-        PreparedStatement statement;
+        System.out.println("data to push: " + project.getData());
+        int projectId = -1;
+        
         try {
+        	String sql = "INSERT INTO projects (data) VALUES(?)";
+        	PreparedStatement statement;
             statement = connection.prepareStatement(sql);
             statement.setString(1, project.getData());
-            rowCount = statement.executeUpdate();
-        } catch (SQLException e) {
+            int rowCount = statement.executeUpdate();
+            
+            sql = "SELECT LAST_INSERT_ID();";
+            statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if(rowCount > 0 && resultSet.next())
+            	projectId = resultSet.getInt("LAST_INSERT_ID()");
+            //rowCount = statement.executeUpdate();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        boolean successful = rowCount >= 1;
-        return new CreateProjectResult(project, successful);
+        System.out.println("CREATED NEW PROJECT WITH ID: " + projectId);
+        boolean successful = projectId != -1;
+        if(successful)
+        	project.setId(projectId);
+        return new CreateProjectResult(projectId, project, successful);
     }
 
     public static DeleteProjectByIdResult deleteProject(int id) {
@@ -85,7 +98,8 @@ public class ProjectDatabase {
         return new DeleteProjectByIdResult(id, rowDeleted > 0);
     }
 
-    public static UpdateProjectResult updateUser(Project project, int id) {
+    public static UpdateProjectResult updateProject(Project project, int id) {
+    	System.out.println("data to update: " + project.getData());
         String sql = "UPDATE projects SET data = ? WHERE id = ?";
         int rowsUpdated = 0;
         try {

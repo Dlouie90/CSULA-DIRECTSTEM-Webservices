@@ -1,7 +1,7 @@
 import {Project} from '../project.model';
 
-export class GetProjectByIdResponse {
+export class ProjectResponse {
     id: number;
-    project: Project;
+    data: string;
     success: boolean;
 }

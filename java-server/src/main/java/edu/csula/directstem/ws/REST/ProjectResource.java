@@ -37,6 +37,7 @@ public class ProjectResource {
     }
 
     @POST
+    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProject(String project) {
@@ -70,8 +71,8 @@ public class ProjectResource {
     public Response updateProject(@PathParam("id") int id, String project) {
         System.out.println("PUT - /projects/" + id);
 
-        Project updatedUser = new Gson().fromJson(project, Project.class);
-        UpdateProjectResult result = ProjectDatabase.updateUser(updatedUser, id);
+        Project updatedProject = new Gson().fromJson(project, Project.class);
+        UpdateProjectResult result = ProjectDatabase.updateProject(updatedProject, id);
         return Response
                 .status(Response.Status.OK)
                 .entity(new Gson().toJson(result))

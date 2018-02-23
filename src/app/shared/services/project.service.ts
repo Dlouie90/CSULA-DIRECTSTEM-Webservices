@@ -17,7 +17,7 @@ import {IService} from '../models/service.interface';
 import {View} from '../view.model';
 import {CreateProjectResponse} from '../models/server-response/create-project-response.model';
 import {GetUserByIdResponse} from '../models/server-response/get-user-by-id-response';
-import {GetProjectByIdResponse} from '../models/server-response/get-project-by-id-response';
+import {ProjectResponse} from '../models/server-response/project-response';
 
 @Injectable()
 export class ProjectService {
@@ -58,12 +58,36 @@ export class ProjectService {
 
     createNew(): Project {
         const project = new Project(ProjectService.generateTempId());
-        this.projects.push(project);
+
+        this.createProjectDb(project)
+        .subscribe(
+            (res: CreateProjectResponse) => {
+                console.log("Created a new project with ID " + res.project.id);
+                project.dbId = res.project.id;
+                this.projects.push(project);
+            },
+            (err: any) => console.log(err),
+            () => console.log("Project Creation Finished"));
+
         return project;
     }
 
     getProjects(): Observable<Project[]> {
+        this.getProjectsDb()
+            .subscribe(
+            (res:any) => {
+                this.projects.splice(0, this.projects.length);
+                var project_strings = res.projects;
+                res.projects.forEach((projectRes:ProjectResponse, index) => {
+                    var project = this.parseProjectJSON(projectRes.data);
+                    project.dbId = projectRes.id;
+                    this.projects.push(project);
+                });
+            },
+            (err: any) => console.log(err),
+            () => console.log("GOT PROJECTS"));
         return Observable.of(this.projects);
+        //return this.getProjectsDb();
     }
 
     getProject(id: number): Observable<Project> {
@@ -106,6 +130,14 @@ export class ProjectService {
         const serviceProject = this.projects.find((p: Project) => p.id === project.id);
         if (serviceProject) {
             Object.assign(serviceProject, project);
+
+            this.updateProjectDb(project)
+                .subscribe(
+                    (res: CreateProjectResponse) => {
+                        console.log("PROJECT UPDATE");
+                    },
+                    (err: any) => console.log(err),
+                    () => console.log("Project Update Finished"));
             return true;
         }
         return false;
@@ -133,12 +165,14 @@ export class ProjectService {
         }
 
         this.removeProjectFromArray(project, this.projects);
-        /*
-        this.projects.forEach((p: Project) => {
-          this.removeProjectFromArray(project, p.neighbors);
-          this.removeProjectFromArray(project, p.children);
-        });
-        */
+
+        this.deleteProjectDb(project)
+        .subscribe(
+            (res: any) => {
+                console.log("project deleted");
+            },
+            (err: any) => console.log(err),
+            () => console.log("Project Deletion Finished"));
     }
 
     private removeProjectFromArray(project: Project, array: Array<Project>): void {
@@ -152,10 +186,12 @@ export class ProjectService {
      *  Database Methods Below
      */
     getProjectsDb(): Observable<any> {
-        return this.http.get(this.baseUrl).map((res: Response) => res.json());
+        return this.http
+            .get(this.baseUrl)
+            .map((res: Response) => res.json());
     }
 
-    getProjectByIdDb(id: number): Observable<GetProjectByIdResponse> {
+    getProjectByIdDb(id: number): Observable<ProjectResponse> {
         const url = `${this.baseUrl}/${id}`;
         return this.http
             .get(url)
@@ -163,8 +199,25 @@ export class ProjectService {
     }
 
     createProjectDb(project: Project): Observable<CreateProjectResponse> {
+        const url = `${this.baseUrl}/add`;
         return this.http
-            .post(this.baseUrl, project)
+            .post(url, {id:project.dbId, data:JSON.stringify(project)})
+            .map((res: Response) => res.json());
+    }
+
+    updateProjectDb(project: Project): Observable<CreateProjectResponse> {
+        const id = project.dbId;
+        const url = `${this.baseUrl}/${id}`;
+        return this.http
+            .put(url, {id:project.dbId, data:JSON.stringify(project)})
+            .map((res: Response) => res.json());
+    }
+
+    deleteProjectDb(project: Project): Observable<any> {
+        const id = project.dbId;
+        const url = `${this.baseUrl}/${id}`;
+        return this.http
+            .delete(url)
             .map((res: Response) => res.json());
     }
 
@@ -180,5 +233,11 @@ export class ProjectService {
         return this.http
             .put(url, project)
             .map((res: Response) => res.json());
+    }
+
+    parseProjectJSON(json):Project {
+        console.log(json);
+        var project = JSON.parse(json);
+        return project;
     }
 }
