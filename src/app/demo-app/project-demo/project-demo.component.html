@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-6">
-        <ngb-accordion #acc="ngbAccordion" activeIds="0, 2">
+        <ngb-accordion #acc="ngbAccordion" activeIds="0, 1, 2, 3, 4">
 
             <ngb-panel title="Get All Projects" id="0">
                 <ng-template ngbPanelContent>
@@ -10,7 +10,7 @@
 
             <ngb-panel title="Get Project By ID" id="1">
                 <ng-template ngbPanelContent>
-                    <!-- <app-project-by-id-form (onGetProject)="onResult($event)"></app-project-by-id-form> -->
+                    <app-project-by-id-form (onGetProject)="onResult($event)"></app-project-by-id-form>
                 </ng-template>
             </ngb-panel>
 
@@ -22,13 +22,13 @@
 
             <ngb-panel title="Delete Project By ID" id="3">
                 <ng-template ngbPanelContent>
-                    <!-- <app-delete-project-form (onDeleteProject)="onResult($event)"></app-delete-project-form> -->
+                    <app-delete-project-form (onDeleteProject)="onResult($event)"></app-delete-project-form>
                 </ng-template>
             </ngb-panel>
 
             <ngb-panel title="Update Project By ID" id="4">
                 <ng-template ngbPanelContent>
-                    <!-- <app-update-project-form (onUpdate)="onResult($event)"></app-update-project-form> -->
+                    <app-update-project-form (onUpdate)="onResult($event)"></app-update-project-form>
                 </ng-template>
             </ngb-panel>
 
