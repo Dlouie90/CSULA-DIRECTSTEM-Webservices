@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {ProjectService} from '../../../../shared/services/project.service';
-import {GetProjectByIdResponse} from '../../../../shared/models/server-response/get-project-by-id-response';
+import {ProjectResponse} from '../../../../shared/models/server-response/project-response';
 
 @Component({
     selector: 'app-project-by-id-form',
@@ -16,9 +16,9 @@ export class ProjectByIdFormComponent {
     getProjectById(id: string): void {
         const idNumber = parseInt(id, 10);
         this.projectService.getProjectByIdDb(idNumber)
-            .subscribe((res: GetProjectByIdResponse) => {
+            .subscribe((res: ProjectResponse) => {
                 if (res.success) {
-                    const project = res.project;
+                    const project = JSON.parse(res.data);
                     console.log('project:', project);
                     this.onGetProject.emit(project);
                 } else {
