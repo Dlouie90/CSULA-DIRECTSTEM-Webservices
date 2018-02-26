@@ -20,7 +20,7 @@ public class Register {
     Connection conn = ConnectDB.getConnection();
     PreparedStatement p;
     try {
-      p = conn.prepareStatement("insert into Users (username, passwordHash) values (?,?);");
+      p = conn.prepareStatement("insert into users (username, passwordHash) values (?,?);");
       p.setString(1, credentials.getUsername());
       p.setString(2, User.hashPassword(credentials.getPassword()));
       p.executeUpdate();
