@@ -542,7 +542,7 @@ export class Graph {
       return this.copyObject(node);
     });
 
-    return new View(nodes, this.parentNode);
+    return new View([this.project], this.project);
   }
 
 
@@ -561,7 +561,6 @@ export class Graph {
     // for convinces
     const thisGraph = this;
     const state = this.state;
-
 
     // update the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
