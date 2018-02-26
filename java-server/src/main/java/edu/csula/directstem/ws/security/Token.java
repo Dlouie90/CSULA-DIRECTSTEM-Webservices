@@ -34,6 +34,8 @@ public class Token {
       p.setInt(1, Integer.parseInt(token.substring(12, token.indexOf('-'))));
 
       rs = p.executeQuery();
+      
+      rs.next();
 
       return token.equals(rs.getString(7)) && (new SimpleDateFormat(dateFormat).parse(token.substring(0, 12)))
           .after(new Date(System.currentTimeMillis()));
@@ -67,7 +69,7 @@ public class Token {
       p = conn.prepareStatement("UPDATE users SET token=? WHERE id=?");
       p.setString(1, token);
       p.setInt(2, user.getId());
-      p.executeQuery();
+      p.execute();
 
       return token;
     } catch (SQLException e) {
