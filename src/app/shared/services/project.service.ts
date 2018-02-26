@@ -131,10 +131,12 @@ export class ProjectService {
         if (serviceProject) {
             Object.assign(serviceProject, project);
 
+            console.log("Updating project " + project.title + " with dbId=" + project.dbId);
+
             this.updateProjectDb(project)
                 .subscribe(
                     (res: CreateProjectResponse) => {
-                        console.log("PROJECT UPDATE");
+                        console.log("PROJECT UPDATED");
                     },
                     (err: any) => console.log(err),
                     () => console.log("Project Update Finished"));
@@ -236,7 +238,7 @@ export class ProjectService {
     }
 
     parseProjectJSON(json):Project {
-        console.log(json);
+        //console.log(json);
         var project = JSON.parse(json);
         return project;
     }

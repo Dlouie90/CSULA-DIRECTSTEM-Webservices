@@ -80,7 +80,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <url>http://localhost:8080</url>
+                    <url>http://localhost</url>
                     <server>localhost</server>
                     <path>/webservice</path>
                 </configuration>

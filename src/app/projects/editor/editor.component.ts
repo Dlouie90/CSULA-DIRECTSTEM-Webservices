@@ -49,8 +49,9 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if(this.projects != null && this.projects != [])
-      this.updateProjectsToService(this.projects);
+    if(this.project != null)
+      this.updateProjectToService(this.graph.project);
+      //this.updateProjectsToService(this.projects);
   }
 
   /* *********************************************************************** */
@@ -150,7 +151,7 @@ export class EditorComponent implements OnInit {
     // update the project in current view
     this.addNodeToProject(oldView.currentProject, node);
     this.updateProjectToService(oldView.currentProject);
-    this.updateProjectsToService(oldView.projects);
+    //this.updateProjectsToService(oldView.projects);
 
     this.graph.insertNode(node);
 
