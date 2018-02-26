@@ -19,11 +19,6 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <servlet>
-        <servlet-name>AngularServlet</servlet-name>
-        <servlet-class>app.AngularServlet</servlet-class>
-    </servlet>
-
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>

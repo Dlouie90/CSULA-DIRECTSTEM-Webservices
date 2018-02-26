@@ -8,7 +8,6 @@ import {ActivatedRoute,
         Router} from '@angular/router';
 
 import {Node} from '../../shared/models/node.model';
-import {NodeService} from '../../shared/services/node.service';
 import {Project} from '../../shared/models/project.model';
 import {ProjectService} from '../../shared/services/project.service';
 
@@ -17,7 +16,6 @@ import {ProjectService} from '../../shared/services/project.service';
 })
 export class DetailComponent implements OnInit {
   project: Project;
-
   constructor(private projectService: ProjectService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {

@@ -4,25 +4,26 @@ import {Node} from './node.model';
 import {Edge} from './edge.model';
 
 export class Project {
-  title: string;
-  description: string;
-  url: string;
-  service: IService;
-  parameters: string[] = [];
-  parameterEntries: ParameterEntry[] = [];
-  headNode: Node;
-  nodes: Node[] = [];
-  edges: Edge[] = [];
+    dbId: number;
+    title: string;
+    description: string;
+    url: string;
+    service: IService;
+    parameters: string[] = [];
+    parameterEntries: ParameterEntry[] = [];
+    headNode: Node;
+    nodes: Node[] = [];
+    edges: Edge[] = [];
 
-  static create(id: number) {
-    return new Project(id);
-  }
+    static create(id: number) {
+        return new Project(id);
+    }
 
-  static projectTitle(project: Project): string {
-    return project.title || `PROJECT_${project.id}`
-  }
+    static projectTitle(project: Project): string {
+        return project.title || `PROJECT_${project.id}`
+    }
 
-  constructor(public id: number) {
-    this.title = `PROJECT_${id}`;
-  }
+    constructor(public id: number) {
+        this.title = `PROJECT_${id}`;
+    }
 }

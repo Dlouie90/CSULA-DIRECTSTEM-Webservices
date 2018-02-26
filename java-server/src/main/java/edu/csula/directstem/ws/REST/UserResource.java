@@ -3,7 +3,7 @@ package edu.csula.directstem.ws.REST;
 import com.google.gson.Gson;
 import edu.csula.directstem.data.user.UserDatabase;
 import edu.csula.directstem.model.User;
-import edu.csula.directstem.results.*;
+import edu.csula.directstem.results.user.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

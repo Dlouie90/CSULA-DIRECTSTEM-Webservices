@@ -6,7 +6,6 @@ import {FormArray,
         FormBuilder,
         FormGroup} from '@angular/forms';
 import {Node} from '../../shared/models/node.model';
-import {NodeService} from '../../shared/services/node.service';
 import {Project} from '../../shared/models/project.model';
 import {ProjectService} from '../../shared/services/project.service';
 
@@ -101,6 +100,7 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
   saveChange(): void {
     if(!this.node) {
       //this.project.parameters.push(param);
+      // search for the right project to update
       this.project.title = this.projectForm.get('title').value;
       this.project.description = this.projectForm.get('description').value;
     }
@@ -115,5 +115,8 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
     }
     
     this.projectService.updateProjectToService(this.project);
+
+    // then save the project to the database
+    this.projectService.updateProjectDb(this.project);
   }
 }

@@ -8,7 +8,6 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Node} from '../shared/models/node.model';
 import {Project} from '../shared/models/project.model';
 import {IService} from '../shared/models/service.interface';
-import {NodeService} from '../shared/services/node.service';
 import {ProjectService} from '../shared/services/project.service';
 
 @Component({
@@ -25,8 +24,9 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   inputNodes: Node[] = [];
   services: IService[];
   selectedService: IService;
+  showNode: boolean = false;
 
-  constructor(private projectService: ProjectService, private nodeService: NodeService, public activeModal: NgbActiveModal) {
+  constructor(private projectService: ProjectService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit(): void {
@@ -45,6 +45,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   private getServices(): void {
     if(!this.node) {
       console.log("Displaying Project details");
+      this.showNode = false;
       this.projectService.getServices()
           .subscribe(
             (services: IService[]) => {
@@ -57,15 +58,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
     }
     else {
       console.log("Displaying Node details");
-      this.nodeService.getServices()
-          .subscribe(
-            (services: IService[]) => {
-              this.services = services;
-            },
-            (error: any) => {
-              this.services = [];
-              console.error(error);
-            });
+      this.showNode = true;
     }
   }
 
@@ -78,7 +71,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   onClose(reason: string): void {
     this.activeModal.close(reason);
   }
-
+  
   get isEmptyInputs(): boolean {
     return this.inputProjects.length === 0;
   }

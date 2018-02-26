@@ -1,9 +1,18 @@
 <div class="container">
   <nav class="breadcrumb">
-    <button class="btn btn-outline-primary"
-            *ngFor="let view of views">
-      {{getViewTitle(view) | uppercase}}
-    </button>
+    <div class="btn-group"
+         *ngFor="let view of controller.views">
+      <button class="btn btn-primary"
+              *ngIf="isCurrent(view)"
+              disabled="true">
+        {{getViewTitle(view) | uppercase}}
+      </button>
+      <button class="btn btn-outline-primary"
+              *ngIf="!isCurrent(view)"
+              (click)="controller.breadcrumbClick(view)">
+        {{getViewTitle(view) | uppercase}}
+      </button>
+    </div>
   </nav>
 </div>
 

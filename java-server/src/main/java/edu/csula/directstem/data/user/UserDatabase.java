@@ -2,7 +2,7 @@ package edu.csula.directstem.data.user;
 
 import edu.csula.directstem.data.user.UserContract.UserEntry;
 import edu.csula.directstem.model.User;
-import edu.csula.directstem.results.*;
+import edu.csula.directstem.results.user.*;
 import edu.csula.directstem.ws.db.ConnectDB;
 
 import java.sql.Connection;
