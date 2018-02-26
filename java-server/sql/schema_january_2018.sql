@@ -147,12 +147,3 @@ Insert into Input (maID,inID) values (2,4);
 
 Insert into Output (maID,outID) values (4,2);
 Insert into Output (maID,outID) values (3,2);
-
-INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Shay', 'Nguyen', 'shay', '1234','shay@nguyen.com');
-
-INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Leanne', 'Graham', 'leanne', '1234','leanne@graham.com');
-
-INSERT INTO users (firstName, lastName, username, password, email)
-VALUES ('Ervin', 'Howell', 'ervin', '1234','ervin@howell.com');
