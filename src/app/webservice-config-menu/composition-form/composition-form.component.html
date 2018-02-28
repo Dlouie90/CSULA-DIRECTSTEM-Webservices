@@ -7,12 +7,12 @@
              formControlName="id" readonly>
     </div>
   </div>
-  <!-- URL -->
+  <!-- TYPE -->
   <div class="form-group row px-3">
-    <label for="node-url" class="col-3 col-form-label">URL</label>
+    <label for="node-type" class="col-3 col-form-label">Type</label>
     <div class="col-9">
-      <input id="node-url" class="form-control col-form-label" type="text"
-             formControlName="url" readonly>
+      <input id="node-type" class="form-control col-form-label" type="text"
+             value="{{ (node != null) ? 'NODE' : 'PROJECT' }}" readonly>
     </div>
   </div>
   <!-- Title -->
@@ -31,45 +31,6 @@
               formControlName="description"></textarea>
     </div>
   </div>
-  <!-- Parameters -->
-  <div>
-    <div class="form-group row " *ngFor="let _ of parameters.controls; let i=index">
-      <label class="col-3"> parameter #{{ i+1 }} </label>
-      <div class="col-9">
-        <div class="row">
-          <div class="col-6" formArrayName="parameters">
-            <input title="param#{{ i }}" class="form-control" type="text" readonly
-                   [formControlName]="i">
-          </div>
-          <div class="col-5" formArrayName="demoInputs">
-            <input title="demo-inputs" class="form-control" type="text" [formControlName]="i">
-          </div>
-          <div class="col-1">
-            <button class="btn btn-outline-danger" (click)="removeParameter()">
-              <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pb-3" *ngIf="demoInputs.length > 0">
-      <button class="float-right btn btn-primary" (click)="testService()">Run Webservice</button>
-    </div>
-  </div>
 </form>
 
 <hr>
-
-<!-- Add Parameter Input -->
-<form *ngIf="project" class="form-group row px-3" [formGroup]="paramGroup">
-
-  <label class="col-3">Add Parameter</label>
-  <div class="col-5">
-    <input class="form-control" title="parameter" #param>
-  </div>
-  <div class="col=4">
-    <button class="btn btn-outline-primary" type="submit"
-            (click)="addParameter(param.value); param.value=''; ">Add
-    </button>
-  </div>
-</form>

@@ -173,6 +173,13 @@
      [ngStyle]="rightPanelStyle"
      oncontextmenu="return false">
 
+  <!-- RUN WS -->
+  <a class="dropdown-item"
+     *ngIf="graph.state.selectedNode && !graph.state.selectedEdge"
+     (click)="runNode()">
+    <i class="fa fa-play-circle"
+       aria-hidden="true"></i>&nbsp;Run</a>
+
   <!-- INSERT -->
   <a class="dropdown-item"
      *ngIf="!graph.state.selectedNode && !graph.state.selectedEdge"

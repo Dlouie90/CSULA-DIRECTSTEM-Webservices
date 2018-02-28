@@ -75,4 +75,11 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   get isEmptyInputs(): boolean {
     return this.inputProjects.length === 0;
   }
+
+  get title(): string {
+    if(!this.node)
+      return this.project.title;
+    else
+      return this.node.title;
+  }
 }

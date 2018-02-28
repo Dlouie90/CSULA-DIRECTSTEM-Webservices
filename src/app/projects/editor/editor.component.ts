@@ -7,6 +7,8 @@ import {ActivatedRoute,
         Router} from '@angular/router';
 import {ModalDismissReasons,
         NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Http,
+        Response} from '@angular/http';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
@@ -39,7 +41,7 @@ export class EditorComponent implements OnInit {
   // Mouse Position, used to insert new nodes onto the coordinate.
   rightClickPos: {x: number, y: number};
 
-  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router) {
+  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
@@ -297,6 +299,24 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  runNode(): void {
+    this.closeContextMenu();
+    if (this.selectedNode) {
+      var url = this.selectedNode.url;
+      this.http.post('/webservice/rest/ws/query', {url: url})
+               .map((res: Response) => res.json())
+               .subscribe(
+                  (res:any) => {
+                    var time = res.time / 1000000;
+                    if (res.time > 0)
+                      alert("WebService query took " + time + "ms");
+                    else
+                      alert("WebService query failed (check URL?)");
+                  },
+                  (err: any) => console.log(err),
+                  () => console.log("BENCHMARKED WEBSERVICE"));
+    }
+  }
 
   /** Insert a node onto the graph and updateToService nodeService.
      * Also add the node into its parent.children array. */

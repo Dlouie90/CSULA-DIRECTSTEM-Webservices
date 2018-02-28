@@ -170,25 +170,6 @@ export class Graph {
     this.updateGraph();
   }
 
-  /** Add the clickNodes as children to the input node.*/
-  compositeClickNodes(node: Node): void {
-    // Removes the clickNodes from the graph nodes
-    this.clickNodes.forEach((n: Node) => {
-      this.nodes.splice(this.nodes.indexOf(n), 1);
-      // Remove all edges originating from this node from this graph view.
-      this.spliceLinksFormNode(n);
-      // Remove the node from all neighbors field
-      // but not if its is associated with a clickNodes
-      //this.removeNeighborsToClickNodes();
-      //this.removeNonClickNeighbors();
-    });
-
-    // Add the clickNodes as children to the input node.
-    //node.children = this.clickNodes;
-    this.clickNodes = [];
-    this.insertNode(node);
-  }
-
   /** Toggle the path/link/edge selected css.
    *  If edge is highlighted, then un-highlight it, if it is not, un-highlight
    *  all the other edges and highlight the current click one
@@ -298,7 +279,9 @@ export class Graph {
 
     if (mouseDownNode !== d) {
       // we're in a different node: create new edge for mousedown edge and add to graph
-      const newEdge = {source: mouseDownNode, target: d};
+      var source_index = this.nodes.findIndex((n: Node) => n.id == mouseDownNode.id);
+      var target_index = this.nodes.findIndex((n: Node) => n.id == d.id);
+      const newEdge = {source: source_index, target: target_index};
 
       // Get all the edges from the graph that is the same as newEdge
       const filtRes = thisGraph.paths.filter(function(_d) {
@@ -308,7 +291,7 @@ export class Graph {
         //     thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
         // }
 
-        return _d.source === newEdge.source && _d.target === newEdge.target;
+        return _d.source == newEdge.source && _d.target == newEdge.target;
       });
 
       // if the edge is not a duplicate, add it to the graph
@@ -561,11 +544,12 @@ export class Graph {
     // for convinces
     const thisGraph = this;
     const state = this.state;
+    const nodes = this.nodes;
 
     // update the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
                           .data(thisGraph.edges, function(d) {
-                            return d.source.id + '+' + d.target.id;
+                            return nodes[d.source].id + '+' + nodes[d.target].id;
                           });
 
     // For convinces: the updateToService selection
@@ -577,7 +561,8 @@ export class Graph {
           return d === state.selectedEdge;
         })
         .attr('d', function(d) {
-          return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
+          // fixes updating edges when node is being dragged
+          return 'M' + nodes[d.source].x + ',' + nodes[d.source].y + 'L' + nodes[d.target].x + ',' + nodes[d.target].y;
         });
 
     // Add new paths: the enter selection
@@ -586,7 +571,8 @@ export class Graph {
         .style('marker-end', 'url(#end-arrow)')
         .classed('link', true)
         .attr('d', function(d) {
-          return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
+          // fixes updating edges when node is being dragged
+          return 'M' + nodes[d.source].x + ',' + nodes[d.source].y + 'L' + nodes[d.target].x + ',' + nodes[d.target].y;
         })
         .on('mousedown', function(d) {
           thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
