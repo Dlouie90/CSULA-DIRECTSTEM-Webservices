@@ -10,10 +10,10 @@ import {Project} from '../../shared/models/project.model';
 import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
-  selector: 'app-composition-form',
-  templateUrl: './composition-form.component.html'
+  selector: 'app-webservicebuilder-form',
+  templateUrl: './webservicebuilder-form.component.html'
 })
-export class CompositionFormComponent implements OnChanges, OnDestroy {
+export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
   @Input()
   project: Project;
   @Input()
@@ -79,8 +79,20 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
     alert('not implemented yet');
   }
 
-  removeParameter(): void {
-    alert('not implemented yet');
+  removeParameter(i): void {
+    //alert('not implemented yet');
+    console.log("Attemping to remove parameter #" + i + " in node " + this.node.title);
+    if(this.node) {
+      this.project.nodes.forEach((n:Node) => {
+        if(n.id == this.node.id) {
+          console.log("Removing parameter from project, too");
+          n.parameters.splice(i, 1);
+        }
+      });
+      this.node.parameters.splice(i, 1);
+      this.parameters.removeAt(i);
+      this.demoInputs.removeAt(i);
+    }
   }
 
   addParameter(param: string): void {
@@ -108,12 +120,14 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
       // search for the right node to update
       this.project.nodes.forEach((n: Node) => {
         if(n.id == this.node.id) {
-          n.title = this.projectForm.get('title').value;
-          n.description = this.projectForm.get('description').value;
+          n.url = this.projectForm.get('url').value;
         }
       });
     }
     
     this.projectService.updateProjectToService(this.project);
+
+    // then save the project to the database
+    this.projectService.updateProjectDb(this.project);
   }
 }
