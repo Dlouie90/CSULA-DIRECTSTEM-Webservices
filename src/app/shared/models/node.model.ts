@@ -5,6 +5,8 @@ export class Node {
   title: string;
   description: string;
   url: string;
+  time_text: string;
+  just_benchmarked: boolean;
   composite_id: number;
   parameters: string[] = [];
   parameterEntries: ParameterEntry[] = [];
@@ -23,6 +25,8 @@ export class Node {
 
   constructor(public id: number, public x: number, public y: number) {
     this.title = `NODE_${id}`;
+    this.time_text  = '';
+    this.just_benchmarked = false;
   }
 }
 
