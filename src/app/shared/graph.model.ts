@@ -328,20 +328,19 @@ export class Graph {
     state.mouseDownNode = null;
   }
 
-  updateSelectedNodeTime(time) {
-    if(this.state.selectedNode) {
-      console.log("UPDATING NODE TIME");
-      var index = this.nodes.findIndex((n: Node) => n.id == this.state.selectedNode.id);
-      this.nodes[index].time_text = time.toFixed(2) + "ms";
-      this.nodes[index].just_benchmarked = true;
-      this.state.selectedNode.time_text = time.toFixed(2) + "ms";
-      this.nodes[index].just_benchmarked = true;
+  updateSelectedNodeTime(time, node) {
+    if(node == null) // what???
+      return;
 
-      // callback to the project and try to update/save it
-      this.projectService.updateProjectToService(this.project);
+    console.log("UPDATING NODE TIME");
+    var index = this.nodes.findIndex((n: Node) => n.id == node.id);
+    this.nodes[index].time_text = time.toFixed(2) + "ms";
+    this.nodes[index].just_benchmarked = true;
 
-      this.updateGraph();
-    }
+    // callback to the project and try to update/save it
+    this.projectService.updateProjectToService(this.project);
+
+    this.updateGraph();
   }
 
   /** Remove all the edges associated with a node.
