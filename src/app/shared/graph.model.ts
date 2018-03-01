@@ -328,6 +328,22 @@ export class Graph {
     state.mouseDownNode = null;
   }
 
+  updateSelectedNodeTime(time) {
+    if(this.state.selectedNode) {
+      console.log("UPDATING NODE TIME");
+      var index = this.nodes.findIndex((n: Node) => n.id == this.state.selectedNode.id);
+      this.nodes[index].time_text = time.toFixed(2) + "ms";
+      this.nodes[index].just_benchmarked = true;
+      this.state.selectedNode.time_text = time.toFixed(2) + "ms";
+      this.nodes[index].just_benchmarked = true;
+
+      // callback to the project and try to update/save it
+      this.projectService.updateProjectToService(this.project);
+
+      this.updateGraph();
+    }
+  }
+
   /** Remove all the edges associated with a node.
    *  Used after a node is deleted to delete all the edges connected to it. */
   spliceLinksFormNode(node) {
@@ -510,7 +526,8 @@ export class Graph {
 
   /** Used for angular 2 to insert a node*/
   insertNode(node: Node) {
-    this.nodes.push(node);
+    if(this.nodes.findIndex((n: Node) => n.id == node.id) == -1)
+      this.nodes.push(node);
     this.updateGraph();
   }
 
@@ -584,7 +601,7 @@ export class Graph {
 
     // update the circle selection
     thisGraph.circles = thisGraph.circles
-                            .data(thisGraph.nodes, function(d) {
+                            .data(nodes, function(d) {
                               return String(d.id);
                             });
 
@@ -599,6 +616,21 @@ export class Graph {
           return thisGraph.clickNodes.findIndex((n: Node) => n.id === d.id) !== -1;
         });
         */
+
+    // update the current subtitle of all nodes that have just been benchmarked
+    thisGraph.circles
+             .selectAll("text")
+             .forEach(t => {
+                // uncomment the line below if you end up adding more texts to the node
+                //var updateC = t[t.findIndex(b => b.id == "subtitle")];
+                // TODO: hard-coding is BAD! Need to optimize the routine above.
+                var updateC = t[1];
+                var updateN = nodes[nodes.findIndex(n => n.id == updateC.__data__.id)];
+                if(updateN.just_benchmarked) {
+                  updateC.textContent = "(" + updateN.time_text + ")";
+                  updateN.just_benchmarked = false;
+                }
+              });
 
     // add new circles to the graph(they are wrapped in <g>)
     const newGs = thisGraph.circles.enter()
@@ -640,16 +672,16 @@ export class Graph {
         .text(function(d) {
           return Node.nodeTitle(d);
         });
-    /*
     newGs.append('text')
         .classed('children', true)
+        .attr('id', 'subtitle')
         .attr('text-anchor', 'middle')
         .attr('y', 30)
         .text(d => {
-          if (d.children.length > 0) {
-            return `(${d.children.length})`;
+          if (d.time_text != null && d.time_text.length > 0) {
+            return `(${d.time_text})`;
           }
-        });*/
+        });
 
     // remove old nodes;
     thisGraph.circles.exit().remove();

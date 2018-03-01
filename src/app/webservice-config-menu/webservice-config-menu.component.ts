@@ -39,13 +39,15 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.projectService.updateProjectToService(this.project);
+    if(this.project) // save only if we have a project
+      this.projectService.updateProjectToService(this.project);
   }
 
   private getServices(): void {
     if(!this.node) {
       console.log("Displaying Project details");
       this.showNode = false;
+      /*
       this.projectService.getServices()
           .subscribe(
             (services: IService[]) => {
@@ -54,7 +56,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
             (error: any) => {
               this.services = [];
               console.error(error);
-            });
+            });*/
     }
     else {
       console.log("Displaying Node details");

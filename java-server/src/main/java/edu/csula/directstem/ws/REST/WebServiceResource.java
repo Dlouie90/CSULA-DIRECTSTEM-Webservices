@@ -59,12 +59,11 @@ public class WebServiceResource {
         	
         	Scanner scanner = new Scanner(response);
         	String responseBody = scanner.useDelimiter("\\A").next();
-        	System.out.println(responseBody);
-        	
         	scanner.close();
         	
         	long end = System.nanoTime();
-        	
+        	System.out.println(responseBody);
+     
         	int time = (int)(end - start);
         	result.setTime(time);
         }
