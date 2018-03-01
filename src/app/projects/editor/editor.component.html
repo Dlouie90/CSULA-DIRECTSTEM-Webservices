@@ -17,7 +17,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let project of projects">
+      <tr *ngFor="let project of comp_projects">
         <td class="text-center">{{ project.id }}</td>
         <td class="text-center">{{ project.title }}</td>
         <td class="text-center">{{ project.parameters }}</td>
@@ -176,7 +176,7 @@
   <!-- RUN ALL WS -->
   <a class="dropdown-item"
      *ngIf="!selectedNode && !graph.state.selectedEdge"
-     (click)="runProject(views[viewIndex].currentProject)">
+     (click)="runCurrentProject()">
     <i class="fa fa-play-circle-o"
        aria-hidden="true"></i>&nbsp;Run All</a>
 

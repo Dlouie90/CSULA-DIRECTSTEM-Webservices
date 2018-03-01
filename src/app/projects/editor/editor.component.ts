@@ -28,6 +28,9 @@ import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webser
 export class EditorComponent implements OnInit {
   project: Project;
   projects: Project[];
+  comp_projects: Project[];
+  time_queue = [];
+  future_upds = [];
   node: Node;
   rightPanelStyle: Object = {};
   mainSvg;
@@ -36,6 +39,7 @@ export class EditorComponent implements OnInit {
   views: View[];
   viewIndex;
   radioOptions: string;
+  waiting: boolean;
   modal;
 
   // Mouse Position, used to insert new nodes onto the coordinate.
@@ -67,33 +71,23 @@ export class EditorComponent implements OnInit {
     this.route.params
         .switchMap((params: Params) => {
           id = +params['id'];
-          return this.projectService.getProject(id);
+          // TODO: make it so that this only queries the relevant sub-projects
+          return this.projectService.getProjects();
         })
-        .subscribe((project: Project) => {
+        .subscribe((projects: Project[]) => {
+          this.projects = projects.slice();
+          var project = this.projects[this.projects.findIndex((p: Project) => p.id == id)];
+
           if (!project) {  // Route back to the project page if id doesn't exist.
             console.error(`There are no projects with the id: ${id}!`);
             console.error('Returning to the project page');
             this.router.navigate(['../../']);
             return;
           }
+
           this.project = project;
           this.initGraph(project);
         });
-  }
-
-  private getProjects(callback): void {
-    const app = this;
-    this.projects = [];
-    this.projectService.getProjects()
-        .subscribe(
-            (projects: Project[]) => {
-              this.projects = projects.slice();
-              if(callback)
-                app.runNodeCallback();
-            },
-            () => {
-              console.log('failed to load projects, defaulting to empty :', []);
-            });
   }
 
   /**
@@ -125,11 +119,11 @@ export class EditorComponent implements OnInit {
     console.log('MAKING A NODE COMPOSITE');
 
     this.closeContextMenu();
-    this.getProjects(false);
 
-    // remove the current project from the list of projects
+    // remove projects that have already appeared from the list of projects
     var index = this.projects.indexOf(this.project);
-    this.projects.splice(index, 1);
+    this.comp_projects = this.projects.slice();
+    this.comp_projects.splice(index, 1);
 
     this.modal = this.modalService.open(content);
 
@@ -195,11 +189,10 @@ export class EditorComponent implements OnInit {
     if(node) {
       var s_node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == node.id)];
 
-      this.getProjects(false);
-
       // remove the current project from the list of projects
       var index = this.projects.indexOf(this.project);
-      this.projects.splice(index, 1);
+      this.comp_projects = this.projects.slice();
+      this.comp_projects.splice(index, 1);
 
       const project_index = this.projects.findIndex((p:Project) => p.id == project_id);
       console.log('INDEX: ' + project_index);
@@ -304,55 +297,141 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  runProject(project): void {
+  runCurrentProject(): void {
+    console.log("Running current projects");
+    
+    var current_project = this.views[this.viewIndex].currentProject;
+    current_project.nodes.forEach((n:Node) => {
+      this.runNode(n);
+    });
+  }
+
+  runProject(project, node=null): void {
     this.closeContextMenu();
+    const app = this;
 
     console.log("Attempting to run a whole PROJECT");
 
     if(!project) // if it's null, then do nothing
       return;
 
+    var project_index = app.projects.findIndex((p: Project) => p.id == project.id);
+    app.time_queue.push({index: project_index, time: -1, node: node, deps: []});
+    var to_index = app.time_queue.length - 1;
+    var time_object = app.time_queue[to_index];
+
     var total_time = 0;
     var benchmarked_count = 0;
-    const app = this;
-
+    
     project.nodes.forEach((n:Node) => {
       console.log("UPDATING NODE " + n.title + " IN " + project.title);
-      console.log(project.nodes);
 
-      var url = n.url;
+      if(n.composite_id) {
+        var p_index = app.projects.findIndex((p: Project) => p.id == n.composite_id);
+        var p = app.projects[p_index];
+        time_object.deps.push(p_index);
+        app.runProject(p, n);
+        benchmarked_count++;
+      }
+      else {
+        var url = n.url;
 
-      this.http.post('/webservice/rest/ws/query', {url: url})
-               .map((res: Response) => res.json())
-               .subscribe(
-                  (res:any) => {
-                    var time = res.time / 1000000;
-                    if (res.time > 0) {
-                      //alert("WebService query took " + time + "ms");
-                      n.time_text = time.toFixed(2) + "ms";
-                      n.just_benchmarked = true;
-                      total_time += time;
-                    }
-                    else
-                      alert("WebService query failed for " + n.title + " (check URL?)");
-                    benchmarked_count++;
+        this.http.post('/webservice/rest/ws/query', {url: url})
+                 .map((res: Response) => res.json())
+                 .subscribe(
+                    (res:any) => {
+                      var time = res.time / 1000000;
+                      if (res.time > 0) {
+                        //alert("WebService query took " + time + "ms");
+                        n.time_text = time.toFixed(2) + "ms";
+                        n.just_benchmarked = true;
+                        total_time += time;
+                      }
+                      else
+                        alert("WebService query failed for " + n.title + " (check URL?)");
+                      benchmarked_count++;
 
-                    if(benchmarked_count == project.nodes.length) {
-                      //alert("Project query took " + total_time + "ms");
-                      app.graph.updateSelectedNodeTime(total_time);
+                      if(benchmarked_count == project.nodes.length) {
+                        console.log("Adding up depedents of project " + project.title);
+                        console.log(time_object.deps);
 
-                      // callback to the project and try to update/save it
-                      //app.projectService.updateProjectToService(project);
-                    }
-                  },
-                  (err: any) => console.log(err),
-                  () => console.log("BENCHMARKED WEBSERVICE"));
+                        // adding up dependents
+                        app.time_queue.forEach(to => {
+                          var i = time_object.deps.findIndex(t => t == to.index);
+                          if(i != -1 && to.time != -1 && to.deps.length == 0) {
+                            total_time += to.time;
+                            time_object.deps.splice(i, 1);
+                          }
+                        })
+
+                        // this is the current total time for this time object
+                        time_object.time = total_time;
+
+                        // push the current time object into a queue if it is waiting
+                        if(time_object.deps.length > 0)
+                          app.future_upds.push(time_object);
+                        else
+                          // or it's not waiting, so let's update it for all dependents
+                          app.updateDependents(time_object);
+                      }
+                    },
+                    (err: any) => console.log(err));
+      }
     });
+  }
+
+  updateDependents(time_object):void {
+    const app = this;
+    var node = time_object.node;
+    var total_time = time_object.time;
+    var p = app.projects[time_object.index];
+
+    console.log("Forward updating Project " + p.title);
+
+    // update visual display of node
+    if(app.project.nodes.findIndex((n: Node) => n.id == node.id) != -1 || node == null) {
+      console.log("Updating the final composite node");
+      if(node)
+        app.graph.updateSelectedNodeTime(total_time, node);
+      else
+        alert("Project " + p.title + " took " + total_time + "ms to finish.");
+
+      // clear the time queue
+      app.time_queue = [];
+    }
+    else {
+      node.time_text = total_time.toFixed(2) + "ms";
+      node.just_benchmarked = true;
+
+      console.log("Going to forward update " + p.title + "'s dependents");
+      console.log(app.future_upds);
+
+      var to_purge = [];
+      // check for future updates
+      app.future_upds.forEach(to => {
+        var i = to.deps.findIndex(t => t == time_object.index);
+        if(i != -1) {
+          console.log("Found one dependent");
+          to.time += time_object.time;
+          to.deps.splice(i, 1);
+
+          if(to.deps.length == 0) { // if this time object is done, update and purge
+            app.updateDependents(to);
+            to_purge.push(to);
+          }
+        }
+      });
+
+      to_purge.forEach(to => { // remove each time_object flagged for purging
+        var i = app.future_upds.findIndex(t => t.index == to.index);
+        app.future_upds.splice(i, 1);
+      });
+    }
   }
 
   runNodeCallback():void {
     var project = this.projects[this.projects.findIndex((p: Project) => p.id == this.node.composite_id)];
-    this.runProject(project);
+    this.runProject(project, this.node);
   }
 
   runNode(node): void {
@@ -360,7 +439,7 @@ export class EditorComponent implements OnInit {
     const app = this;
 
     if (!node.composite_id) {
-      var url = this.selectedNode.url;
+      var url = node.url;
 
       this.http.post('/webservice/rest/ws/query', {url: url})
                .map((res: Response) => res.json())
@@ -369,7 +448,8 @@ export class EditorComponent implements OnInit {
                     var time = res.time / 1000000;
                     if (res.time > 0) {
                       //alert("WebService query took " + time + "ms");
-                      app.graph.updateSelectedNodeTime(time);
+                      console.log("Updating node " + node.title);
+                      app.graph.updateSelectedNodeTime(time, node);
                     }
                     else
                       alert("WebService query failed (check URL?)");
@@ -378,11 +458,8 @@ export class EditorComponent implements OnInit {
                   () => console.log("BENCHMARKED WEBSERVICE"));
     }
     else {
-      this.node = node;
-      if(!this.projects) {
-        this.getProjects(true);
-      }
-      else this.runNodeCallback();
+      var project = this.projects[this.projects.findIndex((p: Project) => p.id == node.composite_id)];
+      this.runProject(project, node);
     }
   }
 
