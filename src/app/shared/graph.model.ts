@@ -408,22 +408,39 @@ export class Graph {
     const thisGraph = this;
     const state = thisGraph.state;
 
-    const selectedNode = state.selectedNode;
+    const node = state.selectedNode;
 
     /* Can only delete selected node that are not an input/output node. */
-    if (selectedNode && Node.isRegular(selectedNode)) {
+    if (node) {
       /* Remove the node form the list. */
-      thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
+      var node_index = thisGraph.nodes.indexOf(node);
+      thisGraph.removeEdgesWithNodeIndex(node_index);
+      thisGraph.nodes.splice(node_index, 1);
       /* Remove all edges originating from this node. */
-      thisGraph.spliceLinksFormNode(selectedNode);
+      //thisGraph.removeEdgesWithNode(node);
+      //thisGraph.spliceLinksFormNode(selectedNode);
       /* Remove the node from all neighbors field */
       //this.removeFromNeighbor(selectedNode);
-      state.selectedNode = null;
+      thisGraph.state.selectedNode = null;
       thisGraph.updateGraph();
 
       // callback to the project and try to update/save it
       this.projectService.updateProjectToService(this.project);
     }
+  }
+
+  removeEdgesWithNodeIndex(node_index) {
+    console.log("Removing edges with node index");
+    if (node_index > -1) {
+      const to_purge = this.edges.filter(edge => edge.source == node_index || edge.target == node_index);
+      to_purge.forEach(edge => {
+        var edge_index = this.edges.indexOf(edge);
+        this.edges.splice(edge_index, 1);
+        //this.paths.splice(edge_index, 1);
+      });
+      console.log("Purged " + to_purge.length + " edges");
+    }
+    console.log("There are " + this.edges.length + " edges remaining");
   }
 
   removeSelectedEdge(): void {
@@ -565,7 +582,7 @@ export class Graph {
     // update the paths : paths = ...selectAll("g")
     thisGraph.paths = thisGraph.paths
                           .data(thisGraph.edges, function(d) {
-                            return nodes[d.source].id + '+' + nodes[d.target].id;
+                            return d.source + '+' + d.target;
                           });
 
     // For convinces: the updateToService selection
