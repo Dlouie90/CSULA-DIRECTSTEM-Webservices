@@ -3,12 +3,9 @@ import {
     EventEmitter,
     Output
 } from '@angular/core';
-import {
-    FormBuilder,
-    FormGroup
-} from '@angular/forms';
 import {ProjectService} from '../../../../shared/services/project.service';
-import {CreateProjectResponse} from '../../../../shared/models/server-response/create-project-response.model';
+import {Project} from '../../../../shared/models/project.model';
+
 
 @Component({
     selector: 'app-create-project-form',
@@ -17,20 +14,14 @@ import {CreateProjectResponse} from '../../../../shared/models/server-response/c
 export class CreateProjectFormsComponent {
     @Output()
     onCreate = new EventEmitter<any>();
-    newProjectForm: FormGroup;
 
-    constructor(private projectService: ProjectService, private formBuilder: FormBuilder) {
-        this.newProjectForm = formBuilder.group({
-            title: '',
-            description: '',
-        });
+    constructor(private projectService: ProjectService) {
+
     }
 
     createProject(): void {
-        this.projectService.createProjectDb(this.newProjectForm.value)
-            .subscribe(
-                (res: CreateProjectResponse) => this.onCreate.emit(res),
-                (err: any) => this.onCreate.emit(err),
-                () => this.newProjectForm.reset());
+        this.projectService.createNew();
+
+        this.projectService.getProjectsDb().subscribe((result: Project[]) => this.onCreate.emit(result));
     }
 }
