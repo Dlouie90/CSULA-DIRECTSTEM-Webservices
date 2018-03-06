@@ -337,6 +337,13 @@ export class Graph {
     this.nodes[index].time_text = time.toFixed(2) + "ms";
     this.nodes[index].just_benchmarked = true;
 
+    var d = new Date();
+    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+    if(this.nodes[index].stats == null)
+      this.nodes[index].stats = [];
+    this.nodes[index].stats.push({date: date, runtime: time});
+
     // callback to the project and try to update/save it
     this.projectService.updateProjectToService(this.project);
 

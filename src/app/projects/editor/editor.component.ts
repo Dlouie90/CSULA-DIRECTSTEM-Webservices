@@ -400,7 +400,12 @@ export class EditorComponent implements OnInit {
       app.time_queue = [];
     }
     else {
+      var d = new Date();
+      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
       node.time_text = total_time.toFixed(2) + "ms";
+      if(node.stats == null) // takes care of legacy nodes
+        node.stats = [];
+      node.stats.push({date: date, runtime: total_time});
       node.just_benchmarked = true;
 
       console.log("Going to forward update " + p.title + "'s dependents");
@@ -718,7 +723,12 @@ export class EditorComponent implements OnInit {
   */
 
   viewPerformance(modal): void {
-    this.openQuickEditModal(modal);
+    this.modalService.open(modal).result.then((result) => {
+      //this.graph.updateGraph();
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
     this.closeContextMenu();
   }
 }
