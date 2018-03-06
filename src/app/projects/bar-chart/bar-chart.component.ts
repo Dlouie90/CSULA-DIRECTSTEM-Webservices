@@ -22,9 +22,13 @@ export class BarChartComponent implements OnInit {
 
   ngOnInit() {
     console.log("Bar chart called on node " + this.node.title);
+
+    if(this.node.stats == null) // fixes legacy nodes
+      this.node.stats = [];
     
     let data = [];
     let stats = [];
+
     if(this.node.stats.length > 20)
       stats = this.node.stats.slice(this.node.stats.length - 21, 20);
     else
@@ -40,7 +44,11 @@ export class BarChartComponent implements OnInit {
     //const data = [55, 44, 30, 23, 17, 14, 16, 25, 41, 61, 85, 101, 95, 105, 114, 150, 180, 210, 125, 100, 71, 75, 72, 67];
 
     const barWidth = 18, barPadding = 1;
-    const maxValue = Math.ceil(d3.max(data) / 100) * 100; // round up to the nearest hundred
+    let maxValue = Math.ceil(d3.max(data) / 100) * 100; // round up to the nearest hundred
+
+    if(data.length == 0)
+      maxValue = 300;
+
     const heightScale = 300 / maxValue; // always scale to 300
 
     const dataLength = (data.length > 20) ? data.length : 20;
