@@ -10,6 +10,7 @@ export class Node {
   composite_id: number;
   parameters: string[] = [];
   parameterEntries: ParameterEntry[] = [];
+  stats;
 
   /** Return true if the node is neither a input or output node. */
   static isRegular(node) {
@@ -27,6 +28,7 @@ export class Node {
     this.title = `NODE_${id}`;
     this.time_text  = '';
     this.just_benchmarked = false;
+    this.stats = [];
   }
 }
 
