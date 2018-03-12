@@ -9,8 +9,8 @@ export class Node {
   time_text: string;
   just_benchmarked: boolean;
   composite_id: number;
-  parameters: string[] = [];
-  parameterEntries: ParameterEntry[] = [];
+  param_keys: string[] = [];
+  param_vals: string[] = [];
   stats;
 
   /** Return true if the node is neither a input or output node. */
@@ -33,11 +33,4 @@ export class Node {
     this.url = "";
     this.method = "GET";
   }
-}
-
-/** Map a parameter to a "Node". This mean that the output, result, of the
- * node should be feed to the "parameter" */
-export class InputEntry {
-  fromNode: Node;
-  toParameter: string;
 }

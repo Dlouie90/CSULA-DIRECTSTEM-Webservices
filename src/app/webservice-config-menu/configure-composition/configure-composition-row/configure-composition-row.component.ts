@@ -2,8 +2,7 @@ import {Component,
         Input,
         OnChanges,
         OnInit} from '@angular/core';
-import {InputEntry,
-        Node} from '../../../shared/models/node.model';
+import {Node} from '../../../shared/models/node.model';
 
 @Component({
   selector: 'app-configure-row',
@@ -17,7 +16,7 @@ export class ConfigureCompositionRowComponent implements OnInit, OnChanges {
   inputNodes: Node[];
   @Input()
   parameter: string;
-  selectedInputEntry: InputEntry;
+  selectedInputEntry;
 
   ngOnInit(): void {
     this.loadPreset();

@@ -346,8 +346,10 @@ export class EditorComponent implements OnInit {
       else {
         var url = n.url;
         var method = n.method;
+        var param_keys = n.param_keys;
+        var param_vals = n.param_vals;
 
-        this.http.post('/webservice/rest/ws/query', {url: url, method: method})
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
                  .map((res: Response) => res.json())
                  .subscribe(
                     (res:any) => {
@@ -400,6 +402,7 @@ export class EditorComponent implements OnInit {
       var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
       this.currentProject.stats.push({date: date, runtime: this.benchmark_time});
+      this.updateProjectToService(this.currentProject);
 
       this.benchmarking = false;
     }
@@ -419,6 +422,7 @@ export class EditorComponent implements OnInit {
       p.stats = []
 
     p.stats.push({date: date, runtime: total_time});
+    this.updateProjectToService(p);
 
     // update visual display of node
     if(app.project.nodes.findIndex((n: Node) => n.id == node.id) != -1 || node == null) {
@@ -467,11 +471,6 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  runNodeCallback():void {
-    var project = this.projects[this.projects.findIndex((p: Project) => p.id == this.node.composite_id)];
-    this.runProject(project, this.node);
-  }
-
   runNode(node): void {
     this.closeContextMenu();
     const app = this;
@@ -479,14 +478,16 @@ export class EditorComponent implements OnInit {
     if (!node.composite_id) {
       var url = node.url;
       var method = node.method;
+      var param_keys = node.param_keys;
+      var param_vals = node.param_vals;
 
-      this.http.post('/webservice/rest/ws/query', {url: url, method: method})
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
                .map((res: Response) => res.json())
                .subscribe(
                   (res:any) => {
                     var time = res.time / 1000000;
                     if (res.time > 0) {
-                      //alert("WebService query took " + time + "ms");
+                      //alert("WebService query took " + time + "ms"); 
                       console.log("Updating node " + node.title);
                       app.graph.updateSelectedNodeTime(time, node);
                       if(app.benchmarking)
