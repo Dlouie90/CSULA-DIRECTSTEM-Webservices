@@ -7,8 +7,8 @@ import {
   Output
 } from '@angular/core';
 import {IService} from '../../shared/models/service.interface';
-import {NodeService} from '../../shared/services/node.service';
-
+//import {NodeService} from '../../shared/services/node.service';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
   selector: 'app-webservice-list',

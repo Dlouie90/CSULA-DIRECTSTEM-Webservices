@@ -2,6 +2,7 @@ import {Component,
         Input,
         OnInit} from '@angular/core';
 
+import {Project} from '../../../shared/models/project.model';
 import {Node} from '../../../shared/models/node.model';
 import {View} from '../../../shared/view.model';
 
@@ -12,7 +13,8 @@ import {View} from '../../../shared/view.model';
 })
 export class BreadcrumbComponent implements OnInit {
   @Input()
-  views: Array<View>;
+  controller;
+  //views: Array<View>;
 
   constructor() {
   }
@@ -23,6 +25,14 @@ export class BreadcrumbComponent implements OnInit {
   /** Return the parentNode title. If the parentNode is null then
      * it is a root view, return "root view" instead. */
   getViewTitle(view: View): string {
-    return view.parentNode ? Node.nodeTitle(view.parentNode) : 'root-view';
+    var title = view.currentProject ? Project.projectTitle(view.currentProject) : 'root-view';
+    if(this.controller.views.indexOf(view) == 0)
+      title += ' (ROOT)';
+    return title;
+    //return view.parentNode ? Node.nodeTitle(view.parentNode) : 'root-view';
+  }
+
+  isCurrent(view):boolean {
+    return view.currentProject.id == this.controller.project.id;
   }
 }

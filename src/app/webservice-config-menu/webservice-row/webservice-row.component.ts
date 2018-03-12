@@ -29,16 +29,17 @@ export class WebserviceRowComponent implements OnInit {
   }
 
   loadOptionPreset(): void {
-    this.selectedOption = this.node
-                              .parameterEntries
-                              .find((value: ParameterEntry) => value.targetServiceParameter === this.parameter);
+    /*this.selectedOption = this.node
+                              .param_vals
+                              .find((value:any) => value.targetServiceParameter === this.parameter);*/
   }
 
   isSelected(param: string): boolean {
-    const entry = this.node
-                      .parameterEntries
-                      .find((value: ParameterEntry) => value.targetServiceParameter === this.parameter && value.parameter === param);
-    return entry != null;
+    /*const entry = this.node
+                      .param_vals
+                      .find((value:any) => value.targetServiceParameter === this.parameter && value.parameter === param);
+    return entry != null;*/
+    return null;
   }
 
   onSelectOption(param: string): void {
@@ -50,10 +51,10 @@ export class WebserviceRowComponent implements OnInit {
 
     // remove  and replace any entries whose target's is this.parameter,
     // with the latest one, (entry);
-    const newEntries = this.node
+    /*const newEntries = this.node
                            .parameterEntries
                            .filter((value: ParameterEntry) => value.targetServiceParameter !== this.parameter);
     newEntries.push(entry);
-    this.node.parameterEntries = newEntries;
+    this.node.parameterEntries = newEntries;*/
   }
 }

@@ -16,17 +16,20 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let node of nodes">
-      <td class="text-center">{{ node.id }}</td>
-      <td class="text-center">{{ node.title }}</td>
-      <td class="text-center">{{ node.parameters }}</td>
+    <tr *ngFor="let project of projects">
+      <td class="text-center">{{ project.id }}</td>
+      <td class="text-center">{{ project.title }}</td>
+      <td class="text-center">{{ project.parameters }}</td>
       <td class="text-center">
-        <button class="btn btn-outline-info" (click)="navigateToDetail(node.id)">
+        <button class="btn btn-outline-info" (click)="navigateToDetail(project.id)">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-outline-danger" (click)="deleteProject(project.id)">
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
       </td>
       <td class="text-center">
-        <button class="btn btn-outline-info" (click)="navigateToEditor(node.id)">
+        <button class="btn btn-outline-info" (click)="navigateToEditor(project.id)">
           <i class="fa fa-picture-o" aria-hidden="true"></i>
         </button>
       </td>

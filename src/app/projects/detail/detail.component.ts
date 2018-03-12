@@ -8,37 +8,37 @@ import {ActivatedRoute,
         Router} from '@angular/router';
 
 import {Node} from '../../shared/models/node.model';
-import {NodeService} from '../../shared/services/node.service';
+import {Project} from '../../shared/models/project.model';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
   templateUrl: './detail.component.html',
 })
 export class DetailComponent implements OnInit {
-  node: Node;
-
-  constructor(private nodeService: NodeService, private route: ActivatedRoute, private router: Router) {}
+  project: Project;
+  constructor(private projectService: ProjectService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.params
         .mergeMap((params: Params) => {
           const id = +params['id'];
-          return this.nodeService.getNode(id);
+          return this.projectService.getProject(id);
         })
-        .subscribe((value: Node) => {
+        .subscribe((value: Project) => {
           if (!value) {
             this.router.navigate(['projects']);
             return;
           }
-          this.node = value;
+          this.project = value;
         });
   }
 
   gotoEditor(isNewProject: boolean): void {
     if (isNewProject) {
-      const node = this.nodeService.createNew();
-      this.router.navigate(['/projects', node.id, 'editor'], 'editor');
+      const project = this.projectService.createNew();
+      this.router.navigate(['/projects', project.id, 'editor'], 'editor');
     } else {
-      this.router.navigate(['/projects', this.node.id, 'editor']);
+      this.router.navigate(['/projects', this.project.id, 'editor']);
     }
   }
 

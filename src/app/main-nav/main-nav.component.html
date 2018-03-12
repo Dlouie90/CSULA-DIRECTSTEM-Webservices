@@ -1,21 +1,21 @@
 <div class="text-center">
-  <a class="navbar-brand"><img src="assets/images/Jiang_Guo_Group_Logo.jpg"></a>
+    <a class="navbar-brand"><img id="logo" src="assets/images/Jiang_Guo_Group_Logo.jpg"></a>
 </div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <ul class="navbar-nav">
-    <li class="nav-item" *ngFor="let path of paths">
-      <a class="nav-link" [routerLink]="path.url" routerLinkActive="active bigger">
-        {{ path.title }}</a>
-    </li>
-  </ul>
+    <ul class="navbar-nav">
+        <li class="nav-item" *ngFor="let path of paths">
+            <a class="nav-link" [routerLink]="path.url" routerLinkActive="active bigger">
+                {{ path.title }}</a>
+        </li>
+    </ul>
 
-  <div class="ml-auto float-right" *ngIf="!currentUser">
-    <a href="#" (click)="onClick()">Log in or sign up</a>
-  </div>
+    <div class="ml-auto float-right" *ngIf="!currentUser">
+        <a href="#" (click)="onClick()">Log in or sign up</a>
+    </div>
 
-  <div class="ml-auto float-right" *ngIf="currentUser">
-    <span>{{ currentUser.firstName }} {{ currentUser.lastName }} </span>
-    <a href="#" (click)="logout()">Log out</a>
-  </div>
+    <div class="ml-auto float-right" *ngIf="currentUser">
+        <span>{{ currentUser.firstName }} {{ currentUser.lastName }} </span>
+        <a href="#" (click)="logout()">Log out</a>
+    </div>
 
 </nav>

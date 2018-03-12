@@ -5,14 +5,13 @@ export class Node {
   title: string;
   description: string;
   url: string;
-  service: IService;
-  parameters: string[] = [];
-  parameterEntries: ParameterEntry[] = [];
-  neighbors: Node[] = [];
-  children: Node[] = [];
-  inputs: Node[] = [];
-  outputs: Node[] = [];
-  inputEntries: InputEntry[] = [];
+  method: string;
+  time_text: string;
+  just_benchmarked: boolean;
+  composite_id: number;
+  param_keys: string[] = [];
+  param_vals: string[] = [];
+  stats;
 
   /** Return true if the node is neither a input or output node. */
   static isRegular(node) {
@@ -28,12 +27,10 @@ export class Node {
 
   constructor(public id: number, public x: number, public y: number) {
     this.title = `NODE_${id}`;
+    this.time_text  = '';
+    this.just_benchmarked = false;
+    this.stats = [];
+    this.url = "";
+    this.method = "GET";
   }
-}
-
-/** Map a parameter to a "Node". This mean that the output, result, of the
- * node should be feed to the "parameter" */
-export class InputEntry {
-  fromNode: Node;
-  toParameter: string;
 }

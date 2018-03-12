@@ -1,11 +1,15 @@
-package edu.csula.directstem.results;
+package edu.csula.directstem.results.user;
 
-public class DeleteUserByIdResult {
+import edu.csula.directstem.model.User;
+
+public class UpdateUserResult {
   private int id;
+  private User user;
   private boolean successful;
 
-  public DeleteUserByIdResult(int id, boolean successful) {
+  public UpdateUserResult(int id, User user, boolean successful) {
     this.id = id;
+    this.user = user;
     this.successful = successful;
   }
 
@@ -15,6 +19,14 @@ public class DeleteUserByIdResult {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 
   public boolean isSuccessful() {

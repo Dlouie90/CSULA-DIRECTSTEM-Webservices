@@ -1,17 +1,22 @@
 import {Component,
         Input,
-        OnInit} from '@angular/core';
+        OnInit,
+        OnDestroy} from '@angular/core';
 import {ActivatedRoute,
         Params,
         Router} from '@angular/router';
 import {ModalDismissReasons,
         NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Http,
+        Response} from '@angular/http';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
 import {Graph} from '../../shared/graph.model';
+import {Project} from '../../shared/models/project.model';
+import {ProjectService} from '../../shared/services/project.service';
 import {Node} from '../../shared/models/node.model';
-import {NodeService} from '../../shared/services/node.service';
+//import {NodeService} from '../../shared/services/node.service';
 import {View} from '../../shared/view.model';
 import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webservice-config-menu.component';
 
@@ -21,24 +26,42 @@ import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webser
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
+  project: Project;
+  projects: Project[];
+  comp_projects: Project[];
+  time_queue = [];
+  future_upds = [];
   node: Node;
   rightPanelStyle: Object = {};
   mainSvg;
   graph: Graph;
   closeResult: string;
   views: View[];
+  viewIndex;
   radioOptions: string;
+  waiting: boolean;
+  modal;
+  benchmarking;
+  benchmark_time;
+  benchmark_count;
 
   // Mouse Position, used to insert new nodes onto the coordinate.
   rightClickPos: {x: number, y: number};
 
-  constructor(private nodeService: NodeService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router) {
+  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
     this.views = [];
     this.initPage();
     this.radioOptions = 'editor';
+    this.benchmarking = false;
+  }
+
+  ngOnDestroy() {
+    if(this.project != null)
+      this.updateProjectToService(this.graph.project);
+      //this.updateProjectsToService(this.projects);
   }
 
   /* *********************************************************************** */
@@ -52,17 +75,22 @@ export class EditorComponent implements OnInit {
     this.route.params
         .switchMap((params: Params) => {
           id = +params['id'];
-          return this.nodeService.getNode(id);
+          // TODO: make it so that this only queries the relevant sub-projects
+          return this.projectService.getProjects();
         })
-        .subscribe((node: Node) => {
-          if (!node) {  // Route back to the project page if id doesn't exist.
-            console.error(`There are no nodes with the id: ${id}!`);
+        .subscribe((projects: Project[]) => {
+          this.projects = projects.slice();
+          var project = this.projects[this.projects.findIndex((p: Project) => p.id == id)];
+
+          if (!project) {  // Route back to the project page if id doesn't exist.
+            console.error(`There are no projects with the id: ${id}!`);
             console.error('Returning to the project page');
             this.router.navigate(['../../']);
             return;
           }
-          this.node = node;
-          this.initGraph(node);
+
+          this.project = project;
+          this.initGraph(project);
         });
   }
 
@@ -70,41 +98,136 @@ export class EditorComponent implements OnInit {
      * Initialize the graph view with the corresponding node (single).
      * Thus parentNode will be NULL and NO edge will be shown.
      */
-  initGraph(node): void {
-    this.mainSvg = d3.select('div#d3-editor').append('svg');
-    this.graph = new Graph(this.mainSvg, [node], null);
-    this.views.push(new View([node], null));
+  initGraph(project): void {
+    console.log("CREATING NEW GRAPH");
+    if(!this.graph) // create a new graph if necessary
+      this.mainSvg = d3.select('div#d3-editor').append('svg');
+    else
+      this.mainSvg.selectAll('*').remove();
+    this.graph = new Graph(this.mainSvg, project.nodes, project.edges, project, this.projectService);
+
+    const project_index = this.views.findIndex((v:View) => v.currentProject.id == project.id);
+    if(project_index < 0 || project_index >= this.views.length) {
+      if(this.viewIndex < this.views.length - 1)
+        this.views.splice(this.viewIndex + 1, this.views.length - this.viewIndex - 1);
+      this.views.push(new View([project], project));
+      this.viewIndex = this.views.length - 1;
+    }
+    else
+      this.viewIndex = project_index;
     this.graph.updateGraph();
   }
 
   /** Create a composite node of the clicked nodes */
-  compositeClickNodes(): void {
-    console.log('COMPOSITE CLICKED NODES');
-
-    const OFFSET = -120;
-    const node = this.nodeService.createNew({
-      x: this.rightClickPos.x,
-      y: this.rightClickPos.y + OFFSET
-    });
-
-    // Add the clickedNodes as children of this node.
-    this.graph.compositeClickNodes(node);
-
-    const oldView = _.last(this.views);    // the view before composition
-    const currentView = this.currentView;  // the view after composition;
-
-    // Add the new node as a child of parentNode.
-    if (oldView.parentNode) {
-      oldView.parentNode.children = currentView.nodes;
-      this.nodeService.updateNodeToService(oldView.parentNode);
-    }
-
-    // Update the current view nodes and inform nodeService of the new node
-    this.replaceRecentView(currentView);
-    this.nodeService.add(node);
-    this.updateNodesToService(currentView.nodes);
+  compositeMake(content): void {
+    console.log('MAKING A NODE COMPOSITE');
 
     this.closeContextMenu();
+
+    // remove projects that have already appeared from the list of projects
+    var index = this.projects.indexOf(this.project);
+    this.comp_projects = this.projects.slice();
+    this.comp_projects.splice(index, 1);
+
+    this.modal = this.modalService.open(content);
+
+    this.modal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  compositeCreate(content): void {
+    console.log('CREATING A COMPOSITE NODE');
+
+    const OFFSET = -120;
+    
+    // TODO: get this id directly from the db
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
+                          this.rightClickPos.x, this.rightClickPos.y);
+
+    const oldView = this.views[this.viewIndex];    // the view before composition
+
+    if(oldView.currentProject)
+      oldView.currentProject.nodes.push(node);
+
+    // update the project in current view
+    this.addNodeToProject(oldView.currentProject, node);
+    this.updateProjectToService(oldView.currentProject);
+    //this.updateProjectsToService(oldView.projects);
+
+    this.graph.insertNode(node);
+
+    this.graph.selectNode(node);
+    this.compositeMake(content);
+  }
+
+  compositeLink(project_id): void {
+    console.log('LINKING A COMPOSITE NODE');
+    if(this.graph.state.selectedNode) {
+      var node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == this.graph.state.selectedNode.id)];
+      var project_index = this.projects.findIndex((p:Project) => p.id == project_id);
+      var project = this.projects[project_index];
+      node.composite_id = project_id;
+      node.title = project.title;
+      this.updateProjectToService(this.project);
+      
+      // update the title of the current node on display (different from the one in the data cache)
+      this.syncNode(node);
+      this.drawCurrentView();
+
+      if(this.modal != null)
+        this.modal.close('confirmed');
+    }
+  }
+
+  compositeView(project_id): void {
+    console.log('VIEWING A COMPOSITE NODE (PROJECT)');
+    console.log('ID   : ' + project_id);
+
+    this.closeContextMenu();
+    var node = this.graph.state.selectedNode;
+
+    if(node) {
+      var s_node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == node.id)];
+
+      // remove the current project from the list of projects
+      var index = this.projects.indexOf(this.project);
+      this.comp_projects = this.projects.slice();
+      this.comp_projects.splice(index, 1);
+
+      const project_index = this.projects.findIndex((p:Project) => p.id == project_id);
+      console.log('INDEX: ' + project_index);
+      if(project_index < 0 || project_index >= this.projects.length) {
+        console.log('COULD NOT FIND A PROJECT WITH THAT ID!');
+        s_node.composite_id = null;
+        this.updateProjectToService(this.project);
+        this.initGraph(this.project);
+        return;
+      }
+
+      const sub_project = this.projects[project_index];
+      this.updateProjectToService(this.project);
+
+      this.project = sub_project;
+      this.initGraph(sub_project);
+
+      this.node = null;
+    }
+  }
+
+  breadcrumbClick(view): void {
+    console.log("BREADCRUMB CLICK!");
+    console.log("PROJECT ID: " + view.currentProject.id);
+
+    this.updateProjectToService(this.project);
+
+    this.project = view.currentProject;
+    this.initGraph(view.currentProject);
+
+    this.node = null;
   }
 
   /** Return the graph's current view, this.graph.currentView */
@@ -131,15 +254,10 @@ export class EditorComponent implements OnInit {
       const currentView = _.last(this.views);  // the view before edge;
       const updatedView = this.currentView;    // the view after edge;
 
-      // Add the new node as a child of parentNode.
-      if (currentView.parentNode) {
-        currentView.parentNode.children = updatedView.nodes;
-        this.nodeService.updateNodeToService(currentView.parentNode);
-      }
+      this.project.edges = this.graph.edges; // update edges
 
-      // Update the current view nodes and inform nodeService of the new node
-      currentView.nodes = updatedView.nodes;
-      this.updateNodesToService(currentView.nodes);
+      currentView.projects = updatedView.projects;
+      this.updateProjectsToService(currentView.projects);
     }
   }
 
@@ -147,22 +265,24 @@ export class EditorComponent implements OnInit {
     if ($event.which === 3) {
       this.rightPanelStyle = {
         'display': 'block',
-        'left': ($event.clientX + 1) + 'px',
-        'top': ($event.clientY + 1) + 'px'
+        'left': ($event.pageX) + 'px',
+        'top': ($event.pageY) + 'px'
       };
-      this.rightClickPos = {x: $event.clientX, y: $event.clientY};
+      // 274 is the height up until the window (maybe?)
+      // TODO: programmatically get this number rather than using a constant
+      this.rightClickPos = {x: $event.pageX, y: $event.pageY - 274};
       return false;
     }
   }
 
   drawCurrentView() {
     console.log('DRAW CURRENT VIEW');
-    const recentView = _.last(this.views);
+    const recentView = this.views[this.viewIndex];
 
     /* Reset the svg and load up the previous state */
     this.mainSvg.selectAll('*').remove();
     this.graph = new Graph(
-        this.mainSvg, recentView.nodes, recentView.parentNode);
+        this.mainSvg, recentView.currentProject.nodes, recentView.currentProject.edges, recentView.currentProject, this.projectService);
     this.graph.updateGraph();
   }
 
@@ -183,27 +303,247 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  runCurrentProject(): void {
+    console.log("Running current projects");
+    
+    this.benchmarking = true;
+    this.benchmark_time = 0;
+    this.benchmark_count = 0;
+
+    var current_project = this.views[this.viewIndex].currentProject;
+    current_project.nodes.forEach((n:Node) => {
+      this.runNode(n);
+    });
+  }
+
+  runProject(project, node=null): void {
+    this.closeContextMenu();
+    var app = this;
+
+    console.log("Attempting to run a whole PROJECT");
+
+    if(!project) // if it's null, then do nothing
+      return;
+
+    var project_index = app.projects.findIndex((p: Project) => p.id == project.id);
+    app.time_queue.push({index: project_index, time: -1, node: node, deps: []});
+    var to_index = app.time_queue.length - 1;
+    var time_object = app.time_queue[to_index];
+
+    var total_time = 0;
+    var benchmarked_count = 0;
+    
+    project.nodes.forEach((n:Node) => {
+      console.log("UPDATING NODE " + n.title + " IN " + project.title);
+
+      if(n.composite_id) {
+        var p_index = app.projects.findIndex((p: Project) => p.id == n.composite_id);
+        var p = app.projects[p_index];
+        time_object.deps.push(p_index);
+        app.runProject(p, n);
+        benchmarked_count++;
+      }
+      else {
+        var url = n.url;
+        var method = n.method;
+        var param_keys = n.param_keys;
+        var param_vals = n.param_vals;
+
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+                 .map((res: Response) => res.json())
+                 .subscribe(
+                    (res:any) => {
+                      var time = res.time / 1000000;
+                      if (res.time > 0) {
+                        //alert("WebService query took " + time + "ms");
+                        n.time_text = time.toFixed(2) + "ms";
+                        n.just_benchmarked = true;
+                        total_time += time;
+                      }
+                      else
+                        alert("WebService query failed for " + n.title + " (check URL?)");
+                      benchmarked_count++;
+
+                      if(benchmarked_count == project.nodes.length) {
+                        console.log("Adding up depedents of project " + project.title);
+                        console.log(time_object.deps);
+
+                        // adding up dependents
+                        app.time_queue.forEach(to => {
+                          var i = time_object.deps.findIndex(t => t == to.index);
+                          if(i != -1 && to.time != -1 && to.deps.length == 0) {
+                            total_time += to.time;
+                            time_object.deps.splice(i, 1);
+                          }
+                        })
+
+                        // this is the current total time for this time object
+                        time_object.time = total_time;
+
+                        // push the current time object into a queue if it is waiting
+                        if(time_object.deps.length > 0)
+                          app.future_upds.push(time_object);
+                        else
+                          // or it's not waiting, so let's update it for all dependents
+                          app.updateDependents(time_object);
+                      }
+                    },
+                    (err: any) => console.log(err));
+      }
+    });
+  }
+
+  updateBenchmarkScore(time) {
+    this.benchmark_time += time;
+    this.benchmark_count++;
+
+    if(this.benchmark_count == this.currentProject.nodes.length) {
+      var d = new Date();
+      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+      this.currentProject.stats.push({date: date, runtime: this.benchmark_time});
+      this.updateProjectToService(this.currentProject);
+
+      this.benchmarking = false;
+    }
+  }
+
+  updateDependents(time_object):void {
+    var app = this;
+    var node = time_object.node;
+    var total_time = time_object.time;
+    var p = app.projects[time_object.index];
+    var d = new Date();
+    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+    console.log("Forward updating Project " + p.title);
+
+    if(p.stats == null)
+      p.stats = []
+
+    p.stats.push({date: date, runtime: total_time});
+    this.updateProjectToService(p);
+
+    // update visual display of node
+    if(app.project.nodes.findIndex((n: Node) => n.id == node.id) != -1 || node == null) {
+      console.log("Updating the final composite node");
+      if(node) {
+        app.graph.updateSelectedNodeTime(total_time, node);
+        if(app.benchmarking)
+          app.updateBenchmarkScore(total_time);
+      }
+      else
+        alert("Project " + p.title + " took " + total_time + "ms to finish.");
+
+      // clear the time queue
+      app.time_queue = [];
+    }
+    else {
+      node.time_text = total_time.toFixed(2) + "ms";
+      if(node.stats == null) // takes care of legacy nodes
+        node.stats = [];
+      node.stats.push({date: date, runtime: total_time});
+      node.just_benchmarked = true;
+
+      console.log("Going to forward update " + p.title + "'s dependents");
+      console.log(app.future_upds);
+
+      var to_purge = [];
+      // check for future updates
+      app.future_upds.forEach(to => {
+        var i = to.deps.findIndex(t => t == time_object.index);
+        if(i != -1) {
+          console.log("Found one dependent");
+          to.time += time_object.time;
+          to.deps.splice(i, 1);
+
+          if(to.deps.length == 0) { // if this time object is done, update and purge
+            app.updateDependents(to);
+            to_purge.push(to);
+          }
+        }
+      });
+
+      to_purge.forEach(to => { // remove each time_object flagged for purging
+        var i = app.future_upds.findIndex(t => t.index == to.index);
+        app.future_upds.splice(i, 1);
+      });
+    }
+  }
+
+  runNode(node): void {
+    this.closeContextMenu();
+    const app = this;
+
+    if (!node.composite_id) {
+      var url = node.url;
+      var method = node.method;
+      var param_keys = node.param_keys;
+      var param_vals = node.param_vals;
+
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+               .map((res: Response) => res.json())
+               .subscribe(
+                  (res:any) => {
+                    var time = res.time / 1000000;
+                    if (res.time > 0) {
+                      //alert("WebService query took " + time + "ms"); 
+                      console.log("Updating node " + node.title);
+                      app.graph.updateSelectedNodeTime(time, node);
+                      if(app.benchmarking)
+                        app.updateBenchmarkScore(time);
+                    }
+                    else
+                      alert("WebService query failed (check URL?)");
+                  },
+                  (err: any) => console.log(err),
+                  () => console.log("BENCHMARKED WEBSERVICE"));
+    }
+    else {
+      var project = this.projects[this.projects.findIndex((p: Project) => p.id == node.composite_id)];
+      this.runProject(project, node);
+    }
+  }
 
   /** Insert a node onto the graph and updateToService nodeService.
      * Also add the node into its parent.children array. */
   insertNode(): void {
+    console.log('adding a new node');
+    this.closeContextMenu();
     const OFFSET = -120;
+    /*
     const node = this.nodeService.createNew({
       x: this.rightClickPos.x,
       y: this.rightClickPos.y + OFFSET
     });
+    */
+    // TODO: get this id directly from the db
+    let node_id = Math.trunc(Math.random() * 999999999) + 1;
+    const node = new Node(node_id,
+                          this.rightClickPos.x, this.rightClickPos.y);
 
     /* Update the view to include the new node. */
-    const recentView = _.last(this.views);
+    const recentView = this.views[this.viewIndex];
+
+    /*
     if (recentView.parentNode) {
       recentView.parentNode.children.push(node);
       this.nodeService.updateNodeToService(recentView.parentNode);
     }
     recentView.nodes.push(node);
     this.nodeService.add(node);
-    this.graph.insertNode(node);
+    */
 
-    this.closeContextMenu();
+    //if(recentView.currentProject)
+      //recentView.currentProject.nodes.push(node);
+
+    // update the project in current view
+    this.addNodeToProject(recentView.currentProject, node);
+    //console.log(JSON.stringify(recentView.currentProject));
+    this.updateProjectToService(recentView.currentProject);
+    //this.updateProjectsToService(recentView.projects);
+
+    this.graph.insertNode(node);
   }
 
   get lastView(): View {
@@ -223,13 +563,14 @@ export class EditorComponent implements OnInit {
     const modalRef = this.modalService
                          .open(WebserviceConfigMenuComponent, {size: 'lg'});
     const inputNodes = this.getInputsToNode(this.selectedNode);
+    modalRef.componentInstance.project = this.project;
     modalRef.componentInstance.node = this.selectedNode;
     modalRef.componentInstance.inputNodes = inputNodes;
     modalRef.result
         .then(
             (result: any) => {
               this.syncNode(this.selectedNode);
-              this.drawCurrentView()
+              this.drawCurrentView();
             },
             (reason: any) => {
               this.syncNode(this.selectedNode);
@@ -249,7 +590,7 @@ export class EditorComponent implements OnInit {
   /* Ensure that the parent.children (nodes) and view.nodes are in sync.
      * they could be out of sync if the user update the title/description */
   syncNode(node: Node): void {
-    this.syncParentChild(node);
+    //this.syncParentChild(node);
     this.syncViewNode(node);
   }
 
@@ -260,7 +601,8 @@ export class EditorComponent implements OnInit {
   }
 
   syncViewNode(node: Node): void {
-    const viewNode = this.lastView
+    const viewNode = this.views[this.viewIndex]
+                         .currentProject
                          .nodes
                          .find((n: Node) => n.id === node.id);
     Object.assign(viewNode, node);
@@ -274,13 +616,15 @@ export class EditorComponent implements OnInit {
     return _.cloneDeep(this.node);
   }
 
+  /*
   removeNodeFromService(node: Node): void {
     return this.nodeService.removeNode(node);
   }
+  */
 
   removeNode(): void {
     console.log('REMOVING NODE');
-    this.removeNodeFromService(this.selectedNode);
+    //this.removeNodeFromService(this.selectedNode);
     this.graph.removeSelectedNode();
     this.closeContextMenu();
   }
@@ -289,9 +633,13 @@ export class EditorComponent implements OnInit {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
     const currentView = this.currentView;
+
+    /*
     if (currentView.parentNode) {
       currentView.parentNode.children = currentView.nodes;
     }
+    */
+
     this.replaceRecentView(currentView);
     this.updateViewToService(currentView);
     this.closeContextMenu();
@@ -332,14 +680,53 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
+  get chartTitle(): string {
+    if(this.selectedNode == null)
+      return this.currentProject.title;
+    else
+      return this.selectedNode.title;
+  }
+
   get selectedNode(): Node {
     return this.graph.state.selectedNode;
+  }
+
+  get currentProject(): Project {
+    return this.views[this.viewIndex].currentProject;
+  }
+
+  addNodeToProject(project: Project, node: Node): void {
+    console.log("Trying to insert node");
+    console.log(JSON.stringify(node));
+    if (project.nodes.findIndex((n: Node) => n.id === node.id) < 0) {
+      console.log("Couldn't find Node, so adding!");
+      project.nodes.push(node);
+    }
+    else {
+      console.log("What da fuq? Node found!");
+      var i = project.nodes.findIndex((n:Node) => n.id == node.id);
+      console.log(i);
+    }
+    console.log(JSON.stringify(project));
+  }
+
+  /**
+     * Update the nodes with the latest changes. This should be called
+     * after navigating to composition view because the user could insert,
+     * add children, to a node and thus it would need to be updated. */
+  updateProjectsFromService(projects: Array<Project>): void {
+    this.projectService.updateProjectsFromService(projects);
+  }
+
+  updateProjectFromService(project: Project): void {
+    this.projectService.updateProjectFromService(project);
   }
 
   /**
      * Update the  nodes with the latest changes. This should be called
      * after navigating to composition view because the user could insert,
      * add children, to a node and thus it would needs to be updated. .*/
+  /*
   updateNodesFromService(nodes: Array<Node>): void {
     this.nodeService.updateNodesFromService(nodes);
   }
@@ -347,16 +734,31 @@ export class EditorComponent implements OnInit {
   updateNodeFromService(node: Node): void {
     this.nodeService.updateNodeFromService(node);
   }
+  */
 
   updateViewFromService(view: View): void {
-    this.updateNodesFromService(view.nodes);
-    this.updateNodeFromService(view.parentNode);
+    this.updateProjectsFromService(view.projects);
+    this.updateProjectFromService(view.currentProject);
+    //this.updateNodesFromService(view.nodes);
+    //this.updateNodeFromService(view.parentNode);
   }
 
   updateViewToService(view: View): void {
-    this.nodeService.updateViewToService(view);
+    this.projectService.updateViewToService(view);
+    //this.nodeService.updateViewToService(view);
   }
 
+  updateProjectToService(project: Project): void {
+    this.projectService.updateProjectToService(project);
+  }
+
+  updateProjectsToService(projects: Array<Project>): void {
+    projects.forEach((p: Project) => {
+      this.projectService.updateProjectToService(p);
+    })
+  }
+
+  /*
   updateNodeToService(node: Node): void {
     this.nodeService.updateNodeToService(node);
   }
@@ -366,29 +768,15 @@ export class EditorComponent implements OnInit {
       this.nodeService.updateNodeToService(n);
     });
   }
-
-  viewComposition(content): void {
-    if (this.selectedNode) {
-      console.log('VIEWING COMPOSITION');
-
-      /* Alert the users with a modal that this view has no composition nodes */
-      if (this.selectedNode.children.length === 0) {
-        this.openNoCompositionModal(content);
-      }
-
-      this.updateNodeFromService(this.selectedNode);
-
-      this.mainSvg.selectAll('*').remove();
-      this.graph = new Graph(
-          this.mainSvg, this.selectedNode.children, this.selectedNode);
-      this.graph.updateGraph();
-      this.views.push(this.graph.currentView);
-    }
-    this.closeContextMenu();
-  }
+  */
 
   viewPerformance(modal): void {
-    this.openQuickEditModal(modal);
+    this.modalService.open(modal).result.then((result) => {
+      //this.graph.updateGraph();
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
     this.closeContextMenu();
   }
 }

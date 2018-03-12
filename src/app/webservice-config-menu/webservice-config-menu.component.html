@@ -1,23 +1,34 @@
 <div class="container modal-body">
-  <code>{{ inputNodes.length }}</code>
+  <h3>{{ title }}</h3>
   <ngb-tabset>
     <!-- Profile Tab-->
-    <ngb-tab id="tab-0" title="Composition">
+    <ngb-tab id="tab-0" title="Information">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-composition-form [node]="node"></app-composition-form>
+          <app-composition-form [project]="project" [node]="node"></app-composition-form>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <!-- WebServiceBuilder Tab-->
+    <ngb-tab id="tab-1" title="WebService Builder"
+      *ngIf="node != null">
+      <ng-template ngbTabContent>
+        <div class="p-3">
+          <app-webservicebuilder-form [project]="project" [node]="node"></app-webservicebuilder-form>
         </div>
       </ng-template>
     </ngb-tab>
     <!-- Service Tab -->
+    <!--
     <ngb-tab id="tab-1" title="Service">
       <ng-template ngbTabContent>
         <div class="p-3">
           <app-webservice-form [service]="selectedService"></app-webservice-form>
         </div>
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
     <!-- Select Tab-->
+    <!--
     <ngb-tab id="tab-2" title="Select">
       <ng-template ngbTabContent>
         <div class="p-3">
@@ -26,17 +37,19 @@
           </app-webservice-list>
         </div>
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
     <!-- Composition Parameter Configure TAB-->
+    <!--
     <ngb-tab id="tab-3" title="Configure Composition" [disabled]="isEmptyInputs">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-configure-composition [inputNodes]="inputNodes"
-                                     [node]="node"></app-configure-composition>
+          <app-configure-composition [inputProjects]="inputProjects"
+                                     [project]="project"></app-configure-composition>
         </div>
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
     <!-- Inputs Wiring Tab-->
+    <!--
     <ngb-tab id="tab-4" title="Configure Service" [disabled]="!selectedService">
       <ng-template ngbTabContent>
         <div class="p-3">
@@ -44,11 +57,11 @@
           </app-webservice-inputs-wiring>
         </div>
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
   </ngb-tabset>
 
   <!-- Modal Close Buttons-->
-  <div class="modal-footer">
+  <div *ngIf="showNode" class="modal-footer">
     <button class="btn btn-success" (click)="onClose('close')">Close</button>
   </div>
 </div>
