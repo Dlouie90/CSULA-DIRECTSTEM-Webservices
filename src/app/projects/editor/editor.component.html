@@ -107,10 +107,10 @@
           size="lg">
   <div class="modal-header"
        id="my-title">
-    <h4 class="modal-title">{{ 'Performance of ' + this.graph.state.selectedNode.title }}</h4>
+    <h4 class="modal-title">{{ 'Performance of ' + this.chartTitle }}</h4>
   </div>
   <div class="modal-body text-center">
-    <app-bar-chart [node]="this.graph.state.selectedNode"></app-bar-chart>
+    <app-bar-chart [project]="this.currentProject" [node]="this.selectedNode"></app-bar-chart>
   </div>
   <div class="modal-footer">
     <button type="button"
@@ -225,7 +225,7 @@
        aria-hidden="true"></i>&nbsp;Composition</a>
   <!-- Performance -->
   <a class="dropdown-item"
-     *ngIf="selectedNode && !graph.state.selectedEdge"
+     *ngIf="!graph.state.selectedEdge"
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>

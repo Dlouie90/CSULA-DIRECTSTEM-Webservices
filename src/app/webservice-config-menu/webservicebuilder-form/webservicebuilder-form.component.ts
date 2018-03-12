@@ -49,6 +49,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
       title: data.title,
       description: data.description,
       url: data.url,
+      method: data.method,
       parameters: this.createParameterFormArray(data),
       demoInputs: this.createDemoInputsFormsArray(data.parameters)
     });

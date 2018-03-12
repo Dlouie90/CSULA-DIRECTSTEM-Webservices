@@ -5,6 +5,7 @@ export class Node {
   title: string;
   description: string;
   url: string;
+  method: string;
   time_text: string;
   just_benchmarked: boolean;
   composite_id: number;
@@ -29,6 +30,8 @@ export class Node {
     this.time_text  = '';
     this.just_benchmarked = false;
     this.stats = [];
+    this.url = "";
+    this.method = "GET";
   }
 }
 

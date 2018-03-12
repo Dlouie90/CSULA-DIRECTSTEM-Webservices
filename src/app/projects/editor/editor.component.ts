@@ -41,6 +41,9 @@ export class EditorComponent implements OnInit {
   radioOptions: string;
   waiting: boolean;
   modal;
+  benchmarking;
+  benchmark_time;
+  benchmark_count;
 
   // Mouse Position, used to insert new nodes onto the coordinate.
   rightClickPos: {x: number, y: number};
@@ -52,6 +55,7 @@ export class EditorComponent implements OnInit {
     this.views = [];
     this.initPage();
     this.radioOptions = 'editor';
+    this.benchmarking = false;
   }
 
   ngOnDestroy() {
@@ -261,10 +265,12 @@ export class EditorComponent implements OnInit {
     if ($event.which === 3) {
       this.rightPanelStyle = {
         'display': 'block',
-        'left': ($event.clientX + 1) + 'px',
-        'top': ($event.clientY + 1) + 'px'
+        'left': ($event.pageX) + 'px',
+        'top': ($event.pageY) + 'px'
       };
-      this.rightClickPos = {x: $event.clientX, y: $event.clientY};
+      // 274 is the height up until the window (maybe?)
+      // TODO: programmatically get this number rather than using a constant
+      this.rightClickPos = {x: $event.pageX, y: $event.pageY - 274};
       return false;
     }
   }
@@ -300,6 +306,10 @@ export class EditorComponent implements OnInit {
   runCurrentProject(): void {
     console.log("Running current projects");
     
+    this.benchmarking = true;
+    this.benchmark_time = 0;
+    this.benchmark_count = 0;
+
     var current_project = this.views[this.viewIndex].currentProject;
     current_project.nodes.forEach((n:Node) => {
       this.runNode(n);
@@ -308,7 +318,7 @@ export class EditorComponent implements OnInit {
 
   runProject(project, node=null): void {
     this.closeContextMenu();
-    const app = this;
+    var app = this;
 
     console.log("Attempting to run a whole PROJECT");
 
@@ -335,8 +345,9 @@ export class EditorComponent implements OnInit {
       }
       else {
         var url = n.url;
+        var method = n.method;
 
-        this.http.post('/webservice/rest/ws/query', {url: url})
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method})
                  .map((res: Response) => res.json())
                  .subscribe(
                     (res:any) => {
@@ -380,19 +391,43 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  updateBenchmarkScore(time) {
+    this.benchmark_time += time;
+    this.benchmark_count++;
+
+    if(this.benchmark_count == this.currentProject.nodes.length) {
+      var d = new Date();
+      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+      this.currentProject.stats.push({date: date, runtime: this.benchmark_time});
+
+      this.benchmarking = false;
+    }
+  }
+
   updateDependents(time_object):void {
-    const app = this;
+    var app = this;
     var node = time_object.node;
     var total_time = time_object.time;
     var p = app.projects[time_object.index];
+    var d = new Date();
+    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
     console.log("Forward updating Project " + p.title);
+
+    if(p.stats == null)
+      p.stats = []
+
+    p.stats.push({date: date, runtime: total_time});
 
     // update visual display of node
     if(app.project.nodes.findIndex((n: Node) => n.id == node.id) != -1 || node == null) {
       console.log("Updating the final composite node");
-      if(node)
+      if(node) {
         app.graph.updateSelectedNodeTime(total_time, node);
+        if(app.benchmarking)
+          app.updateBenchmarkScore(total_time);
+      }
       else
         alert("Project " + p.title + " took " + total_time + "ms to finish.");
 
@@ -400,8 +435,6 @@ export class EditorComponent implements OnInit {
       app.time_queue = [];
     }
     else {
-      var d = new Date();
-      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
       node.time_text = total_time.toFixed(2) + "ms";
       if(node.stats == null) // takes care of legacy nodes
         node.stats = [];
@@ -445,8 +478,9 @@ export class EditorComponent implements OnInit {
 
     if (!node.composite_id) {
       var url = node.url;
+      var method = node.method;
 
-      this.http.post('/webservice/rest/ws/query', {url: url})
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method})
                .map((res: Response) => res.json())
                .subscribe(
                   (res:any) => {
@@ -455,6 +489,8 @@ export class EditorComponent implements OnInit {
                       //alert("WebService query took " + time + "ms");
                       console.log("Updating node " + node.title);
                       app.graph.updateSelectedNodeTime(time, node);
+                      if(app.benchmarking)
+                        app.updateBenchmarkScore(time);
                     }
                     else
                       alert("WebService query failed (check URL?)");
@@ -643,8 +679,19 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
+  get chartTitle(): string {
+    if(this.selectedNode == null)
+      return this.currentProject.title;
+    else
+      return this.selectedNode.title;
+  }
+
   get selectedNode(): Node {
     return this.graph.state.selectedNode;
+  }
+
+  get currentProject(): Project {
+    return this.views[this.viewIndex].currentProject;
   }
 
   addNodeToProject(project: Project, node: Node): void {
