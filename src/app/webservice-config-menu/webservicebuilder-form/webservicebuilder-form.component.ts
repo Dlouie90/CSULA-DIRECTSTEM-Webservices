@@ -1,5 +1,6 @@
 import {Component,
         Input,
+        OnInit,
         OnChanges,
         OnDestroy} from '@angular/core';
 import {FormArray,
@@ -18,25 +19,36 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
   project: Project;
   @Input()
   node: Node;
-  projectForm: FormGroup;
+  webserviceForm: FormGroup;
   paramGroup: FormGroup;
+  selected;
+  methods = ['GET', 'POST', 'PUT', 'DELETE'];
+  checked = [true, false, false, false];
 
   constructor(private formBuilder: FormBuilder, private projectService: ProjectService) {}
 
-  ngOnChanges(): void {
-    if (!this.project && !this.node) {
+  ngOnInit(): void {
+    if (!this.node) {
+      console.log("can't display node");
       return;
     }
 
-    if(!this.node) {
-      console.log("displaying project");
-      this.projectForm = this.createFormGroup(this.project);
-    }
-    else {
+    if(this.node) {
       console.log("displaying node");
-      this.projectForm = this.createFormGroup(this.node);
+
+      // change default display value
+      var index = this.methods.indexOf(this.node.method);
+      this.checked[index] = true;
+
+      // save default method
+      this.selected = this.node.method;
+      this.webserviceForm = this.createFormGroup(this.node);
     }
     this.paramGroup = this.formBuilder.group({});
+  }
+
+  ngOnChanges(): void {
+    // do something?
   }
 
   ngOnDestroy(): void {
@@ -49,30 +61,28 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
       title: data.title,
       description: data.description,
       url: data.url,
-      parameters: this.createParameterFormArray(data),
-      demoInputs: this.createDemoInputsFormsArray(data.parameters)
+      method: data.method,
+      param_keys: this.createParamKeysFormArray(data.param_keys),
+      param_vals: this.createParamValsFormArray(data.param_vals)
     });
   }
 
-  private createParameterFormArray(data): FormArray {
-    const paramControlArray = data
-                              .parameters
-                              .map((param: string) => this.formBuilder.control(param));
-    return this.formBuilder.array(paramControlArray);
+  private createParamKeysFormArray(keys:string[]): FormArray {
+    const paramKeysControlArray = keys.map((key:string) => this.formBuilder.control(key));
+    return this.formBuilder.array(paramKeysControlArray);
   }
 
-  get parameters(): FormArray {
-    return this.projectForm.get('parameters') as FormArray;
+  get param_keys(): FormArray {
+    return this.webserviceForm.get('param_keys') as FormArray;
   }
 
-  private createDemoInputsFormsArray(parameters: string[]): FormArray {
-    const inputs = parameters
-                       .map(_ => this.formBuilder.control(''));
+  private createParamValsFormArray(vals:string[]): FormArray {
+    const inputs = vals.map((val:string) => this.formBuilder.control(val));
     return this.formBuilder.array(inputs);
   }
 
-  get demoInputs(): FormArray {
-    return this.projectForm.get('demoInputs') as FormArray;
+  get param_vals(): FormArray {
+    return this.webserviceForm.get('param_vals') as FormArray;
   }
 
   testService(): void {
@@ -86,41 +96,38 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
       this.project.nodes.forEach((n:Node) => {
         if(n.id == this.node.id) {
           console.log("Removing parameter from project, too");
-          n.parameters.splice(i, 1);
+          n.param_keys.splice(i, 1);
+          n.param_vals.splice(i, 1);
         }
       });
-      this.node.parameters.splice(i, 1);
-      this.parameters.removeAt(i);
-      this.demoInputs.removeAt(i);
+      this.node.param_keys.splice(i, 1);
+      this.node.param_vals.splice(i, 1);
+      this.param_keys.removeAt(i);
+      this.param_vals.removeAt(i);
     }
   }
 
-  addParameter(param: string): void {
-    this.parameters.push(this.formBuilder.control(param));
-    this.demoInputs.push(this.formBuilder.control(''));
-    if(!this.node)
-      this.project.parameters.push(param);
-    else {
+  addParameter(key:string): void {
+    this.param_keys.push(this.formBuilder.control(key));
+    this.param_vals.push(this.formBuilder.control(''));
+    if(this.node) {
       // search for the right node to update
       this.project.nodes.forEach((n: Node) => {
         if(n.id == this.node.id)
-          n.parameters.push(param);
+          n.param_keys.push(key);
+          n.param_vals.push('');
       });
     }
   }
 
   saveChange(): void {
-    if(!this.node) {
-      //this.project.parameters.push(param);
-      // search for the right project to update
-      this.project.title = this.projectForm.get('title').value;
-      this.project.description = this.projectForm.get('description').value;
-    }
-    else {
+    if(this.node) {
       // search for the right node to update
       this.project.nodes.forEach((n: Node) => {
         if(n.id == this.node.id) {
-          n.url = this.projectForm.get('url').value;
+          n.url = this.webserviceForm.get('url').value;
+          n.method = this.selected;
+          this.param_vals.controls.forEach((form, index) => n.param_vals[index] = form.value);
         }
       });
     }
@@ -129,5 +136,15 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
 
     // then save the project to the database
     this.projectService.updateProjectDb(this.project);
+  }
+
+  methodChange(event) {
+    //console.log(event);
+    console.log("chose " + event.target.value);
+    this.selected = event.target.value;
+  }
+
+  currentMethod(method) {
+    return method == this.node.method;
   }
 }

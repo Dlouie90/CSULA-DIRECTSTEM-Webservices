@@ -1,4 +1,4 @@
-<form class="mb-2 pb-2" *ngIf="project" [formGroup]="projectForm">
+<form class="mb-2 pb-2" *ngIf="project" [formGroup]="webserviceForm">
   <!-- URL -->
   <div class="form-group row px-3">
     <label for="node-url" class="col-3 col-form-label">URL</label>
@@ -11,28 +11,25 @@
   <div class="form-group row px-3">
     <label class="col-3 col-form-label">Request Method</label>
     <div class="form-group col-9">
-      <div class="form-check">
-        <input class="form-check-input" type="radio" id="req-method1" name="req-method" aria-label="GET checkbox">
-        GET
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" id="req-method2" name="req-method" aria-label="POST checkbox">
-        POST
+      <div class="form-check" *ngFor="let method of methods; let i=index">
+        <input class="form-check-input" type="radio" name="req-method"
+               [checked]="checked[i]" [value]="method" (change)="methodChange($event)">
+        {{method}}
       </div>
     </div>
   </div>
   <!-- Parameters -->
   <div>
-    <div class="form-group row" *ngFor="let _ of parameters.controls; let i=index">
+    <div class="form-group row" *ngFor="let _ of param_keys.controls; let i=index">
       <label class="col-3">Parameter #{{ i+1 }} </label>
       <div class="col-9">
         <div class="row">
-          <div class="col-6" formArrayName="parameters">
+          <div class="col-6" formArrayName="param_keys">
             <input title="param#{{ i }}" class="form-control" type="text" readonly
                    [formControlName]="i">
           </div>
-          <div class="col-5" formArrayName="demoInputs">
-            <input title="demo-inputs" class="form-control" type="text" [formControlName]="i">
+          <div class="col-5" formArrayName="param_vals">
+            <input title="param-vals" class="form-control" type="text" [formControlName]="i">
           </div>
           <div class="col-1">
             <button class="btn btn-outline-danger" (click)="removeParameter(i)">
@@ -42,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="pb-3" *ngIf="demoInputs.length > 0">
+    <div class="pb-3" *ngIf="param_vals.length > 0">
       <button class="float-right btn btn-primary" (click)="testService()">Run Webservice</button>
     </div>
   </div>

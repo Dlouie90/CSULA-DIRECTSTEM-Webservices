@@ -4,6 +4,7 @@ import {Component,
         OnInit} from '@angular/core';
 
 import * as d3 from 'd3';
+import {Project} from '../../shared/models/project.model';
 import {Node} from '../../shared/models/node.model';
 
 @Component({
@@ -13,6 +14,8 @@ import {Node} from '../../shared/models/node.model';
 })
 export class BarChartComponent implements OnInit {
   @Input()
+  project: Project;
+  @Input()
   node: Node;
   host;
 
@@ -21,18 +24,8 @@ export class BarChartComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("Bar chart called on node " + this.node.title);
-
-    if(this.node.stats == null) // fixes legacy nodes
-      this.node.stats = [];
-    
+    let stats = this.getStats();
     let data = [];
-    let stats = [];
-
-    if(this.node.stats.length > 20)
-      stats = this.node.stats.slice(this.node.stats.length - 21, 20);
-    else
-      stats = this.node.stats.slice(0, this.node.stats.length);
 
     stats.forEach(s => {
       //console.log(s);
@@ -177,5 +170,30 @@ export class BarChartComponent implements OnInit {
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .text('RESPONSE TIME (milliseconds)');
+  }
+
+  getStats() {
+    let stats = [];
+
+    if(this.node == null) {
+      if(this.project.stats == null) // fixes legacy projects
+        this.project.stats = [];
+
+      if(this.project.stats.length > 20)
+        stats = this.project.stats.slice(this.project.stats.length - 21, 20);
+      else
+        stats = this.project.stats.slice(0, this.project.stats.length);
+    }
+    else {
+      if(this.node.stats == null) // fixes legacy nodes
+        this.node.stats = [];
+
+      if(this.node.stats.length > 20)
+        stats = this.node.stats.slice(this.node.stats.length - 21, 20);
+      else
+        stats = this.node.stats.slice(0, this.node.stats.length);
+    }
+
+    return stats;
   }
 }

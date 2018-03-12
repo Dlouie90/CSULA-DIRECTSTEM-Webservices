@@ -48,53 +48,8 @@ export class CompositionFormComponent implements OnChanges, OnDestroy {
       id: data.id,
       title: data.title,
       description: data.description,
-      url: data.url,
-      parameters: this.createParameterFormArray(data),
-      demoInputs: this.createDemoInputsFormsArray(data.parameters)
+      url: data.url
     });
-  }
-
-  private createParameterFormArray(data): FormArray {
-    const paramControlArray = data
-                              .parameters
-                              .map((param: string) => this.formBuilder.control(param));
-    return this.formBuilder.array(paramControlArray);
-  }
-
-  get parameters(): FormArray {
-    return this.projectForm.get('parameters') as FormArray;
-  }
-
-  private createDemoInputsFormsArray(parameters: string[]): FormArray {
-    const inputs = parameters
-                       .map(_ => this.formBuilder.control(''));
-    return this.formBuilder.array(inputs);
-  }
-
-  get demoInputs(): FormArray {
-    return this.projectForm.get('demoInputs') as FormArray;
-  }
-
-  testService(): void {
-    alert('not implemented yet');
-  }
-
-  removeParameter(): void {
-    alert('not implemented yet');
-  }
-
-  addParameter(param: string): void {
-    this.parameters.push(this.formBuilder.control(param));
-    this.demoInputs.push(this.formBuilder.control(''));
-    if(!this.node)
-      this.project.parameters.push(param);
-    else {
-      // search for the right node to update
-      this.project.nodes.forEach((n: Node) => {
-        if(n.id == this.node.id)
-          n.parameters.push(param);
-      });
-    }
   }
 
   saveChange(): void {
