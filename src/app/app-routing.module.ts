@@ -7,6 +7,9 @@ import {EditorComponent} from './projects/editor/editor.component';
 import {DebugComponent} from './debug/debug.component';
 import {AdminComponent} from './admin/admin.component';
 import {AddUserComponent} from './admin/add-user/add-user.component';
+import {EditUserComponent} from './admin/edit-user/edit-user.component';
+import {UserSessionComponent} from './admin/user-session/user-session.component';
+import {DetailUserComponent} from './admin/detail-user/detail-user.component';
 
 const routes: Routes = [
     {
@@ -40,8 +43,20 @@ const routes: Routes = [
         component: AdminComponent
     },
     {
-        path: 'admin/add-user',
+        path: 'detail',
+        component: DetailUserComponent
+    },
+    {
+        path: 'add',
         component: AddUserComponent
+    },
+    {
+        path: 'edit/:id',
+        component: EditUserComponent
+    },
+    {
+        path: 'admin/user-session',
+        component: UserSessionComponent
     },
     {
         path: '**',

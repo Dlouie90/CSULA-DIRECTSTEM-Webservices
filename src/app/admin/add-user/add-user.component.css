@@ -1,8 +1,15 @@
-.adduser {
-    margin-top: 50px;
-    width: 50%;
-    margin-left: 25%;
+.addUser {
+    float: left;
 }
-hr {
-    border-color: limegreen;
+.cancel{
+    float: right;
+}
+.myForm{
+    margin-left: 45%;
+}
+input.ng-touched.ng-invalid {
+    border: 1px red solid;
+}
+.passError.ng-touched {
+    border: 1px red solid;
 }

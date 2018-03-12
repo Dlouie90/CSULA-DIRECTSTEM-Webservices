@@ -1,0 +1,44 @@
+<div class="container col-lg-10">
+  <div>
+      <h4 class="ui header" align="center">Edit Page</h4>
+      <hr>
+      <form class="myForm">
+        <div class="form-group">
+            <div>
+                <label for="fname" class="col-sm-4 col-form-label">First Name</label>
+                <div class="col-sm-6">
+                    <input id="fname" value="{{ userE.firstName }}" placeholder="First Name" class="form-control" #firstName>
+                </div>
+            </div>
+            <div>
+                <label for="lname" class="col-sm-4 col-form-label">Last Name</label>
+                <div class="col-sm-6">
+                    <input id="lname" value="{{ userE.lastName }}" placeholder="Last Name" class="form-control" #lastName>
+                </div>
+            </div>
+            <div>
+                <label for="email" class="col-sm-4 col-form-label">Email: </label>
+                <div class="col-sm-6">
+                    <input id="email" value="{{ userE.email }}" placeholder="Email" class="form-control" #email>
+                </div>
+            </div>
+            <div>
+                <label for="password" class="col-sm-4 col-form-label">Password: </label>
+                <div class="col-sm-6">
+                    <input id="password" class="form-control" placeholder="Password" #password>
+                </div>
+            </div>
+            <div>
+                <label for="cPassword" class="col-sm-4 col-form-label">Confirm Password</label>
+                <div class="col-sm-6">
+                    <input id="cPassword" class="form-control" placeholder="Confirm Password">
+                </div>
+            </div>
+            <div class="btnGrp col-lg-6">
+                <button type="submit" class="save btn btn-primary" (click)="onSave(firstName, lastName, email, password)">Save</button>
+                <button class="cancel btn btn-danger" (click)="onCancel()">Cancel</button>
+            </div>
+        </div>
+      </form>
+  </div>
+</div>

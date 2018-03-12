@@ -1,52 +1,55 @@
-<div class="adduser">
-    <div class="ui raised segment container">
-        <h2 class="ui header aligned center">Add User</h2>
-        <hr>
-        <form class="p-3" [formGroup]="newAddUserForm" (submit)="createUser()">
-            <!-- first name-->
+<div class="container">
+    <h4 align="center">Add User</h4>
+    <hr>
+    <div class="col-lg-8">
+        <form class="myForm" (ngSubmit)="onSubmit(f)" #f="ngForm">
             <div class="form-group row">
-                <label for="newUserFirstNameInput" class="col-4">First Name: </label>
-                <div class="col-8">
-                    <input id="newUserFirstNameInput" class="form-control"
-                           [formControl]="newAddUserForm.controls['firstName']">
-                </div>
-            </div>
-            <!-- last name-->
-            <div class="form-group row">
-                <label for="newUserLastNameInput" class="col-4">Last Name: </label>
-                <div class="col-8">
-                    <input id="newUserLastNameInput" class="form-control"
-                           [formControl]="newAddUserForm.controls['lastName']">
-                </div>
-            </div>
-            <!-- email -->
-            <div class="form-group row">
-                <label for="newUserEmailInput" class="col-4">Email: </label>
-                <div class="col-8">
-                    <input id="newUserEmailInput" class="form-control" type="email"
-                           [formControl]="newAddUserForm.controls['email']">
-                </div>
-            </div>
-            <!-- password-->
-            <div class="form-group row">
-                <label for="newUserPasswordInput" class="col-4">Password: </label>
-                <div class="col-8">
-                    <input id="newUserPasswordInput" class="form-control"
-                           [formControl]="newAddUserForm.controls['password']">
-                </div>
-            </div>
-            <!-- description -->
-            <div class="form-group row">
-                <label for="newUserUsernameInput" class="col-4">Description: </label>
-                <div class="col-8">
-                <textarea id="newUserUsernameInput" class="form-control" rows="8"
-                [formControl]="newAddUserForm.controls['description']"></textarea>
+                <label for="fname" class="col-sm-4 col-form-label">First Name:</label>
+                <div class="col-sm-8">
+                    <input id="fname" class="form-control" placeholder="First Name"
+                           name="firstName" ngModel required #firstName="ngModel">
+                    <span *ngIf="firstName.invalid && firstName.touched">This field cannot be empty.</span>
                 </div>
             </div>
             <div class="form-group row">
-                <div class="ml-auto col-8">
-                    <button class="btn btn-block btn-outline-primary" type="submit">Save</button>
+                <label for="lname" class="col-sm-4 col-form-label">Last Name:</label>
+                <div class="col-sm-8">
+                    <input id="lname" class="form-control" placeholder="Last Name"
+                           name="lastName" ngModel #lastName="ngModel" required>
+                    <span *ngIf="lastName.invalid && lastName.touched">This field cannot be empty.</span>
                 </div>
+            </div>
+            <div class="form-group row">
+                <label for="email" class="col-sm-4 col-form-label">Email:</label>
+                <div class="col-sm-8">
+                    <input class="form-control" id="email" placeholder="Email"
+                           ngModel name="email" #email="ngModel" required email>
+                    <span *ngIf="email.invalid && email.touched">Please enter valid email.</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-sm-4 col-form-label">Password:</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="password" placeholder="Password"
+                           ngModel name="password" #password="ngModel" required
+                    [ngClass]="{passError: password.touched && cPassword.touched && password.value !== cPassword.value}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="cPassword" class="col-sm-4 col-form-label">Confirm Password:</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="cPassword" placeholder="Password"
+                           name="cPassword" ngModel #cPassword="ngModel" required
+                           [ngClass]="{passError: password.touched && cPassword.touched && password.value !== cPassword.value}">
+                    <span *ngIf="password.touched && cPassword.touched && password.value !== cPassword.value">Password does not match.</span>
+                </div>
+            </div>
+            <div class="btnGrp">
+                <!--<button type="button"(click)="addUser(newfirstName, newlastName, newemail, password)"-->
+                        <!--class="btn btn-success addUser"-->
+                <!--[disabled]="f.invalid">Add User</button>-->
+                <button type="submit" class="btn btn-success addUser">Add User</button>
+                <button type="button" class="btn btn-danger cancel" (click)="onCancel()">Cancel</button>
             </div>
         </form>
     </div>

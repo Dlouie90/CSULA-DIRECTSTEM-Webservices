@@ -3,29 +3,30 @@ import {AddUserComponent} from './add-user/add-user.component';
 import {HttpModule} from '@angular/http';
 import {AdminComponent} from './admin.component';
 import {CommonModule} from '@angular/common';
-import {UserService} from '../shared/services/user.service';
-import {NgbModule} from'@ng-bootstrap/ng-bootstrap';
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { UserSessionComponent } from './user-session/user-session.component';
+import { DetailUserComponent } from './detail-user/detail-user.component';
+import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
-import {ReactiveFormsModule} from '@angular/forms';
+
 
 @NgModule({
     declarations: [
         AdminComponent,
-        AddUserComponent
+        AddUserComponent,
+        EditUserComponent,
+        UserSessionComponent,
+        DetailUserComponent
     ],
     imports: [
         HttpModule,
-        NgbModule,
-        CommonModule,
         BrowserModule,
-        ReactiveFormsModule
+        FormsModule,
+        CommonModule
     ],
     exports: [
         AdminComponent,
         AddUserComponent
-    ],
-    providers: [
-        UserService
     ],
 })
 export class AdminModule {
