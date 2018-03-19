@@ -21,6 +21,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   node: Node;
   @Input()
   inputProjects: Project[] = [];
+  @Input()
   inputNodes: Node[] = [];
   services: IService[];
   selectedService: IService;

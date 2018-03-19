@@ -1,3 +1,38 @@
+<ng-template #paramLinkModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Parameters Linking</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Please choose a parameter to link to:</p>
+    <table class="table table-hover table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center">Node</th>
+        <th class="text-center">Parameter</th>
+        <th class="text-center">Link</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let param of input_params; let i = index">
+        <td class="text-center">{{ param.node.title }}</td>
+        <td class="text-center">{{ param.key }}</td>
+        <td class="text-center">
+          <button class="btn btn-outline-info" (click)="paramLink(i)">
+            <i class="fa fa-link" aria-hidden="true"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>
+
 <form class="mb-2 pb-2" *ngIf="project" [formGroup]="webserviceForm">
   <!-- URL -->
   <div class="form-group row px-3">
@@ -16,6 +51,7 @@
                [checked]="checked[i]" [value]="method" (change)="methodChange($event)">
         {{method}}
       </div>
+      <button class="float-right btn btn-primary" (click)="testService()">Test & Save</button>
     </div>
   </div>
   <!-- Parameters -->
@@ -24,23 +60,23 @@
       <label class="col-3">Parameter #{{ i+1 }} </label>
       <div class="col-9">
         <div class="row">
-          <div class="col-6" formArrayName="param_keys">
+          <div class="col-4" formArrayName="param_keys">
             <input title="param#{{ i }}" class="form-control" type="text" readonly
                    [formControlName]="i">
           </div>
           <div class="col-5" formArrayName="param_vals">
             <input title="param-vals" class="form-control" type="text" [formControlName]="i">
           </div>
-          <div class="col-1">
+          <div class="col-3">
+            <button class="btn btn-outline-info" (click)="linkParameter(i, paramLinkModal)">
+              <i class="fa fa-link" aria-hidden="true"></i>
+            </button>
             <button class="btn btn-outline-danger" (click)="removeParameter(i)">
               <i class="fa fa-trash-o" aria-hidden="true"></i>
             </button>
           </div>
         </div>
       </div>
-    </div>
-    <div class="pb-3" *ngIf="param_vals.length > 0">
-      <button class="float-right btn btn-primary" (click)="testService()">Run Webservice</button>
     </div>
   </div>
 </form>

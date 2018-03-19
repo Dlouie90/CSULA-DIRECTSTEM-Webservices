@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 CREATE TABLE projects (
   id   INTEGER AUTO_INCREMENT,
-  data TEXT(65535),
+  data LONGTEXT,
   PRIMARY KEY (id)
 );
 CREATE TABLE xrefUsersProjects (

@@ -13,7 +13,7 @@ export class Project {
     parameterEntries: ParameterEntry[] = [];
     headNode: Node;
     nodes: Node[] = [];
-    edges: Edge[] = [];
+    edges = [];
     stats;
 
     static create(id: number) {

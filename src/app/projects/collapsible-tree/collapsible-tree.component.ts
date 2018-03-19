@@ -3,7 +3,7 @@ import {Component,
         Input,
         OnInit} from '@angular/core';
 import * as d3 from 'd3';
-import {Node} from '../../shared/models/node.model';
+import {Project} from '../../shared/models/project.model';
 
 /* based on https://bl.ocks.org/mbostock/4339083 */
 @Component({
@@ -13,7 +13,7 @@ import {Node} from '../../shared/models/node.model';
 })
 export class CollapsibleTreeComponent implements OnInit {
   @Input()
-  node: Node;
+  project: Project;
 
   host: any;
 
@@ -27,7 +27,13 @@ export class CollapsibleTreeComponent implements OnInit {
     const height = 800 - margin.top - margin.bottom;
     const nodeRadius = 10;
     const duration = 750;
-    const root: any = this.node;
+    const data = this.makeGraphData(this.project);
+    var root = null;
+
+    data.forEach(n => {
+      if(n.type.localeCompare("INPUT") == 0)
+        root = n;
+    });
 
     const tree = d3.layout.tree()
                      .size([height, width]);
@@ -60,7 +66,7 @@ export class CollapsibleTreeComponent implements OnInit {
       }
     }
 
-    root.children.forEach(collapse);
+    //root.children.forEach(collapse);
     update(root);
 
     function update(source) {
@@ -75,7 +81,7 @@ export class CollapsibleTreeComponent implements OnInit {
 
       // Update the nodes…
       const node = mainGroup.selectAll('g.node')
-                       .data(nodes, (d: Node) => d.id);
+                       .data(nodes, (d) => d.id);
 
       // Enter any new nodes at the parent's previous position.
       const nodeEnter = node.enter().append('g').attr('class', 'node').attr('transform', () => `translate(${source.y0},${source.x0})`).on('mouseover', (d: Node) => {
@@ -97,7 +103,7 @@ export class CollapsibleTreeComponent implements OnInit {
           .attr('dy', '.35em')
           .attr('class', 'tree-text')
           .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
-          .text(d => Node.nodeTitle(d));
+          .text(d => d.title);
 
       // Transition nodes to their new position.
       const nodeUpdate = node.transition()
@@ -169,29 +175,49 @@ export class CollapsibleTreeComponent implements OnInit {
           .duration(200)
           .style('opacity', .85);
       tooltipDiv.html(`
-<dl>
-<div class="row">
-<dt class="col-sm-5">Title:</dt>
-<dd class="col-sm-7">${Node.nodeTitle(d)}</dd>
-</div>
+            <dl>
+              <div class="row">
+                <dt class="col-sm-5">Title:</dt>
+                <dd class="col-sm-7">${d.title}</dd>
+              </div>
 
-<div class="row">
-<dt class="col-sm-5">Domain:</dt>
-<dd class="col-sm-7">${d.domain}</dd>
-</div>
+              <div class="row">
+                <dt class="col-sm-5">URL:</dt>
+                <dd class="col-sm-7">${d.url}</dd>
+              </div>
 
-<div class="row">
-<dt class="col-sm-5">Path:</dt>
-<dd class="col-sm-7">${d.path}</dd>
-</div>
-
-<div class="row">
-<dt class="col-sm-5">Measurement:</dt>
-<dd class="col-sm-7">${parseFloat(String(Math.random())).toFixed(2)} Mangos</dd>
-</div>
-</dl>`)
+              <div class="row">
+                <dt class="col-sm-5">Run-time:</dt>
+                <dd class="col-sm-7">${d.time}</dd>
+              </div>
+            </dl>
+          `)
           .style('left', (d3.event as any).pageX + 'px')
           .style('top', (d3.event as any).pageY + 'px');
     }
+  }
+
+  makeGraphData(project: Project) {
+    var nodes = project.nodes;
+    var edges = project.edges;
+
+    var data = [];
+
+    nodes.forEach(n => {
+      data.push({
+        id: n.id,
+        title: n.title,
+        url: n.url,
+        type: n.type,
+        time: n.time_text,
+        children: []
+      });
+    });
+
+    edges.forEach(e => {
+      data[e.source].children.push(data[e.target]);
+    })
+
+    return data;
   }
 }
