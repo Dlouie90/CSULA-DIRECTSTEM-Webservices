@@ -7,7 +7,7 @@ import {View} from './view.model';
 
 const final = {
   /* --------------- NODE CONSTANTS --------------- */
-  NODE_RADIUS: 60,
+  NODE_RADIUS: 50,
 
   /* --------------- KEY CODES --------------- */
   BACK_SPACE_KEY: 8,
@@ -17,13 +17,17 @@ const final = {
   /*
    | CSS file located in /src/assets/css
    */
-  SELECTED_CLASS: 'node-selected',
-  CONNECTED_NODE_CLASS: 'connect-node',
-  CIRCLE_G_CLASS: 'conceptG',
-  NODE_COMPOSITE_CLASS: 'node-composite',
+  CONNECTED_NODE_CLASS:          'connect-node',
+  NODE_CLASS:                    'node',
+  NODE_SELECTED_CLASS:           'node-selected',
+  NODE_COMPOSITE_CLASS:          'node-composite',
   NODE_COMPOSITE_SELECTED_CLASS: 'node-composite-selected',
-  GRAPH_CLASS: 'graph',
-  CLICKED_NODE: 'clicked-node'
+  NODE_INPUT_CLASS:              'node-input',
+  NODE_INPUT_SELECTED_CLASS:     'node-input-selected',
+  NODE_OUTPUT_CLASS:             'node-output',
+  NODE_OUTPUT_SELECTED_CLASS:    'node-output-selected',
+  GRAPH_CLASS:                   'graph',
+  CLICKED_NODE:                  'clicked-node'
 };
 
 export class Graph {
@@ -80,7 +84,7 @@ export class Graph {
     defs.append('svg:marker')
         .attr('id', 'end-arrow')
         .attr('viewBox', '0 -5 10 10')
-        .attr('refX', '32')
+        .attr('refX', '42')
         .attr('markerWidth', 4.0)
         .attr('markerHeight', 4.5)
         .attr('orient', 'auto')
@@ -201,12 +205,34 @@ export class Graph {
     }
   };
 
+  makeNodeInput(node) {
+    console.log("MAKING CURRENT NODE INPUT");
+
+    this.nodes.forEach(n => {
+      if(n.type.localeCompare("INPUT") == 0)
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "INPUT";
+    })
+  }
+
+  makeNodeOutput(node) {
+    console.log("MAKING CURRENT NODE OUTPUT");
+
+    this.nodes.forEach(n => {
+      if(n.type.localeCompare("OUTPUT") == 0)
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "OUTPUT";
+    })
+  }
+
   /** Highlight a path. And if there is a path that is already highlighted,
    * then un-highlight it.
    */
   replaceSelectEdge(d3Path, edgeData) {
     const thisGraph = this;
-    d3Path.classed(final.SELECTED_CLASS, true);
+    d3Path.classed(final.NODE_SELECTED_CLASS, true);
 
     // un-highlight the previous edge if there is one
     if (thisGraph.state.selectedEdge) {
@@ -225,7 +251,7 @@ export class Graph {
     thisGraph.paths.filter(function(cd) {
                      return cd === thisGraph.state.selectedEdge;
                    })
-        .classed(final.SELECTED_CLASS, false);
+        .classed(final.NODE_SELECTED_CLASS, false);
 
     // reset the state
     thisGraph.state.selectedEdge = null;
@@ -350,6 +376,22 @@ export class Graph {
     this.updateGraph();
   }
 
+  findSelectedNodeNeighbors(node) {
+    if(node == null) // huh?
+      return [];
+
+    console.log("FINDING NODE NEIGHBORS");
+    var node_indices = [];
+
+    this.edges.forEach(edge => {
+      if(this.nodes[edge.target].id == node.id) {
+        node_indices.push(edge.source);
+      }
+    });
+
+    return node_indices;
+  }
+
   /** Remove all the edges associated with a node.
    *  Used after a node is deleted to delete all the edges connected to it. */
   spliceLinksFormNode(node) {
@@ -374,7 +416,12 @@ export class Graph {
 
     if(nodeData.composite_id == null) {
       console.log("REGULAR NODE")
-      d3Node.classed(final.SELECTED_CLASS, true);
+      if(nodeData.type.localeCompare("REGULAR") == 0)
+        d3Node.classed(final.NODE_SELECTED_CLASS, true);
+      else if(nodeData.type.localeCompare("INPUT") == 0)
+        d3Node.classed(final.NODE_INPUT_SELECTED_CLASS, true);
+      else if(nodeData.type.localeCompare("OUTPUT") == 0)
+        d3Node.classed(final.NODE_OUTPUT_SELECTED_CLASS, true);
     }
     else {
       console.log("COMPOSITE NODE");
@@ -397,9 +444,17 @@ export class Graph {
     const thisGraph = this;
 
     thisGraph.circles.filter(function(cd) {
-                       return cd.id === thisGraph.state.selectedNode.id && cd.composite_id == null;
+                       return cd.id === thisGraph.state.selectedNode.id && cd.composite_id == null && cd.type.localeCompare("REGULAR") == 0;
                      })
-        .classed(final.SELECTED_CLASS, false);
+        .classed(final.NODE_SELECTED_CLASS, false);
+    thisGraph.circles.filter(function(cd) {
+                       return cd.id === thisGraph.state.selectedNode.id && cd.composite_id == null && cd.type.localeCompare("INPUT") == 0;
+                     })
+        .classed(final.NODE_INPUT_SELECTED_CLASS, false);
+    thisGraph.circles.filter(function(cd) {
+                       return cd.id === thisGraph.state.selectedNode.id && cd.composite_id == null && cd.type.localeCompare("OUTPUT") == 0;
+                     })
+        .classed(final.NODE_OUTPUT_SELECTED_CLASS, false);
     thisGraph.circles.filter(function(d) {
                        return d.id === thisGraph.state.selectedNode.id && d.composite_id != null;
                      })
@@ -597,7 +652,7 @@ export class Graph {
 
     // Update existing paths (notice no enter() or exit())
     paths.style('marker-end', 'url(#end-arrow)')
-        .classed(final.SELECTED_CLASS, function(d) {
+        .classed(final.NODE_SELECTED_CLASS, function(d) {
           return d === state.selectedEdge;
         })
         .attr('d', function(d) {
@@ -659,12 +714,18 @@ export class Graph {
     const newGs = thisGraph.circles.enter()
                       .append('g');
 
-    newGs.classed(final.CIRCLE_G_CLASS, true)
+    newGs.classed(final.NODE_CLASS, true)
         .attr('transform', function(d) {
           return 'translate(' + d.x + ',' + d.y + ')';
         })
         .classed(final.NODE_COMPOSITE_CLASS, function(d) {
           return d.composite_id != null;
+        })
+        .classed(final.NODE_INPUT_CLASS, function(d) {
+          return d.type.localeCompare("INPUT") == 0;
+        })
+        .classed(final.NODE_OUTPUT_CLASS, function(d) {
+          return d.type.localeCompare("OUTPUT") == 0;
         })
         .on('click', function(d: Node) {
           thisGraph.toggleClickNodes(d);

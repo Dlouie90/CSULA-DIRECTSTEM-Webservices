@@ -45,7 +45,7 @@
              [(ngModel)]="radioOptions"
              id="editor-view-radio"
              value="editor">
-      Editor View
+      Editor
     </label>
   </div>
 
@@ -55,20 +55,21 @@
              type="radio"
              name="radio-options"
              [(ngModel)]="radioOptions"
-             id="radial-tree-radio"
+             id="radial-view-radio"
+             value="radial">
+      Radial
+    </label>
+  </div>
+
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             id="tree-view-radio"
              value="tree">
-      Radial Tree
-    </label>
-  </div>
-
-  <div class="form-check form-check-inline">
-    <label class="form-check-label">
-      <input class="form-check-input"
-             type="radio"
-             name="radio-options"
-             [(ngModel)]="radioOptions"
-             value="clickable-tree">
-      Radial Tree
+      Tree
     </label>
   </div>
 </div>
@@ -87,14 +88,14 @@
 </div>
 
 <!-- Tree View -->
-<div *ngIf="radioOptions === 'tree'">
-  <app-visual *ngIf="node"
-              [node]="nodeClone">
+<div *ngIf="radioOptions === 'radial'">
+  <app-visual *ngIf="project"
+              [project]="project">
   </app-visual>
 </div>
 
-<div *ngIf="radioOptions === 'clickable-tree'">
-  <app-collapsible-tree [node]="nodeClone"></app-collapsible-tree>
+<div *ngIf="radioOptions === 'tree'">
+  <app-collapsible-tree *ngIf="project" [project]="project"></app-collapsible-tree>
 </div>
 <!---------------------------------------------------->
 <!------------------ Modals -------------------------->
@@ -205,6 +206,18 @@
      (click)="removeSelected()">
     <i class="fa fa-trash"
        aria-hidden="true"></i>&nbsp;Delete</a>
+  <!-- INPUT NODE -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedNode.composite_id && isRegular(graph.state.selectedNode) && !graph.state.selectedEdge"
+     (click)="makeInput(graph.state.selectedNode)">
+    <i class="fa fa-sign-in"
+       aria-hidden="true"></i>&nbsp;Make Input</a>
+  <!-- OUTPUT NODE -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedNode.composite_id && isRegular(graph.state.selectedNode) && !graph.state.selectedEdge"
+     (click)="makeOutput(graph.state.selectedNode)">
+    <i class="fa fa-sign-out"
+       aria-hidden="true"></i>&nbsp;Make Output</a>
   <!-- COMPOSITE -->
   <a class="dropdown-item"
      *ngIf="!selectedNode && !graph.state.selectedEdge"

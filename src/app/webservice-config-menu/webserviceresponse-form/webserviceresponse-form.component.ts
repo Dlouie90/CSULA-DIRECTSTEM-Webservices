@@ -15,18 +15,17 @@ import {Project} from '../../shared/models/project.model';
 import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
-  selector: 'app-webservicebuilder-form',
-  templateUrl: './webservicebuilder-form.component.html'
+  selector: 'app-webserviceresponse-form',
+  templateUrl: './webserviceresponse-form.component.html'
 })
-export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
+export class WebServiceResponseComponent implements OnChanges, OnDestroy {
   @Input()
   project: Project;
   @Input()
   node: Node;
   @Input()
   neighbors;
-  //input_params = [{node:{title:"node1"}, p_index:-1, key:"test", value:"test"}];
-  input_params = [];
+  input_params = [{node:"node1", key:"test", value:"test"}];
   webserviceForm: FormGroup;
   paramGroup: FormGroup;
   selected;
@@ -34,6 +33,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
   checked = [true, false, false, false];
   paramModal;
   paramIndex;
+  isJSON;
 
   constructor(private formBuilder: FormBuilder, private projectService: ProjectService, private modalService: NgbModal, private http: Http) {}
 
@@ -47,16 +47,8 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
       console.log("displaying node");
       console.log(this.node);
 
-      if(this.node.params == null) // for legacy support
-        this.node.params = [];
-
-      console.log(this.neighbors);
-
-      this.neighbors.forEach(node => {
-        node.res_params.forEach((param, index) => {
-          this.input_params.push({node:node, p_index:index, key:param.key, value:param.val});
-        });
-      });
+      if(this.node.res_params == null) // for legacy support
+        this.node.res_params = [];
 
       this.paramModal = null;
 
@@ -81,13 +73,9 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
 
   private createFormGroup(data): FormGroup {
     return this.formBuilder.group({
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      url: data.url,
-      method: data.method,
-      param_keys: this.createParamKeysFormArray(data.params),
-      param_vals: this.createParamValsFormArray(data.params)
+      response: this.formatJSON(data.response), // make sure it is JSON first!
+      param_keys: this.createParamKeysFormArray(data.res_params),
+      param_vals: this.createParamValsFormArray(data.res_params)
     });
   }
 
@@ -104,16 +92,8 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     const inputs = params.map(param => this.formBuilder.control(param.val));
     let input_forms = this.formBuilder.array(inputs);
     params.map((param, index) => {
-      if(param.link != null) {
-        var link = param.link;
-        var node = this.findNode(link.node_id);
-
-        if(node != null) {
-          input_forms.controls[index].disable();
-          input_forms.controls[index].setValue("[" + node.title + "] > " + node.res_params[link.param_i].key);
-        }
-        else input_forms.controls[index].setValue("");
-      }
+      if(param.link != null)
+        input_forms.controls[index].disable()
     });
     return input_forms;
   }
@@ -126,13 +106,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     //alert('not implemented yet');
     console.log("Attemping to remove parameter #" + i + " in node " + this.node.title);
     if(this.node) {
-      this.project.nodes.forEach((n:Node) => {
-        if(n.id == this.node.id) {
-          console.log("Removing parameter from project, too");
-          n.params.splice(i, 1);
-        }
-      });
-      this.node.params.splice(i, 1);
+      this.node.res_params.splice(i, 1);
       this.param_keys.removeAt(i);
       this.param_vals.removeAt(i);
     }
@@ -142,11 +116,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     this.param_keys.push(this.formBuilder.control(key));
     this.param_vals.push(this.formBuilder.control(''));
     if(this.node) {
-      // search for the right node to update
-      this.project.nodes.forEach((n: Node) => {
-        if(n.id == this.node.id)
-          n.params.push({key:key,val:'',link:null});
-      });
+      this.node.res_params.push({key:key,val:'',link:null});
     }
   }
 
@@ -169,9 +139,9 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
 
     let param = this.input_params[i];
 
-    this.param_vals.controls[this.paramIndex].setValue("[" + param.node.title + "] > " + param.key);
+    this.param_vals.controls[this.paramIndex].setValue(param.node + "->" + param.key);
     this.param_vals.controls[this.paramIndex].disable();
-    this.node.params[this.paramIndex].link = {node_id:param.node.id, param_i:param.p_index};
+    this.node.res_params[this.paramIndex].link = {node:param.node, key:param.key};
 
     if(this.paramModal != null)
       this.paramModal.close();
@@ -180,13 +150,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
   saveChange(): void {
     if(this.node) {
       // search for the right node to update
-      this.project.nodes.forEach((n: Node) => {
-        if(n.id == this.node.id) {
-          n.url = this.webserviceForm.get('url').value;
-          n.method = this.selected;
-          this.param_vals.controls.forEach((form, index) => n.params[index].val = form.value);
-        }
-      });
+      this.param_vals.controls.forEach((form, index) => this.node.res_params[index].val = form.value);
     }
     
     this.projectService.updateProjectToService(this.project);
@@ -203,14 +167,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     var param_vals = [];
 
     this.param_keys.controls.forEach((form, index) => param_keys[index] = form.value);
-    this.param_vals.controls.forEach((form, index) => {
-      if(!form.disabled) // just get straight value
-        param_vals[index] = form.value
-      else { // fetch the value from neighbor
-        var link = this.node.params[index].link;
-        param_vals[index] = this.findNode(link.node_id).res_params[link.param_i].val;
-      }
-    });
+    this.param_vals.controls.forEach((form, index) => param_vals[index] = form.value);
 
     console.log("Testing " + url + " with method " + method);
     console.log(param_keys);
@@ -225,13 +182,6 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
                     console.log("Finished testing " + url);
                     console.log(res);
                     webform.node.response = res.response;
-
-                    webform.node.time_text = time.toFixed(2) + "ms";
-
-                    var d = new Date();
-                    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-                    webform.node.stats.push({date: date, runtime: time});
-                    webform.node.just_benchmarked = true;
                   }
                   else
                     alert("WebService query failed (check URL?)");
@@ -250,12 +200,17 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     return method == this.node.method;
   }
 
-  findNode(id) {
-    var node = null;
-    this.project.nodes.forEach(n => {
-      if(n.id == id)
-        node = n;
-    });
-    return node;
+  formatJSON(text) {
+    var ret = text;
+    try {
+      ret = JSON.stringify(JSON.parse(text), null, 2);
+      this.isJSON = true;
+    }
+    catch(e) {
+      console.log("response was not in JSON form");
+      this.isJSON = false;
+    }
+
+    return ret;
   }
 }

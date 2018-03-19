@@ -8,6 +8,7 @@ import {ShareModule} from '../share.module';
 
 import {CompositionFormComponent} from './composition-form/composition-form.component';
 import {WebServiceBuilderComponent} from './webservicebuilder-form/webservicebuilder-form.component';
+import {WebServiceResponseComponent} from './webserviceresponse-form/webserviceresponse-form.component';
 import {ConfigureCompositionRowComponent} from './configure-composition/configure-composition-row/configure-composition-row.component';
 import {ConfigureCompositionComponent} from './configure-composition/configure-composition.component';
 import {WebserviceCardComponent} from './webservice-card/webservice-card.component';
@@ -27,6 +28,7 @@ import {WebserviceRowComponent} from './webservice-row/webservice-row.component'
     WebserviceRowComponent,
     CompositionFormComponent,
     WebServiceBuilderComponent,
+    WebServiceResponseComponent,
     ConfigureCompositionComponent,
     ConfigureCompositionRowComponent
   ],

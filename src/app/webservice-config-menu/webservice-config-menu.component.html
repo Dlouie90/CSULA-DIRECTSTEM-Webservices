@@ -14,10 +14,20 @@
       *ngIf="node != null">
       <ng-template ngbTabContent>
         <div class="p-3">
-          <app-webservicebuilder-form [project]="project" [node]="node"></app-webservicebuilder-form>
+          <app-webservicebuilder-form [project]="project" [node]="node" [neighbors]="inputNodes"></app-webservicebuilder-form>
         </div>
       </ng-template>
     </ngb-tab>
+    <!-- WebServiceResponse Tab-->
+    <ngb-tab id="tab-2" title="WebService Response"
+      *ngIf="node != null && node.response != null">
+      <ng-template ngbTabContent>
+        <div class="p-3">
+          <app-webserviceresponse-form [project]="project" [node]="node" [neighbors]="inputNodes"></app-webserviceresponse-form>
+        </div>
+      </ng-template>
+    </ngb-tab>
+
     <!-- Service Tab -->
     <!--
     <ngb-tab id="tab-1" title="Service">

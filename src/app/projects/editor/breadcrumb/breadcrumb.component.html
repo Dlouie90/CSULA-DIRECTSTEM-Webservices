@@ -4,7 +4,7 @@
          *ngFor="let view of controller.views">
       <button class="btn btn-primary"
               *ngIf="isCurrent(view)"
-              disabled="true">
+              disabled>
         {{getViewTitle(view) | uppercase}}
       </button>
       <button class="btn btn-outline-primary"

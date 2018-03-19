@@ -90,6 +90,11 @@ export class EditorComponent implements OnInit {
           }
 
           this.project = project;
+          // legacy support
+          this.project.nodes.forEach(n => {
+            if(n.type == null)
+              n.type = "REGULAR";
+          });
           this.initGraph(project);
         });
   }
@@ -346,8 +351,17 @@ export class EditorComponent implements OnInit {
       else {
         var url = n.url;
         var method = n.method;
-        var param_keys = n.param_keys;
-        var param_vals = n.param_vals;
+        var param_keys = [];
+        var param_vals = [];
+
+        n.params.forEach((param, index) => {
+          param_keys[index] = param.key;
+          if(param.link == null)
+            param_vals[index] = param.val;
+          else {
+            param_vals[index] = this.findNode(param.link.node_id).res_params[param.link.param_i].val;
+          }
+        });
 
         this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
                  .map((res: Response) => res.json())
@@ -478,8 +492,17 @@ export class EditorComponent implements OnInit {
     if (!node.composite_id) {
       var url = node.url;
       var method = node.method;
-      var param_keys = node.param_keys;
-      var param_vals = node.param_vals;
+      var param_keys = [];
+      var param_vals = [];
+
+      node.params.forEach((param, index) => {
+        param_keys[index] = param.key;
+        if(param.link == null)
+          param_vals[index] = param.val;
+        else {
+          param_vals[index] = this.findNode(param.link.node_id).res_params[param.link.param_i].val;
+        }
+      });
 
       this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
                .map((res: Response) => res.json())
@@ -565,7 +588,7 @@ export class EditorComponent implements OnInit {
     const inputNodes = this.getInputsToNode(this.selectedNode);
     modalRef.componentInstance.project = this.project;
     modalRef.componentInstance.node = this.selectedNode;
-    modalRef.componentInstance.inputNodes = inputNodes;
+    modalRef.componentInstance.inputNodes = this.selectedNodeNeighbors;
     modalRef.result
         .then(
             (result: any) => {
@@ -576,6 +599,36 @@ export class EditorComponent implements OnInit {
               this.syncNode(this.selectedNode);
               this.drawCurrentView();
             });
+  }
+
+  makeInput(node) {
+    this.closeContextMenu();
+
+    this.currentProject.nodes.forEach(n => {
+      if(n.type.localeCompare("INPUT") == 0) // clear the last input node first
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "INPUT";
+    });
+
+    //this.graph.makeNodeInput(node);
+    this.updateProjectToService(this.currentProject);
+    this.initGraph(this.currentProject);
+  }
+
+  makeOutput(node) {
+    this.closeContextMenu();
+
+    this.currentProject.nodes.forEach(n => {
+      if(n.type.localeCompare("OUTPUT") == 0) // clear the last output node first
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "OUTPUT";
+    });
+
+    //this.graph.makeNodeOutput(node);
+    this.updateProjectToService(this.currentProject);
+    this.initGraph(this.currentProject);
   }
 
   /* Return all the nodes that has an edge to the input node. ignores nodes
@@ -632,7 +685,7 @@ export class EditorComponent implements OnInit {
   removeEdge(): void {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
-    const currentView = this.currentView;
+    //const currentView = this.currentView;
 
     /*
     if (currentView.parentNode) {
@@ -640,8 +693,8 @@ export class EditorComponent implements OnInit {
     }
     */
 
-    this.replaceRecentView(currentView);
-    this.updateViewToService(currentView);
+    //this.replaceRecentView(currentView);
+    //this.updateViewToService(currentView);
     this.closeContextMenu();
   }
 
@@ -693,6 +746,26 @@ export class EditorComponent implements OnInit {
 
   get currentProject(): Project {
     return this.views[this.viewIndex].currentProject;
+  }
+
+  get selectedNodeNeighbors() {
+    var indices = this.graph.findSelectedNodeNeighbors(this.graph.state.selectedNode);
+
+    console.log(indices);
+
+    var ret = [];
+
+    indices.forEach(index => {
+      ret.push(this.currentProject.nodes[index]);
+    })
+
+    console.log(ret);
+
+    return ret;
+  }
+
+  isRegular(node) {
+    return node.type.localeCompare("REGULAR") == 0;
   }
 
   addNodeToProject(project: Project, node: Node): void {
@@ -778,5 +851,14 @@ export class EditorComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
     this.closeContextMenu();
+  }
+
+  findNode(id) {
+    var node = null;
+    this.project.nodes.forEach(n => {
+      if(n.id == id)
+        node = n;
+    });
+    return node;
   }
 }

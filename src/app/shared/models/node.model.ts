@@ -11,7 +11,15 @@ export class Node {
   composite_id: number;
   param_keys: string[] = [];
   param_vals: string[] = [];
-  stats;
+
+  ///////// PARAMETERS /////////
+  params = []; // param objects
+  ///////// RESPONSE //////////
+  response: string; // response in raw string format
+  res_params = []; // parameters from the response object
+  ///////// STATISTICS /////////
+  stats = []; // stat objects
+  type: string;
 
   /** Return true if the node is neither a input or output node. */
   static isRegular(node) {
@@ -29,8 +37,10 @@ export class Node {
     this.title = `NODE_${id}`;
     this.time_text  = '';
     this.just_benchmarked = false;
+    this.params = [];
     this.stats = [];
     this.url = "";
     this.method = "GET";
+    this.type = "REGULAR";
   }
 }

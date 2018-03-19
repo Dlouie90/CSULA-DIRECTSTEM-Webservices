@@ -4,16 +4,25 @@ svg {
   border : dotted dodgerblue thin;
 }
 
+.modal {
+  background: rgba(0,0,0,0.15);
+}
+
 .visual {
   height : 1000px !important;
   width  : 1000px !important;
   border : none;
 }
 
-g.conceptG circle {
+g.node circle {
   fill         : rgb(229, 239, 255);
   stroke       : rgb(190, 210, 240);
   stroke-width : 4px;
+}
+
+g.node-selected circle {
+  stroke       : rgb(51, 108, 215) !important;
+  stroke-width : 5px;
 }
 
 g.node-composite circle {
@@ -27,20 +36,37 @@ g.node-composite-selected circle {
   stroke-width : 5px;
 }
 
-g.node-selected circle {
-  stroke       : rgb(51, 108, 215) !important;
+g.node-input circle {
+  fill         : rgb(255, 218, 220);
+  stroke       : rgb(240, 181, 178);
+  stroke-width : 4px;
+}
+
+g.node-input-selected circle {
+  stroke       : rgb(240, 21, 18) !important;
+  stroke-width : 5px;
+}
+
+g.node-output circle {
+  fill         : rgb(198, 255, 200);
+  stroke       : rgb(161, 230, 158);
+  stroke-width : 4px;
+}
+
+g.node-output-selected circle {
+  stroke       : rgb(21, 220, 18) !important;
   stroke-width : 5px;
 }
 
 div#d3-editor text {
   fill        : rgb(34, 34, 35);
-  font-size   : 20px;
+  font-size   : 16px;
   font-family : monospace;
   font-weight : bolder;
 }
 
 text.tree-text {
-  font-size : 14px !important;
+  font-size : 16px !important;
 }
 
 /*g.conceptG:hover circle {*/
@@ -60,7 +86,7 @@ g.clicked-node circle {
 path.link {
   fill         : #ccc;
   stroke       : #ccc;
-  stroke-width : 6px;
+  stroke-width : 4px;
   cursor       : default;
 }
 
@@ -88,13 +114,13 @@ path.link.selected {
 }
 
 .composite-node {
-  fill         : #fff;
-  stroke       : steelblue;
+  fill         : rgb(255, 208, 100);
+  stroke       : rgb(240, 180, 85);
   stroke-width : 5px;
 }
 
 .root-node {
-  fill         : rgb(30, 144, 255); /* dodgerblue */
+  fill         : rgb(110, 144, 255); /* dodgerblue */
   stroke       : rgb(0, 114, 225);
   stroke-width : 5px;
 }
