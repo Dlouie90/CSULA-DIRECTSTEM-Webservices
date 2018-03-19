@@ -1,12 +1,57 @@
 <div class="container">
-  <app-carousel></app-carousel>
+    <app-carousel></app-carousel>
 
-  <div class="jumbotron-fluid text-center">
-    <h1 class="display-3 text-center">DIRECT STEM</h1>
-    <h3 class="display-3 text-center">Visualization Tool for Cloud Computing Services</h3>
-    <p class="lead">Build, Import, Export, Test, View, Analyse</p>
-    <a class="btn btn-outline-success btn-lg btn-block btn-start-new mx-auto"
-       routerLink="../projects"
-       id="btn-start-new">Start Here</a>
-  </div>
+    <div class="jumbotron-fluid text-center">
+        <h1 class="display-3 text-center">DIRECT STEM</h1>
+        <h3 class="display-3 text-center">Visualization Tool for Cloud Computing Services</h3>
+        <p class="lead">Build, Import, Export, Test, View, Analyse</p>
+        <a class="btn btn-outline-success btn-lg btn-block btn-start-new mx-auto"
+           routerLink="../projects"
+           id="btn-start-new">Start Here</a>
+    </div>
+    <div>
+        <img id="logo" src="assets/images/tutorial_insert.PNG">
+        <p>
+            Run All - Run All will run the current project you are in.
+        </p>
+        <p>
+            Insert -
+        </p>
+        <p></p>
+    </div>
+    <br>
+    <div>
+        <h2>Project Description</h2>
+        <br>
+        <p>The purpose of the Visualization Tool for Composition of Cloud Computing Services (VTCCCS) is to develop a
+            software tool to support the composition of cloud computing web services. Users will be able to use this
+            visualization tool to model the architectures of cloud computing services based systems. The system is
+            designed to facilitate the process of tracking and displaying the composition of cloud services and the
+            results of these composite services. Potential scenarios include processing satellite data and then passing
+            the processed data to another service to analyze.
+        </p>
+        <p>
+            The Visualization Tool for Composition of Cloud Computing Services system is composed of two main
+            components: a client-side application which will be served over the web, and a server-side which will
+            support and interact with various client-side features. The Visualization Tool has two types of web portals.
+            One web portal is used for users to create projects and view relevant information of web services while the
+            other web portal is for administrators to manage user information and other details.
+        </p>
+        <p>
+            There are multiple functionalities available to the user to create projects to simulate cloud computing.
+            Users will be able to create, save, load, delete, and modify projects. These projects are used to simulate
+            cloud computing and views its QoS. Once a user chooses to load or create a new project, they will be taken
+            to the View Block. Nodes can be created and displayed in the View Block. The View Block displays the nodes
+            depending on the View selected of which the user can choose based on their preference. Users are able to
+            obtain metrics about usage of services such as runtime for each service or project.
+        </p>
+        <p>
+            Administrators are met with a different set of functionalities to manage user data obtained from the
+            database. Administrators are able to view all, view details, add, edit, or delete users. Administrators are
+            able to check the users’ login times, each session length, and average session time. For the session length
+            data, administrators are able to view this in list view or graph view. Using the session length data again,
+            the administrators are able to view the average session time for each user. Administrators will not be able
+            to modify users’ projects or view them. Administrators are only able to manage user data.
+        </p>
+    </div>
 </div>
