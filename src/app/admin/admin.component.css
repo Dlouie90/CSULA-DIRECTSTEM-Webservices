@@ -1,4 +1,8 @@
-.editDeleteBtns{
+.editDeleteBtns {
     margin-right: 25%;
     float: right;
+}
+
+tr, td {
+    background-color: black;
 }

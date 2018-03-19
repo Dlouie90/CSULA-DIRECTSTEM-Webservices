@@ -9,22 +9,45 @@
            routerLink="../projects"
            id="btn-start-new">Start Here</a>
     </div>
-    <div>
-        <img id="logo" src="assets/images/tutorial_insert.PNG">
-        <p>
-            Run All - Run All will run the current project you are in.
-        </p>
-        <p>
-            Insert - Insert will place a new node container at the location of your mouse pointer.
-        </p>
-        <p>
-            Composite - Composite will link the current selected node to a project. If a node is not selected, a new
-            node shall be created and the chosen project will be linked to it.
-        </p>
-        <p>
-            Performance - Performance will display a bar chart of the runtime performance of the current project. If a
-            node is selected, then the graph will display the runtime performance of the selected node.
-        </p>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h4 class="text-center">When nothing is selected</h4>
+            <img src="assets/images/tutorial_insert.PNG">
+            <p>
+                Run All - Run All will run the current project you are in and display the runtime of each node in
+                milliseconds.
+            </p>
+            <p>
+                Insert - Insert will place a new node container at the location of your mouse pointer.
+            </p>
+            <p>
+                Composite - Composite will create a new node and bring up the composite node menu where you can
+                link your other projects to that node.
+            </p>
+            <p>
+                Performance - Performance will display a bar chart of the runtime performance of the current project.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center">When a node is selected</h4>
+            <img src="assets/images/tutorial_node.PNG">
+            <p>
+                Run - Run will run the selected node and display the runtime of the node in milliseconds.
+            </p>
+            <p>
+                Edit - Edit will allow the user to change the name of the node and add a webservice to the node.
+            </p>
+            <p>
+                Delete - Delete will remove the selected node from the project.
+            </p>
+            <p>
+                Make Composite - Make Composite will bring up the composite node menu and allow you to link another
+                project to the selected node.
+            </p>
+            <p>
+                Performance - Performance will display the runtime bar chart of the current node.
+            </p>
+        </div>
     </div>
     <br>
     <div>

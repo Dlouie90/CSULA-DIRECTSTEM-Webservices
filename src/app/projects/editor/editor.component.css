@@ -1,24 +1,25 @@
 .rightClickPanel {
-  position : absolute;
-  display  : none;
+    position: absolute;
+    display: none;
+    background-color: black;
 }
 
 /* http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css*/
 .noselect {
-  -webkit-touch-callout : none; /* iOS Safari */
-  -webkit-user-select   : none; /* Safari */
-  -khtml-user-select    : none; /* Konqueror HTML */
-  -moz-user-select      : none; /* Firefox */
-  -ms-user-select       : none; /* Internet Explorer/Edge */
-  user-select           : none; /* Non-prefixed version, currently supported by Chrome and Opera */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 #my-title {
-  text-align : center;
-  margin     : auto;
+    text-align: center;
+    margin: auto;
 }
 
 .dropdown-menu i {
-  margin-left  : 1em;
-  margin-right : 1em;
+    margin-left: 1em;
+    margin-right: 1em;
 }
