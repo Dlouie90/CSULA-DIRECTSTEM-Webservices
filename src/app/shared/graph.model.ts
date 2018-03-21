@@ -501,6 +501,13 @@ export class Graph {
         //this.paths.splice(edge_index, 1);
       });
       console.log("Purged " + to_purge.length + " edges");
+
+      // properly update indices to account for the node being gone
+      const to_update = this.edges.filter(edge => edge.source > node_index || edge.target > node_index);
+      to_update.forEach(edge => {
+        if(edge.source > node_index) edge.source--;
+        if(edge.target > node_index) edge.target--;
+      })
     }
     console.log("There are " + this.edges.length + " edges remaining");
   }
