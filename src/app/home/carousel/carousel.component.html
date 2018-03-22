@@ -14,7 +14,7 @@
   <div class="carousel-inner"
        role="listbox">
     <div *ngFor="let path of paths; let index = index;"
-         [ngClass]="{active: index === 0}"
+         [ngClass]="{active: index === 1}"
          class="carousel-item">
       <img class="d-block img-fluid"
            [src]="path.url"

@@ -1,0 +1,12 @@
+.save {
+    float: left;
+}
+.cancel{
+    float: right;
+}
+.btnGrp{
+    margin-top: 5px;
+}
+.myForm{
+    margin-left: 35%;
+}
