@@ -853,6 +853,15 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
+  viewMonitor(modal) {
+    this.modalService.open(modal).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+    this.closeContextMenu();
+  }
+
   findNode(id) {
     var node = null;
     this.project.nodes.forEach(n => {

@@ -1,3 +1,4 @@
+<!-- composite window modal -->
 <ng-template #compositeModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Composite Node</h4>
@@ -7,6 +8,44 @@
   </div>
   <div class="modal-body">
     <p>Please choose a project to link to:&hellip;</p>
+    <table class="table table-hover table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center">ID</th>
+        <th class="text-center">Title</th>
+        <th class="text-center">Parameters</th>
+        <th class="text-center">Link</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let project of comp_projects">
+        <td class="text-center">{{ project.id }}</td>
+        <td class="text-center">{{ project.title }}</td>
+        <td class="text-center">{{ project.parameters }}</td>
+        <td class="text-center">
+          <button class="btn btn-outline-info" (click)="compositeLink(project.id)">
+            <i class="fa fa-link" aria-hidden="true"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>
+
+<!-- real-time monitor window modal -->
+<ng-template #monitorModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Real-time Monitor</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Please choose a how you would like to monitor:&hellip;</p>
     <table class="table table-hover table-bordered">
       <thead>
       <tr>
@@ -242,6 +281,12 @@
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>
+  <!-- Real-time Monitor -->
+  <a class="dropdown-item"
+     *ngIf="!graph.state.selectedEdge"
+     (click)="viewMonitor(monitorModal)">
+    <i class="fa fa-television"
+       aria-hidden="true"></i>Real-Time</a>
   <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--<a class="dropdown-item"-->
   <!--(click)="debugNode(debugModal)">-->
