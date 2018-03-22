@@ -72,6 +72,7 @@ public class WebServiceResource {
         	if(url.substring(0, 4).toLowerCase().equals("https"))
         		ssl = true;
         	
+        	// reconstruct a GET request url string thing
         	if(method.equals("GET")) {
         		need_params = false;
         		url += "?";
