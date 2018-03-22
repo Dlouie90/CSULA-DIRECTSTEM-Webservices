@@ -1,0 +1,25 @@
+.bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+}
+
+.bar text {
+    fill: #fff;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+div#userGraph {
+    max-height: 250px;
+    max-width: 120px;
+}
+
+/*svg {*/
+    /*width  : 80%;*/
+    /*height : 550px;*/
+    /*border : dotted orange thin;*/
+/*}*/

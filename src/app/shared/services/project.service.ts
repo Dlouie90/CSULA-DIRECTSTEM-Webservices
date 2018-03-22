@@ -60,14 +60,14 @@ export class ProjectService {
         const project = new Project(ProjectService.generateTempId());
 
         this.createProjectDb(project)
-        .subscribe(
-            (res: CreateProjectResponse) => {
-                console.log("Created a new project with ID " + res.project.id);
-                project.dbId = res.project.id;
-                this.projects.push(project);
-            },
-            (err: any) => console.log(err),
-            () => console.log("Project Creation Finished"));
+            .subscribe(
+                (res: CreateProjectResponse) => {
+                    console.log('Created a new project with ID ' + res.project.id);
+                    project.dbId = res.project.id;
+                    this.projects.push(project);
+                },
+                (err: any) => console.log(err),
+                () => console.log('Project Creation Finished'));
 
         return project;
     }
@@ -75,17 +75,17 @@ export class ProjectService {
     getProjects(): Observable<Project[]> {
         this.getProjectsDb()
             .subscribe(
-            (res:any) => {
-                this.projects.splice(0, this.projects.length);
-                var project_strings = res.projects;
-                res.projects.forEach((projectRes:ProjectResponse, index) => {
-                    var project = this.parseProjectJSON(projectRes.data);
-                    project.dbId = projectRes.id;
-                    this.projects.push(project);
-                });
-            },
-            (err: any) => console.log(err),
-            () => console.log("GOT PROJECTS"));
+                (res: any) => {
+                    this.projects.splice(0, this.projects.length);
+                    var project_strings = res.projects;
+                    res.projects.forEach((projectRes: ProjectResponse, index) => {
+                        var project = this.parseProjectJSON(projectRes.data);
+                        project.dbId = projectRes.id;
+                        this.projects.push(project);
+                    });
+                },
+                (err: any) => console.log(err),
+                () => console.log('GOT PROJECTS'));
         return Observable.of(this.projects);
         //return this.getProjectsDb();
     }
@@ -131,15 +131,15 @@ export class ProjectService {
         if (serviceProject) {
             Object.assign(serviceProject, project);
 
-            console.log("Updating project " + project.title + " with dbId=" + project.dbId);
+            console.log('Updating project ' + project.title + ' with dbId=' + project.dbId);
 
             this.updateProjectDb(project)
                 .subscribe(
                     (res: CreateProjectResponse) => {
-                        console.log("PROJECT UPDATED");
+                        console.log('PROJECT UPDATED');
                     },
                     (err: any) => console.log(err),
-                    () => console.log("Project Update Finished"));
+                    () => console.log('Project Update Finished'));
             return true;
         }
         return false;
@@ -169,12 +169,12 @@ export class ProjectService {
         this.removeProjectFromArray(project, this.projects);
 
         this.deleteProjectDb(project)
-        .subscribe(
-            (res: any) => {
-                console.log("project deleted");
-            },
-            (err: any) => console.log(err),
-            () => console.log("Project Deletion Finished"));
+            .subscribe(
+                (res: any) => {
+                    console.log('project deleted');
+                },
+                (err: any) => console.log(err),
+                () => console.log('Project Deletion Finished'));
     }
 
     private removeProjectFromArray(project: Project, array: Array<Project>): void {
@@ -203,7 +203,7 @@ export class ProjectService {
     createProjectDb(project: Project): Observable<CreateProjectResponse> {
         const url = `${this.baseUrl}/add`;
         return this.http
-            .post(url, {id:project.dbId, data:JSON.stringify(project)})
+            .post(url, {id: project.dbId, data: JSON.stringify(project)})
             .map((res: Response) => res.json());
     }
 
@@ -211,7 +211,7 @@ export class ProjectService {
         const id = project.dbId;
         const url = `${this.baseUrl}/${id}`;
         return this.http
-            .put(url, {id:project.dbId, data:JSON.stringify(project)})
+            .put(url, {id: project.dbId, data: JSON.stringify(project)})
             .map((res: Response) => res.json());
     }
 
@@ -237,9 +237,9 @@ export class ProjectService {
             .map((res: Response) => res.json());
     }
 
-    parseProjectJSON(json):Project {
+    parseProjectJSON(json): Project {
         //console.log(json);
-        var project = JSON.parse(json);
+        const project = JSON.parse(json);
         return project;
     }
 }

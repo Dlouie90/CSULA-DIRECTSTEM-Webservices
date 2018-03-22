@@ -1,0 +1,41 @@
+<div class="container">
+    <button (click)="onAdd()" class="btn btn-success">Add User</button>
+    <table class="table table-light">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td>{{user.email}}</td>
+            <td class="editDeleteBtns">
+                <button (click)="onEdit(user.id)" class="btn btn-info">Edit</button>
+                <button class="btn btn-danger" (click)="onDeleteUser(user.id)">Delete</button>
+                <!--<button class="btn btn-info" (click)="onUserSess()">Details</button>-->
+                <button class="btn btn-info" (click)="onDetail()">Details</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--<ng-template #content let-c="close" let-d="dismiss">-->
+    <!--<div class="modal-header">-->
+        <!--<h4 class="modal-title">Are you sure?</h4>-->
+        <!--<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">-->
+            <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
+    <!--</div>-->
+    <!--<div class="modal-body">-->
+        <!--<p>Name</p>-->
+    <!--</div>-->
+    <!--<div class="modal-footer">-->
+        <!--<button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Delete</button>-->
+    <!--</div>-->
+<!--</ng-template>-->
+<!--&lt;!&ndash;<a [routerLink]="['/add']" class="btn btn-success">Add New User</a> &ndash;&gt;-->
