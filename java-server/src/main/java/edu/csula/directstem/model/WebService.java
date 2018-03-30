@@ -5,12 +5,14 @@ public class WebService {
 	private String method;
 	private String[] param_keys;
 	private String[] param_vals;
+	private int interval;
 
-    public WebService(String url, String method, String[] param_keys, String[] param_vals) {
+    public WebService(String url, String method, String[] param_keys, String[] param_vals, int interval) {
         this.url = url;
         this.method = method;
         this.param_keys = param_keys;
         this.param_vals = param_vals;
+        this.interval = interval;
     }
 
     public String getUrl() {
@@ -43,5 +45,13 @@ public class WebService {
     
     public void setParam_vals(String[] param_vals) {
     	this.param_vals= param_vals;
+    }
+    
+    public int getInterval() {
+    	return this.interval;
+    }
+    
+    public void setInterval(int interval) {
+    	this.interval = interval;
     }
 }

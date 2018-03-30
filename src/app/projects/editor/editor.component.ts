@@ -5,7 +5,8 @@ import {Component,
 import {ActivatedRoute,
         Params,
         Router} from '@angular/router';
-import {ModalDismissReasons,
+import {NgbModule,
+        ModalDismissReasons,
         NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Http,
         Response} from '@angular/http';
@@ -19,6 +20,7 @@ import {Node} from '../../shared/models/node.model';
 //import {NodeService} from '../../shared/services/node.service';
 import {View} from '../../shared/view.model';
 import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webservice-config-menu.component';
+import {LineChartComponent} from '../line-chart/line-chart.component';
 
 @Component({
   selector: 'app-editor',
@@ -363,7 +365,7 @@ export class EditorComponent implements OnInit {
           }
         });
 
-        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
                  .map((res: Response) => res.json())
                  .subscribe(
                     (res:any) => {
@@ -504,7 +506,7 @@ export class EditorComponent implements OnInit {
         }
       });
 
-      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
                .map((res: Response) => res.json())
                .subscribe(
                   (res:any) => {
@@ -850,6 +852,28 @@ export class EditorComponent implements OnInit {
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
+    this.closeContextMenu();
+  }
+
+  viewMonitor() {
+    const modalRef = this.modalService
+                         .open(LineChartComponent, {size: 'lg'});
+    const inputNodes = this.getInputsToNode(this.selectedNode);
+    modalRef.componentInstance.project = this.project;
+    modalRef.componentInstance.node = this.selectedNode;
+    modalRef.componentInstance.inputNodes = this.selectedNodeNeighbors;
+
+    //this.modalRef = this.modalService.open(modal);
+    modalRef.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
+    });
+
     this.closeContextMenu();
   }
 

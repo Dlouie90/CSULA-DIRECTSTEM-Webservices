@@ -478,9 +478,11 @@ export class Graph {
       var node_index = thisGraph.nodes.indexOf(node);
       thisGraph.removeEdgesWithNodeIndex(node_index);
       thisGraph.nodes.splice(node_index, 1);
+
       /* Remove all edges originating from this node. */
       //thisGraph.removeEdgesWithNode(node);
       //thisGraph.spliceLinksFormNode(selectedNode);
+      
       /* Remove the node from all neighbors field */
       //this.removeFromNeighbor(selectedNode);
       thisGraph.state.selectedNode = null;

@@ -173,7 +173,13 @@ div#d3-ctree .link {
 }
 
 #svg-barChart {
-  width  : 500px !important;
+  width  : 600px !important;
+  height : 100% !important;
+  border : none !important;
+}
+
+#lineChart {
+  width  : 600px !important;
   height : 100% !important;
   border : none !important;
 }

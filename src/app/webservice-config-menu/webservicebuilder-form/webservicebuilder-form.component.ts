@@ -216,7 +216,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
     console.log(param_keys);
     console.log(param_vals);
 
-    this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+    this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
              .map((res: Response) => res.json())
              .subscribe(
                 (res:any) => {

@@ -1,11 +1,14 @@
 import {Component,
         ElementRef,
+        ViewChild,
         Input,
-        OnInit} from '@angular/core';
+        OnInit,
+        AfterViewInit} from '@angular/core';
 
 import * as d3 from 'd3';
 import {Project} from '../../shared/models/project.model';
 import {Node} from '../../shared/models/node.model';
+import {Chart} from 'chart.js';
 
 @Component({
   selector: 'app-bar-chart',
@@ -13,163 +16,116 @@ import {Node} from '../../shared/models/node.model';
   styleUrls: ['./bar-chart.component.css']
 })
 export class BarChartComponent implements OnInit {
+  @ViewChild('canvas')
+  canvas: ElementRef;
   @Input()
   project: Project;
   @Input()
   node: Node;
-  host;
+  chartColors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+  };
+  chart:Chart;
 
   constructor(element: ElementRef) {
-    this.host = d3.select(element.nativeElement);
+    // do something
   }
 
   ngOnInit() {
+    // do something
+  }
+
+  ngAfterViewInit() {
+    //let stats = this.node.stats;
     let stats = this.getStats();
+    let labels = [];
     let data = [];
 
-    stats.forEach(s => {
-      //console.log(s);
+    stats.forEach((s, index) => {
+      labels.push(s.date);
       data.push(s.runtime);
     });
 
-    //console.log(data);
-
-    //const data = [55, 44, 30, 23, 17, 14, 16, 25, 41, 61, 85, 101, 95, 105, 114, 150, 180, 210, 125, 100, 71, 75, 72, 67];
-
-    const barWidth = 18, barPadding = 1;
-    let maxValue = Math.ceil(d3.max(data) / 100) * 100; // round up to the nearest hundred
-
-    if(data.length == 0)
-      maxValue = 300;
-
-    const heightScale = 300 / maxValue; // always scale to 300
-
-    const dataLength = (data.length > 20) ? data.length : 20;
-
-    const graphWidth = dataLength * (barWidth + barPadding) - barPadding;
-    const margin = {top: 10, right: 10, bottom: 10, left: 80};
-
-    const totalWidth = graphWidth + margin.left + margin.right;
-    const totalHeight = maxValue + margin.top + margin.bottom;
-
-    const svg = this.host.append('svg')
-                    .attr('id', 'svg-barChart')
-                    .attr({width: totalWidth, height: totalHeight * heightScale + 50});
-
-    const mainGroup = svg.append('g')
-                         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    mainGroup.append('rect').attr({
-      fill: 'rgba(0,0,0,0.1)',
-      width: totalWidth - (margin.left + margin.right),
-      height: (totalHeight - (margin.bottom + margin.top)) * heightScale
-    });
-
-    function xloc(d, i) {
-      return i * (barWidth + barPadding);
-    }
-
-    function yloc(d) {
-      return (maxValue - d) * heightScale;
-    }
-
-    function translator(d, i) {
-      return 'translate(' + xloc(d, i) + ',' + yloc(d) + ')';
-    }
-
-    const barGroup = mainGroup.selectAll('g')
-                         .data(data)
-                         .enter()
-                         .append('g')
-                         .attr('transform', translator);
-
-    barGroup.append('rect')
-        .attr({
-          fill: 'steelblue',
-          width: barWidth,
-          height: function(d) {
-            return d * heightScale;
+    var config = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Run Time',
+          backgroundColor: this.chartColors.blue,
+          borderColor: this.chartColors.blue,
+          data: data,
+          fill: false
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false,
+        },
+        /*
+        title: {
+          display: true,
+          text: 'Performance of ' + this.node.title
+        },
+        */
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            title: function(tooltipItems, data) {
+              return labels[tooltipItems[0].index];
+            },
+            label: function(tooltipItem, data) {
+              let rounded = Math.round(tooltipItem.yLabel * 100) / 100;
+              return "Response time: " + rounded + "ms";
+            }
           }
-        });
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
+        },
+        scales: {
+          xAxes: [{
+            //type: 'time',
+            /*
+            time: {
+              parser: 'YYYY/MM/DD HH:mm:ss',
+              //round: 'day',
+            },*/
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Benchmark #'
+            },
+            ticks: {
+              // Include a dollar sign in the ticks
+              callback: function(value, index, values) {
+                return '' + index;
+              }
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Performance (ms)'
+            }
+          }]
+        }
+      }
+    };
 
-    const textTranslator = 'translate(' + barWidth / 2 + ',0)';
-
-    barGroup.append('text')
-        .text(function(d) {
-          console.log(d);
-          return d.toFixed(2);
-        })
-        .attr({
-          fill: 'black',
-          'alignment-baseline': 'before-edge',
-          'text-anchor': 'middle',
-          transform: textTranslator
-        })
-        .style('font', '11px sans-serif');
-
-    const leftAxisGroup = svg.append('g');
-    const axisPadding = 3;
-    leftAxisGroup.attr({transform: 'translate(' + (margin.left - axisPadding) + ',' + margin.top + ')'});
-    const scale = d3.scale
-                      .linear()
-                      .domain([maxValue, 0])
-                      .range([0, maxValue * heightScale]);
-    const axis = d3.svg.axis()
-                     .orient('left')
-                     .scale(scale);
-
-    const bottomAxisGroup = svg.append('g')
-                                .attr({
-                                  transform: `translate(${margin.left - axisPadding},${(totalHeight - margin.bottom - barPadding) * heightScale + 8})`
-                                });
-    const xScale = d3.scale
-                       .linear()
-                       .domain([0, dataLength])
-                       .range([0, dataLength * (barWidth + barPadding)]);
-    const xAxis = d3.svg.axis()
-                      .orient('bottom')
-                      .scale(xScale);
-
-    const axisNodes = leftAxisGroup.call(axis);
-    const xAxisNodes = bottomAxisGroup.call(xAxis);
-    const domain = axisNodes.selectAll('.domain');
-    domain.attr({
-      fill: 'none',
-      'stroke-width': 1,
-      stroke: 'black'
-    });
-    const xDomain = xAxisNodes.selectAll('.domain');
-    xDomain.attr({
-      fill: 'none',
-      'stroke-width': 1,
-      stroke: 'black'
-    });
-    const ticks = axisNodes.selectAll('.tick line');
-    ticks.attr({
-      fill: 'none',
-      'stroke-width': 1,
-      stroke: 'black'
-    });
-    const xTicks = xAxisNodes.selectAll('.tick line');
-    xTicks.attr({
-      fill: 'none',
-      'stroke-width': 1,
-      stroke: 'black'
-    });
-
-    svg.append('text')  // text label for the x axis
-        .attr('x', totalWidth / 2)
-        .attr('y', totalHeight * heightScale + 50)
-        .style('text-anchor', 'middle')
-        .text('MOST RECENT RUNS');
-
-    svg.append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 0)
-        .attr('x', 0 - (totalHeight / 2) * heightScale)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .text('RESPONSE TIME (milliseconds)');
+    var ctx = this.canvas.nativeElement.getContext('2d');
+    this.chart = new Chart(ctx, config);
   }
 
   getStats() {
@@ -180,7 +136,7 @@ export class BarChartComponent implements OnInit {
         this.project.stats = [];
 
       if(this.project.stats.length > 20)
-        stats = this.project.stats.slice(this.project.stats.length - 21, 20);
+        stats = this.project.stats.slice(this.node.stats.length - 21, this.node.stats.length);
       else
         stats = this.project.stats.slice(0, this.project.stats.length);
     }
@@ -189,7 +145,7 @@ export class BarChartComponent implements OnInit {
         this.node.stats = [];
 
       if(this.node.stats.length > 20)
-        stats = this.node.stats.slice(this.node.stats.length - 21, 20);
+        stats = this.node.stats.slice(this.node.stats.length - 21, this.node.stats.length);
       else
         stats = this.node.stats.slice(0, this.node.stats.length);
     }

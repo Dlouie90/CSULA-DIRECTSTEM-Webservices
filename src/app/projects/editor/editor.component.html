@@ -1,3 +1,4 @@
+<!-- composite window modal -->
 <ng-template #compositeModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Composite Node</h4>
@@ -110,7 +111,7 @@
        id="my-title">
     <h4 class="modal-title">{{ 'Performance of ' + this.chartTitle }}</h4>
   </div>
-  <div class="modal-body text-center">
+  <div class="modal-body text-center" style="height:500px">
     <app-bar-chart [project]="this.currentProject" [node]="this.selectedNode"></app-bar-chart>
   </div>
   <div class="modal-footer">
@@ -242,6 +243,12 @@
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>
+  <!-- Real-time Monitor -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedEdge"
+     (click)="viewMonitor()">
+    <i class="fa fa-television"
+       aria-hidden="true"></i>Real-Time</a>
   <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--<a class="dropdown-item"-->
   <!--(click)="debugNode(debugModal)">-->

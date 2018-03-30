@@ -18,6 +18,7 @@ import {CarouselComponent} from './home/carousel/carousel.component';
 import {HomeComponent} from './home/home.component';
 import {MainNavComponent} from './main-nav/main-nav.component';
 import {BarChartComponent} from './projects/bar-chart/bar-chart.component';
+import {LineChartComponent} from './projects/line-chart/line-chart.component';
 import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-tree.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
@@ -29,6 +30,7 @@ import {ProjectService} from './shared/services/project.service';
 import {UserService} from './shared/services/user.service';
 import {SplitPanelLoginModule} from './split-panel-login/split-panel-login.module';
 import {WebserviceModalModule} from './webservice-config-menu/webservice-modal.module';
+import {LineChartModalModule} from './projects/line-chart/line-chart-modal.module';
 import {AdminModule} from './admin/admin.module';
 
 @NgModule({
@@ -44,7 +46,7 @@ import {AdminModule} from './admin/admin.module';
         DebugComponent,
         VisualComponent,
         CollapsibleTreeComponent,
-        BarChartComponent,
+        BarChartComponent
     ],
 
 
@@ -58,6 +60,7 @@ import {AdminModule} from './admin/admin.module';
         AppRoutingModule,
         SplitPanelLoginModule,
         WebserviceModalModule,
+        LineChartModalModule,
         AdminModule
     ],
 
