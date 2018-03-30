@@ -39,6 +39,39 @@ export class LineChartComponent implements OnInit, OnDestroy {
   labels = [];
   data = [];
   websocket;
+  interval = -1;
+  intervals =
+    [{
+      text: "5 seconds",
+      time: 5,
+    }, {
+      text: "10 seconds",
+      time: 10,
+    }, {
+      text: "30 seconds",
+      time: 30,
+    }, {
+      text: "1 minute",
+      time: 60,
+    }, {
+      text: "2 minutes",
+      time: 120,
+    }, {
+      text: "5 minutes",
+      time: 300,
+    }, {
+      text: "10 minutes",
+      time: 600,
+    }, {
+      text: "15 minutes",
+      time: 900,
+    }, {
+      text: "30 minutes",
+      time: 1800,
+    }, {
+      text: "1 hour",
+      time: 3600,
+    }];
 
   constructor(element: ElementRef, private projectService: ProjectService, public activeModal: NgbActiveModal) {
     this.host = d3.select(element.nativeElement);
@@ -138,6 +171,9 @@ export class LineChartComponent implements OnInit, OnDestroy {
   }
 
   startMonitor() {
+    if(this.interval == -1 || this.websocket != null)
+      return;
+
     console.log("refreshing monitor");
     this.websocket = new WebSocket("ws://localhost:8080/webservice/socket/performance");
 
@@ -146,32 +182,64 @@ export class LineChartComponent implements OnInit, OnDestroy {
     var node = this.node;
 
     ws.onmessage = function(event) {
-      //var log = document.getElementById("log");
+      //console.log(event.data);
       var d = new Date();
       var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-      //console.log(event.data);
+      var res = JSON.parse(event.data);
+      var time = res.time / 1000000;
 
-      if(event.data == "result") {
-        context.addData(date, Math.random() * 1000);
-        if(context.data.length > 20)
+      if(time > 0) {
+        // update graph display
+        context.addData(date, time);
+        // limits current display to 24 entries
+        // so once per hour should give you 24 hours!
+        // but you can totally set a higher limit!
+        if(context.data.length > 24)
           context.removeFirstData();
+
+        // update the node
+        node.response = res.response;
+        node.time_text = time.toFixed(2) + "ms";
+        node.stats.push({date:date, runtime:time});
+        node.just_benchmarked = true;
       }
-      //var message = JSON.parse(event.data);
-      //log.innerHTML += message.from + " : " + message.content + "\n";
     };
 
     ws.onopen = function(event) {
-      console.log(event.data);
-      var msg = "measure " + node.url;
-      console.log(msg);
+      var url = node.url;
+      var method = node.method;
+      var param_keys = [];
+      var param_vals = [];
+      var interv = context.intervals[context.interval].time * 1000; // convert from s to ms
+
+      node.params.forEach((param, index) => {
+        param_keys[index] = param.key;
+        if(param.link == null)
+          param_vals[index] = param.val;
+        else {
+          param_vals[index] = this.findNode(param.link.node_id).res_params[param.link.param_i].val;
+        }
+      });
+
+      var webservice = {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: interv};
+
+      var msg = JSON.stringify(webservice);
+      //console.log(msg);
       ws.send(msg);
     }
   }
 
   stopMonitor() {
     console.log("stopping modal");
-    if(this.websocket)
+    if(this.websocket) {
       this.websocket.close();
+      this.websocket = null;
+    }
+  }
+
+  selectedInterval(index) {
+    console.log("selected " + index);
+    this.interval = index;
   }
 
   onClose(reason: string): void {
@@ -183,5 +251,12 @@ export class LineChartComponent implements OnInit, OnDestroy {
       return this.project.title;
     else
       return this.node.title;
+  }
+
+  get intervalText(): string {
+    if(this.interval == -1)
+      return "Select Interval";
+    else
+      return this.intervals[this.interval].text;
   }
 }

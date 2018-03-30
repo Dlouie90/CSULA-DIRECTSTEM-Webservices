@@ -365,7 +365,7 @@ export class EditorComponent implements OnInit {
           }
         });
 
-        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
                  .map((res: Response) => res.json())
                  .subscribe(
                     (res:any) => {
@@ -506,7 +506,7 @@ export class EditorComponent implements OnInit {
         }
       });
 
-      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals})
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
                .map((res: Response) => res.json())
                .subscribe(
                   (res:any) => {
@@ -866,8 +866,12 @@ export class EditorComponent implements OnInit {
     //this.modalRef = this.modalService.open(modal);
     modalRef.result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
     });
 
     this.closeContextMenu();

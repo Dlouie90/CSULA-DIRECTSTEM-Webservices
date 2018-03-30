@@ -1,11 +1,22 @@
 package edu.csula.directstem.ws.WebSocket;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
- 
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -13,7 +24,13 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.server.ServerEndpoint;
- 
+
+import com.google.gson.Gson;
+
+import edu.csula.directstem.model.WebService;
+import edu.csula.directstem.results.webservices.QueryWSResult;
+import edu.csula.directstem.util.WSBenchmark;
+
 // access at host + "/socket/performance"
 @ServerEndpoint(value = "/socket/performance")
 public class RTPerformanceEndpoint {
@@ -60,38 +77,30 @@ public class RTPerformanceEndpoint {
     }
  
     @OnMessage
-    public String onMessage(String message, final Session session) {
+    public void onMessage(String message, final Session session) {
     	System.out.println(message);
     	String ret = message;
     	
     	int index = sessions.indexOf(session);
     	Timer t = timers.get(index);
     	
-    	String[] msgs = message.split(" ");
+    	final WebService ws = new Gson().fromJson(message, WebService.class);
     	
-        switch (msgs[0]) {
-        	case "measure":
-        		logger.info("Measuring performance of a node");
-        		
-        		TimerTask task = new TimerTask() {
-        			@Override
-        			public void run() {
-        				try {
-        					session.getBasicRemote().sendText("result");
-        				} catch (IOException e) {
-        					System.out.println(e.getMessage());
-        					e.printStackTrace();
-        				}
-        			}
-        		};
-        		
-        		t.scheduleAtFixedRate(task, 0, 1000);
-        		
-        		ret = "measurement started";
-        		break;
-        }
-        
-        return ret;
+    	TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					QueryWSResult result = WSBenchmark.benchmark(ws);
+					String msg = new Gson().toJson(result);
+					session.getBasicRemote().sendText(msg);
+				} catch (IOException e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		t.scheduleAtFixedRate(task, 0, ws.getInterval());
     }
  
     @OnClose
