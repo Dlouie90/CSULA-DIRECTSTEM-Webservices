@@ -136,7 +136,7 @@ export class BarChartComponent implements OnInit {
         this.project.stats = [];
 
       if(this.project.stats.length > 20)
-        stats = this.project.stats.slice(this.project.stats.length - 21, 20);
+        stats = this.project.stats.slice(this.node.stats.length - 21, this.node.stats.length);
       else
         stats = this.project.stats.slice(0, this.project.stats.length);
     }
@@ -145,7 +145,7 @@ export class BarChartComponent implements OnInit {
         this.node.stats = [];
 
       if(this.node.stats.length > 20)
-        stats = this.node.stats.slice(this.node.stats.length - 21, 20);
+        stats = this.node.stats.slice(this.node.stats.length - 21, this.node.stats.length);
       else
         stats = this.node.stats.slice(0, this.node.stats.length);
     }
