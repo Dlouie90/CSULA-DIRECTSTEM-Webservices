@@ -13,7 +13,8 @@ export class Project {
     parameterEntries: ParameterEntry[] = [];
     headNode: Node;
     nodes: Node[] = [];
-    edges: Edge[] = [];
+    edges = [];
+    stats;
 
     static create(id: number) {
         return new Project(id);
@@ -25,5 +26,6 @@ export class Project {
 
     constructor(public id: number) {
         this.title = `PROJECT_${id}`;
+        this.stats = [];
     }
 }

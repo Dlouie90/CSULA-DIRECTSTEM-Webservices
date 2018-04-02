@@ -7,7 +7,6 @@ nav {
     margin-bottom: 1.5em;
 }
 
-img#logo {
-    max-height: 2em;
-    max-width: 3em;
+#logo {
+    width: 1110px;
 }

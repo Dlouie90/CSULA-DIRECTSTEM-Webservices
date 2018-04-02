@@ -1,3 +1,4 @@
+<!-- composite window modal -->
 <ng-template #compositeModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Composite Node</h4>
@@ -17,7 +18,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let project of projects">
+      <tr *ngFor="let project of comp_projects">
         <td class="text-center">{{ project.id }}</td>
         <td class="text-center">{{ project.title }}</td>
         <td class="text-center">{{ project.parameters }}</td>
@@ -45,7 +46,7 @@
              [(ngModel)]="radioOptions"
              id="editor-view-radio"
              value="editor">
-      Editor View
+      Editor
     </label>
   </div>
 
@@ -55,20 +56,21 @@
              type="radio"
              name="radio-options"
              [(ngModel)]="radioOptions"
-             id="radial-tree-radio"
+             id="radial-view-radio"
+             value="radial">
+      Radial
+    </label>
+  </div>
+
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             id="tree-view-radio"
              value="tree">
-      Radial Tree
-    </label>
-  </div>
-
-  <div class="form-check form-check-inline">
-    <label class="form-check-label">
-      <input class="form-check-input"
-             type="radio"
-             name="radio-options"
-             [(ngModel)]="radioOptions"
-             value="clickable-tree">
-      Radial Tree
+      Tree
     </label>
   </div>
 </div>
@@ -87,14 +89,14 @@
 </div>
 
 <!-- Tree View -->
-<div *ngIf="radioOptions === 'tree'">
-  <app-visual *ngIf="node"
-              [node]="nodeClone">
+<div *ngIf="radioOptions === 'radial'">
+  <app-visual *ngIf="project"
+              [project]="project">
   </app-visual>
 </div>
 
-<div *ngIf="radioOptions === 'clickable-tree'">
-  <app-collapsible-tree [node]="nodeClone"></app-collapsible-tree>
+<div *ngIf="radioOptions === 'tree'">
+  <app-collapsible-tree *ngIf="project" [project]="project"></app-collapsible-tree>
 </div>
 <!---------------------------------------------------->
 <!------------------ Modals -------------------------->
@@ -107,10 +109,10 @@
           size="lg">
   <div class="modal-header"
        id="my-title">
-    <h4 class="modal-title">24-Hours Performance</h4>
+    <h4 class="modal-title">{{ 'Performance of ' + this.chartTitle }}</h4>
   </div>
-  <div class="modal-body">
-    <app-bar-chart></app-bar-chart>
+  <div class="modal-body text-center" style="height:500px">
+    <app-bar-chart [project]="this.currentProject" [node]="this.selectedNode"></app-bar-chart>
   </div>
   <div class="modal-footer">
     <button type="button"
@@ -173,48 +175,80 @@
      [ngStyle]="rightPanelStyle"
      oncontextmenu="return false">
 
+  <!-- RUN ALL WS -->
+  <a class="dropdown-item"
+     *ngIf="!selectedNode && !graph.state.selectedEdge"
+     (click)="runCurrentProject()">
+    <i class="fa fa-play-circle-o"
+       aria-hidden="true"></i>&nbsp;Run All</a>
+
+  <!-- RUN WS -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedEdge"
+     (click)="runNode(selectedNode)">
+    <i class="fa fa-play-circle"
+       aria-hidden="true"></i>&nbsp;Run</a>
+
   <!-- INSERT -->
   <a class="dropdown-item"
-     *ngIf="!graph.state.selectedNode && !graph.state.selectedEdge"
+     *ngIf="!selectedNode && !graph.state.selectedEdge"
      (click)="insertNode()">
     <i class="fa fa-plus-circle"
        aria-hidden="true"></i>&nbsp;Insert</a>
   <!-- EDIT-->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && !graph.state.selectedEdge"
+     *ngIf="selectedNode && !graph.state.selectedEdge"
      (click)="edit()">
     <i class="fa fa-pencil"
        aria-hidden="true"></i>&nbsp;Edit</a>
   <!-- DELETE-->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode || graph.state.selectedEdge"
+     *ngIf="selectedNode || graph.state.selectedEdge"
      (click)="removeSelected()">
     <i class="fa fa-trash"
        aria-hidden="true"></i>&nbsp;Delete</a>
+  <!-- INPUT NODE -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedNode.composite_id && isRegular(graph.state.selectedNode) && !graph.state.selectedEdge"
+     (click)="makeInput(graph.state.selectedNode)">
+    <i class="fa fa-sign-in"
+       aria-hidden="true"></i>&nbsp;Make Input</a>
+  <!-- OUTPUT NODE -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedNode.composite_id && isRegular(graph.state.selectedNode) && !graph.state.selectedEdge"
+     (click)="makeOutput(graph.state.selectedNode)">
+    <i class="fa fa-sign-out"
+       aria-hidden="true"></i>&nbsp;Make Output</a>
   <!-- COMPOSITE -->
   <a class="dropdown-item"
-     *ngIf="!graph.state.selectedNode && !graph.state.selectedEdge"
+     *ngIf="!selectedNode && !graph.state.selectedEdge"
      (click)="compositeCreate(compositeModal)">
     <i class="fa fa-plus-square-o"
        aria-hidden="true"></i>&nbsp;Composite</a>
   <!-- Make -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && !graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
+     *ngIf="selectedNode && !graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
      (click)="compositeMake(compositeModal)">
     <i class="fa fa-plus-square-o"
        aria-hidden="true"></i>&nbsp;Make Composite</a>
   <!-- View -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
+     *ngIf="selectedNode && graph.state.selectedNode.composite_id && !graph.state.selectedEdge"
      (click)="compositeView(graph.state.selectedNode.composite_id)">
     <i class="fa fa-sitemap"
        aria-hidden="true"></i>&nbsp;Composition</a>
   <!-- Performance -->
   <a class="dropdown-item"
-     *ngIf="graph.state.selectedNode && !graph.state.selectedEdge"
+     *ngIf="!graph.state.selectedEdge"
      (click)="viewPerformance(chartModal)">
     <i class="fa fa-bar-chart"
        aria-hidden="true"></i>Performance</a>
+  <!-- Real-time Monitor -->
+  <a class="dropdown-item"
+     *ngIf="selectedNode && !graph.state.selectedEdge"
+     (click)="viewMonitor()">
+    <i class="fa fa-television"
+       aria-hidden="true"></i>Real-Time</a>
   <!--&lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--<a class="dropdown-item"-->
   <!--(click)="debugNode(debugModal)">-->

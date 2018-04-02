@@ -1,0 +1,57 @@
+<form class="mb-2 pb-2" *ngIf="project" [formGroup]="webserviceForm">
+  <!-- Response Text -->
+  <div class="form-group row px-3">
+    <label for="node-response" class="col-2 col-form-label">Response</label>
+    <div class="col-10">
+      <textarea id="node-response" class="form-control col-form-label" rows="16" formControlName="response"></textarea>
+    </div>
+  </div>
+  <!-- JSON Flag -->
+  <div class="form-group row px-3">
+    <div class="form-group col-12">
+      <div class="float-right btn btn-success" style="pointer-events:none" *ngIf="isJSON">Valid JSON</div>
+      <div class="float-right btn btn-danger" style="pointer-events:none" *ngIf="!isJSON">Not JSON</div>
+    </div>
+  </div>
+  <!-- Parameters -->
+  <div>
+    <div class="form-group row" *ngFor="let _ of param_keys.controls; let i=index">
+      <label class="col-3">Parameter #{{ i+1 }} </label>
+      <div class="col-9">
+        <div class="row">
+          <div class="col-4" formArrayName="param_keys">
+            <input title="param#{{ i }}" class="form-control" type="text" readonly
+                   [formControlName]="i">
+          </div>
+          <div class="col-5" formArrayName="param_vals">
+            <input title="param-vals" class="form-control" type="text" [formControlName]="i">
+          </div>
+          <div class="col-3">
+            <button class="btn btn-outline-info" (click)="linkParameter(i, paramLinkModal)">
+              <i class="fa fa-link" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-outline-danger" (click)="removeParameter(i)">
+              <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<hr>
+
+<!-- Add Parameter Input -->
+<form *ngIf="node" class="form-group row px-3" [formGroup]="paramGroup">
+
+  <label class="col-3">Add Parameter</label>
+  <div class="col-5">
+    <input class="form-control" title="parameter" #param>
+  </div>
+  <div class="col=4">
+    <button class="btn btn-outline-primary" type="submit"
+            (click)="addParameter(param.value); param.value=''; ">Add
+    </button>
+  </div>
+</form>

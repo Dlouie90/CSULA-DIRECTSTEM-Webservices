@@ -5,6 +5,7 @@ import {Component,
 import {Router} from '@angular/router';
 import * as d3 from 'd3';
 
+import {Project} from '../../shared/models/project.model';
 import {Node} from '../../shared/models/node.model';
 
 @Component({
@@ -14,12 +15,12 @@ import {Node} from '../../shared/models/node.model';
 })
 export class VisualComponent implements OnInit {
   @Input()
-  node: Node;
+  project: Project;
 
   htmlElement;
   host;
 
-  selectedNode: Node;
+  selectedNode;
 
   constructor(private element: ElementRef, private router: Router) {
     this.htmlElement = this.element.nativeElement;
@@ -27,14 +28,15 @@ export class VisualComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initTree(this.node);
+    console.log("DISPLAYING RADIAL TREE");
+    this.initTree(this.project);
   }
 
   /****************************************************/
   /****************************************************/
   /****************************************************/
 
-  initTree(node: Node): void {
+  initTree(project: Project): void {
     // visual class width = 1000px, thus 500 is the center
     const center = 500;
     const nodeRadius = 25;
@@ -49,8 +51,16 @@ export class VisualComponent implements OnInit {
     const cluster = d3.layout.cluster()
                         .size([360, center / 1.5]);
 
-    const nodes = cluster.nodes(node);
-    const links = cluster.links(nodes);
+    var data = this.makeGraphData(project);
+    var root = null;
+
+    data.forEach(n => {
+      if(n.type.localeCompare("INPUT") == 0)
+        root = n;
+    });
+
+    const nodes = cluster.nodes(root);
+    const links = cluster.links(data);
 
     const diagonal = d3.svg.diagonal.radial()
                          .projection(function(d) {
@@ -80,47 +90,52 @@ export class VisualComponent implements OnInit {
                            });
 
     nodeGroups.append('circle')
-        .attr('r', (d: Node) => {
-          if (d.id === this.node.id) {
-            return nodeRadius * 2;
-          } else {
+        .attr('r', (d) => {
+          if (d.type.localeCompare("INPUT") == 0) {
+            return nodeRadius * 1.75;
+          } else if (d.composite_id == null) {
             return nodeRadius / 2;
+          } else {
+            return nodeRadius / 1.25;
           }
         })
         // Stylesheet graph.css
-        .classed('composite-node', (d: Node) => {
-          return d.id !== this.node.id;
+        .classed('composite-node', (d) => {
+          return d.composite_id != null;
         })
-        .classed('root-node', (d: Node) => {
-          return d.id === this.node.id;
+        .classed('root-node', (d) => {
+          return d.type.localeCompare("INPUT") == 0;
         })
-        .on('dblclick', (d: Node) => {
+        .on('dblclick', (d) => {
           this.selectedNode = d;
-          this.navigate(d);
+          //this.navigate(d);
+          console.log("double clicked on node " + d.title);
         })
         // Tooltip, its excessively ugly but i'm not sure if
         // d3 allow for html template.
-        .on('mouseover', (d: Node) => {
+        .on('mouseover', (d) => {
           tooltipDiv.transition()
-              .duration(200)
-              .style('opacity', .9);
+                    .duration(100)
+                    .style('opacity', .9);
+
           tooltipDiv.html(`
-<dl>
-<div class="row">
-<dt class="col-sm-5">Title:</dt>
-<dd class="col-sm-7">${Node.nodeTitle(d)}</dd>
-</div>
+              <dl>
+                <div class="row">
+                  <dt class="col-sm-5">Title:</dt>
+                  <dd class="col-sm-7">${d.title}</dd>
+                </div>
 
-<div class="row">
-<dt class="col-sm-5">URL:</dt>
-<dd class="col-sm-7">${d.url}</dd>
-</div>
+                <div class="row">
+                  <dt class="col-sm-5">URL:</dt>
+                  <dd class="col-sm-7">${d.url}</dd>
+                </div>
 
-<div class="row">
-<dt class="col-sm-5">Measurement:</dt>
-<dd class="col-sm-7">${parseFloat(String(Math.random())).toFixed(2)} Mangos</dd>
-</div>
-</dl>`)
+                <div class="row">
+                  <dt class="col-sm-5">Run-time:</dt>
+                  <dd class="col-sm-7">${d.time}</dd>
+                </div>
+              </dl>
+              `)
               .style('left', (d3.event as any).pageX + 'px')
               .style('top', (d3.event as any).pageY + 'px');
         })
@@ -137,8 +152,8 @@ export class VisualComponent implements OnInit {
           'text-anchor': function(d) {
             return d.x < 180 ? 'start' : 'end';
           },
-          transform: (d: Node) => {
-            if (d.id === this.node.id) {
+          transform: (d) => {
+            if (d.type.localeCompare("INPUT") == 0) {
               return d.x < 180 ?
                   'translate(' + (nodeRadius * 3.0) + ')' :
                   'rotate(180)' +
@@ -151,14 +166,33 @@ export class VisualComponent implements OnInit {
             }
           }
         })
-        .text(function(d: Node) {
-          return `id-${d.id}`;
+        .text(function(d) {
+          return `${d.title}`;
         });
   }
 
-  navigate(node: Node): void {
-    if (this.selectedNode) {
-      this.router.navigate(['/projects', node.id, 'detail']);
-    }
+  makeGraphData(project: Project) {
+    var nodes = project.nodes;
+    var edges = project.edges;
+
+    var data = [];
+
+    nodes.forEach(n => {
+      data.push({
+        id: n.id,
+        title: n.title,
+        url: n.url,
+        type: n.type,
+        time: n.time_text,
+        composite_id: n.composite_id,
+        children: []
+      });
+    });
+
+    edges.forEach(e => {
+      data[e.source].children.push(data[e.target]);
+    })
+
+    return data;
   }
 }

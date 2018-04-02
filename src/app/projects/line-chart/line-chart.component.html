@@ -1,0 +1,38 @@
+<!-- real-time monitor window modal -->
+<div class="container">
+  <div class="modal-header"
+       id="my-title">
+    <h4 class="modal-title">{{ 'Real-Time Performance of ' + chartTitle }}</h4>
+  </div>
+  <div class="modal-body text-center" style="height:500px">
+    <div class="lineChart" style="height:480px">
+      <canvas #canvas></canvas>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div ngbDropdown placement="top-right" class="d-inline-block" style="width:140px !important">
+      <button class="btn btn-outline-primary btn-block" id="dropdownInterval" ngbDropdownToggle>{{ intervalText }}</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownInterval">
+        <button class="dropdown-item"
+                *ngFor="let interval of intervals; let i = index"
+                (click)="selectedInterval(i)">
+          {{ interval.text }}
+        </button>
+      </div>
+    </div>
+    <div class="btn-group" style="float:none;">
+      <button type="button"
+              class="btn btn-success"
+              (click)="startMonitor()">Start
+      </button>
+      <button type="button"
+              class="btn btn-danger"
+              (click)="stopMonitor()">Stop
+      </button>
+      <button type="button"
+              class="btn btn-secondary"
+              (click)="onClose('close')">Close
+      </button>
+    </div>
+  </div>
+</div>

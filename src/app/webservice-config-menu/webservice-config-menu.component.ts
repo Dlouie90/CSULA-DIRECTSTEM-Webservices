@@ -21,6 +21,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   node: Node;
   @Input()
   inputProjects: Project[] = [];
+  @Input()
   inputNodes: Node[] = [];
   services: IService[];
   selectedService: IService;
@@ -39,13 +40,15 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.projectService.updateProjectToService(this.project);
+    if(this.project) // save only if we have a project
+      this.projectService.updateProjectToService(this.project);
   }
 
   private getServices(): void {
     if(!this.node) {
       console.log("Displaying Project details");
       this.showNode = false;
+      /*
       this.projectService.getServices()
           .subscribe(
             (services: IService[]) => {
@@ -54,7 +57,7 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
             (error: any) => {
               this.services = [];
               console.error(error);
-            });
+            });*/
     }
     else {
       console.log("Displaying Node details");
@@ -74,5 +77,12 @@ export class WebserviceConfigMenuComponent implements OnInit, OnChanges, OnDestr
   
   get isEmptyInputs(): boolean {
     return this.inputProjects.length === 0;
+  }
+
+  get title(): string {
+    if(!this.node)
+      return this.project.title;
+    else
+      return this.node.title;
   }
 }

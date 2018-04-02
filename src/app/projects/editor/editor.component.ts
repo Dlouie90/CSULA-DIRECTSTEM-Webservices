@@ -5,8 +5,11 @@ import {Component,
 import {ActivatedRoute,
         Params,
         Router} from '@angular/router';
-import {ModalDismissReasons,
+import {NgbModule,
+        ModalDismissReasons,
         NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Http,
+        Response} from '@angular/http';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
@@ -17,6 +20,7 @@ import {Node} from '../../shared/models/node.model';
 //import {NodeService} from '../../shared/services/node.service';
 import {View} from '../../shared/view.model';
 import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webservice-config-menu.component';
+import {LineChartComponent} from '../line-chart/line-chart.component';
 
 @Component({
   selector: 'app-editor',
@@ -26,6 +30,9 @@ import {WebserviceConfigMenuComponent} from '../../webservice-config-menu/webser
 export class EditorComponent implements OnInit {
   project: Project;
   projects: Project[];
+  comp_projects: Project[];
+  time_queue = [];
+  future_upds = [];
   node: Node;
   rightPanelStyle: Object = {};
   mainSvg;
@@ -34,23 +41,29 @@ export class EditorComponent implements OnInit {
   views: View[];
   viewIndex;
   radioOptions: string;
+  waiting: boolean;
   modal;
+  benchmarking;
+  benchmark_time;
+  benchmark_count;
 
   // Mouse Position, used to insert new nodes onto the coordinate.
   rightClickPos: {x: number, y: number};
 
-  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router) {
+  constructor(private projectService: ProjectService, private route: ActivatedRoute, private modalService: NgbModal, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
     this.views = [];
     this.initPage();
     this.radioOptions = 'editor';
+    this.benchmarking = false;
   }
 
   ngOnDestroy() {
-    if(this.projects != null && this.projects != [])
-      this.updateProjectsToService(this.projects);
+    if(this.project != null)
+      this.updateProjectToService(this.graph.project);
+      //this.updateProjectsToService(this.projects);
   }
 
   /* *********************************************************************** */
@@ -64,28 +77,28 @@ export class EditorComponent implements OnInit {
     this.route.params
         .switchMap((params: Params) => {
           id = +params['id'];
-          return this.projectService.getProject(id);
+          // TODO: make it so that this only queries the relevant sub-projects
+          return this.projectService.getProjects();
         })
-        .subscribe((project: Project) => {
+        .subscribe((projects: Project[]) => {
+          this.projects = projects.slice();
+          var project = this.projects[this.projects.findIndex((p: Project) => p.id == id)];
+
           if (!project) {  // Route back to the project page if id doesn't exist.
             console.error(`There are no projects with the id: ${id}!`);
             console.error('Returning to the project page');
             this.router.navigate(['../../']);
             return;
           }
+
           this.project = project;
+          // legacy support
+          this.project.nodes.forEach(n => {
+            if(n.type == null)
+              n.type = "REGULAR";
+          });
           this.initGraph(project);
         });
-  }
-
-  private getProjects(): void {
-    this.projectService.getProjects()
-        .subscribe(
-            (projects: Project[]) => this.projects = projects.slice(),
-            () => {
-              this.projects = [];
-              console.log('failed to load projects, defaulting to empty :', []);
-            });
   }
 
   /**
@@ -117,11 +130,11 @@ export class EditorComponent implements OnInit {
     console.log('MAKING A NODE COMPOSITE');
 
     this.closeContextMenu();
-    this.getProjects();
 
-    // remove the current project from the list of projects
+    // remove projects that have already appeared from the list of projects
     var index = this.projects.indexOf(this.project);
-    this.projects.splice(index, 1);
+    this.comp_projects = this.projects.slice();
+    this.comp_projects.splice(index, 1);
 
     this.modal = this.modalService.open(content);
 
@@ -150,7 +163,7 @@ export class EditorComponent implements OnInit {
     // update the project in current view
     this.addNodeToProject(oldView.currentProject, node);
     this.updateProjectToService(oldView.currentProject);
-    this.updateProjectsToService(oldView.projects);
+    //this.updateProjectsToService(oldView.projects);
 
     this.graph.insertNode(node);
 
@@ -187,11 +200,10 @@ export class EditorComponent implements OnInit {
     if(node) {
       var s_node = this.project.nodes[this.project.nodes.findIndex((n:Node) => n.id == node.id)];
 
-      this.getProjects();
-
       // remove the current project from the list of projects
       var index = this.projects.indexOf(this.project);
-      this.projects.splice(index, 1);
+      this.comp_projects = this.projects.slice();
+      this.comp_projects.splice(index, 1);
 
       const project_index = this.projects.findIndex((p:Project) => p.id == project_id);
       console.log('INDEX: ' + project_index);
@@ -260,10 +272,12 @@ export class EditorComponent implements OnInit {
     if ($event.which === 3) {
       this.rightPanelStyle = {
         'display': 'block',
-        'left': ($event.clientX + 1) + 'px',
-        'top': ($event.clientY + 1) + 'px'
+        'left': ($event.pageX) + 'px',
+        'top': ($event.pageY) + 'px'
       };
-      this.rightClickPos = {x: $event.clientX, y: $event.clientY};
+      // 274 is the height up until the window (maybe?)
+      // TODO: programmatically get this number rather than using a constant
+      this.rightClickPos = {x: $event.pageX, y: $event.pageY - 274};
       return false;
     }
   }
@@ -296,6 +310,225 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  runCurrentProject(): void {
+    console.log("Running current projects");
+    
+    this.benchmarking = true;
+    this.benchmark_time = 0;
+    this.benchmark_count = 0;
+
+    var current_project = this.views[this.viewIndex].currentProject;
+    current_project.nodes.forEach((n:Node) => {
+      this.runNode(n);
+    });
+  }
+
+  runProject(project, node=null): void {
+    this.closeContextMenu();
+    var app = this;
+
+    console.log("Attempting to run a whole PROJECT");
+
+    if(!project) // if it's null, then do nothing
+      return;
+
+    var project_index = app.projects.findIndex((p: Project) => p.id == project.id);
+    app.time_queue.push({index: project_index, time: -1, node: node, deps: []});
+    var to_index = app.time_queue.length - 1;
+    var time_object = app.time_queue[to_index];
+
+    var total_time = 0;
+    var benchmarked_count = 0;
+    
+    project.nodes.forEach((n:Node) => {
+      console.log("UPDATING NODE " + n.title + " IN " + project.title);
+
+      if(n.composite_id) {
+        var p_index = app.projects.findIndex((p: Project) => p.id == n.composite_id);
+        var p = app.projects[p_index];
+        time_object.deps.push(p_index);
+        app.runProject(p, n);
+        benchmarked_count++;
+      }
+      else {
+        var url = n.url;
+        var method = n.method;
+        var param_keys = [];
+        var param_vals = [];
+
+        n.params.forEach((param, index) => {
+          param_keys[index] = param.key;
+          if(param.link == null)
+            param_vals[index] = param.val;
+          else {
+            param_vals[index] = this.findNode(param.link.node_id).res_params[param.link.param_i].val;
+          }
+        });
+
+        this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
+                 .map((res: Response) => res.json())
+                 .subscribe(
+                    (res:any) => {
+                      var time = res.time / 1000000;
+                      if (res.time > 0) {
+                        //alert("WebService query took " + time + "ms");
+                        n.time_text = time.toFixed(2) + "ms";
+                        n.just_benchmarked = true;
+                        total_time += time;
+                      }
+                      else
+                        alert("WebService query failed for " + n.title + " (check URL?)");
+                      benchmarked_count++;
+
+                      if(benchmarked_count == project.nodes.length) {
+                        console.log("Adding up depedents of project " + project.title);
+                        console.log(time_object.deps);
+
+                        // adding up dependents
+                        app.time_queue.forEach(to => {
+                          var i = time_object.deps.findIndex(t => t == to.index);
+                          if(i != -1 && to.time != -1 && to.deps.length == 0) {
+                            total_time += to.time;
+                            time_object.deps.splice(i, 1);
+                          }
+                        })
+
+                        // this is the current total time for this time object
+                        time_object.time = total_time;
+
+                        // push the current time object into a queue if it is waiting
+                        if(time_object.deps.length > 0)
+                          app.future_upds.push(time_object);
+                        else
+                          // or it's not waiting, so let's update it for all dependents
+                          app.updateDependents(time_object);
+                      }
+                    },
+                    (err: any) => console.log(err));
+      }
+    });
+  }
+
+  updateBenchmarkScore(time) {
+    this.benchmark_time += time;
+    this.benchmark_count++;
+
+    if(this.benchmark_count == this.currentProject.nodes.length) {
+      var d = new Date();
+      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+      this.currentProject.stats.push({date: date, runtime: this.benchmark_time});
+      this.updateProjectToService(this.currentProject);
+
+      this.benchmarking = false;
+    }
+  }
+
+  updateDependents(time_object):void {
+    var app = this;
+    var node = time_object.node;
+    var total_time = time_object.time;
+    var p = app.projects[time_object.index];
+    var d = new Date();
+    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+    console.log("Forward updating Project " + p.title);
+
+    if(p.stats == null)
+      p.stats = []
+
+    p.stats.push({date: date, runtime: total_time});
+    this.updateProjectToService(p);
+
+    // update visual display of node
+    if(app.project.nodes.findIndex((n: Node) => n.id == node.id) != -1 || node == null) {
+      console.log("Updating the final composite node");
+      if(node) {
+        app.graph.updateSelectedNodeTime(total_time, node);
+        if(app.benchmarking)
+          app.updateBenchmarkScore(total_time);
+      }
+      else
+        alert("Project " + p.title + " took " + total_time + "ms to finish.");
+
+      // clear the time queue
+      app.time_queue = [];
+    }
+    else {
+      node.time_text = total_time.toFixed(2) + "ms";
+      if(node.stats == null) // takes care of legacy nodes
+        node.stats = [];
+      node.stats.push({date: date, runtime: total_time});
+      node.just_benchmarked = true;
+
+      console.log("Going to forward update " + p.title + "'s dependents");
+      console.log(app.future_upds);
+
+      var to_purge = [];
+      // check for future updates
+      app.future_upds.forEach(to => {
+        var i = to.deps.findIndex(t => t == time_object.index);
+        if(i != -1) {
+          console.log("Found one dependent");
+          to.time += time_object.time;
+          to.deps.splice(i, 1);
+
+          if(to.deps.length == 0) { // if this time object is done, update and purge
+            app.updateDependents(to);
+            to_purge.push(to);
+          }
+        }
+      });
+
+      to_purge.forEach(to => { // remove each time_object flagged for purging
+        var i = app.future_upds.findIndex(t => t.index == to.index);
+        app.future_upds.splice(i, 1);
+      });
+    }
+  }
+
+  runNode(node): void {
+    this.closeContextMenu();
+    const app = this;
+
+    if (!node.composite_id) {
+      var url = node.url;
+      var method = node.method;
+      var param_keys = [];
+      var param_vals = [];
+
+      node.params.forEach((param, index) => {
+        param_keys[index] = param.key;
+        if(param.link == null)
+          param_vals[index] = param.val;
+        else {
+          param_vals[index] = this.findNode(param.link.node_id).res_params[param.link.param_i].val;
+        }
+      });
+
+      this.http.post('/webservice/rest/ws/query', {url: url, method: method, param_keys: param_keys, param_vals: param_vals, interval: 0})
+               .map((res: Response) => res.json())
+               .subscribe(
+                  (res:any) => {
+                    var time = res.time / 1000000;
+                    if (res.time > 0) {
+                      //alert("WebService query took " + time + "ms"); 
+                      console.log("Updating node " + node.title);
+                      app.graph.updateSelectedNodeTime(time, node);
+                      if(app.benchmarking)
+                        app.updateBenchmarkScore(time);
+                    }
+                    else
+                      alert("WebService query failed (check URL?)");
+                  },
+                  (err: any) => console.log(err),
+                  () => console.log("BENCHMARKED WEBSERVICE"));
+    }
+    else {
+      var project = this.projects[this.projects.findIndex((p: Project) => p.id == node.composite_id)];
+      this.runProject(project, node);
+    }
+  }
 
   /** Insert a node onto the graph and updateToService nodeService.
      * Also add the node into its parent.children array. */
@@ -331,7 +564,7 @@ export class EditorComponent implements OnInit {
 
     // update the project in current view
     this.addNodeToProject(recentView.currentProject, node);
-    console.log(JSON.stringify(recentView.currentProject));
+    //console.log(JSON.stringify(recentView.currentProject));
     this.updateProjectToService(recentView.currentProject);
     //this.updateProjectsToService(recentView.projects);
 
@@ -357,7 +590,7 @@ export class EditorComponent implements OnInit {
     const inputNodes = this.getInputsToNode(this.selectedNode);
     modalRef.componentInstance.project = this.project;
     modalRef.componentInstance.node = this.selectedNode;
-    modalRef.componentInstance.inputNodes = inputNodes;
+    modalRef.componentInstance.inputNodes = this.selectedNodeNeighbors;
     modalRef.result
         .then(
             (result: any) => {
@@ -368,6 +601,36 @@ export class EditorComponent implements OnInit {
               this.syncNode(this.selectedNode);
               this.drawCurrentView();
             });
+  }
+
+  makeInput(node) {
+    this.closeContextMenu();
+
+    this.currentProject.nodes.forEach(n => {
+      if(n.type.localeCompare("INPUT") == 0) // clear the last input node first
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "INPUT";
+    });
+
+    //this.graph.makeNodeInput(node);
+    this.updateProjectToService(this.currentProject);
+    this.initGraph(this.currentProject);
+  }
+
+  makeOutput(node) {
+    this.closeContextMenu();
+
+    this.currentProject.nodes.forEach(n => {
+      if(n.type.localeCompare("OUTPUT") == 0) // clear the last output node first
+        n.type = "REGULAR";
+      if(n.id == node.id)
+        n.type = "OUTPUT";
+    });
+
+    //this.graph.makeNodeOutput(node);
+    this.updateProjectToService(this.currentProject);
+    this.initGraph(this.currentProject);
   }
 
   /* Return all the nodes that has an edge to the input node. ignores nodes
@@ -424,7 +687,7 @@ export class EditorComponent implements OnInit {
   removeEdge(): void {
     console.log('REMOVING EDGE');
     this.graph.removeSelectedEdge();
-    const currentView = this.currentView;
+    //const currentView = this.currentView;
 
     /*
     if (currentView.parentNode) {
@@ -432,8 +695,8 @@ export class EditorComponent implements OnInit {
     }
     */
 
-    this.replaceRecentView(currentView);
-    this.updateViewToService(currentView);
+    //this.replaceRecentView(currentView);
+    //this.updateViewToService(currentView);
     this.closeContextMenu();
   }
 
@@ -472,8 +735,39 @@ export class EditorComponent implements OnInit {
     this.closeContextMenu();
   }
 
+  get chartTitle(): string {
+    if(this.selectedNode == null)
+      return this.currentProject.title;
+    else
+      return this.selectedNode.title;
+  }
+
   get selectedNode(): Node {
     return this.graph.state.selectedNode;
+  }
+
+  get currentProject(): Project {
+    return this.views[this.viewIndex].currentProject;
+  }
+
+  get selectedNodeNeighbors() {
+    var indices = this.graph.findSelectedNodeNeighbors(this.graph.state.selectedNode);
+
+    console.log(indices);
+
+    var ret = [];
+
+    indices.forEach(index => {
+      ret.push(this.currentProject.nodes[index]);
+    })
+
+    console.log(ret);
+
+    return ret;
+  }
+
+  isRegular(node) {
+    return node.type.localeCompare("REGULAR") == 0;
   }
 
   addNodeToProject(project: Project, node: Node): void {
@@ -552,7 +846,43 @@ export class EditorComponent implements OnInit {
   */
 
   viewPerformance(modal): void {
-    this.openQuickEditModal(modal);
+    this.modalService.open(modal).result.then((result) => {
+      //this.graph.updateGraph();
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
     this.closeContextMenu();
+  }
+
+  viewMonitor() {
+    const modalRef = this.modalService
+                         .open(LineChartComponent, {size: 'lg'});
+    const inputNodes = this.getInputsToNode(this.selectedNode);
+    modalRef.componentInstance.project = this.project;
+    modalRef.componentInstance.node = this.selectedNode;
+    modalRef.componentInstance.inputNodes = this.selectedNodeNeighbors;
+
+    //this.modalRef = this.modalService.open(modal);
+    modalRef.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.updateProjectToService(this.currentProject);
+      this.initGraph(this.currentProject);
+    });
+
+    this.closeContextMenu();
+  }
+
+  findNode(id) {
+    var node = null;
+    this.project.nodes.forEach(n => {
+      if(n.id == id)
+        node = n;
+    });
+    return node;
   }
 }

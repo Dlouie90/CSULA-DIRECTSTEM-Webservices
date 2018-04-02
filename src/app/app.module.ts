@@ -1,10 +1,12 @@
 import {
-  HashLocationStrategy,
-  LocationStrategy
+    HashLocationStrategy,
+    LocationStrategy
 } from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule,
-        ReactiveFormsModule} from '@angular/forms';
+import {
+    FormsModule,
+    ReactiveFormsModule
+} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -16,6 +18,7 @@ import {CarouselComponent} from './home/carousel/carousel.component';
 import {HomeComponent} from './home/home.component';
 import {MainNavComponent} from './main-nav/main-nav.component';
 import {BarChartComponent} from './projects/bar-chart/bar-chart.component';
+import {LineChartComponent} from './projects/line-chart/line-chart.component';
 import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-tree.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
@@ -27,34 +30,39 @@ import {ProjectService} from './shared/services/project.service';
 import {UserService} from './shared/services/user.service';
 import {SplitPanelLoginModule} from './split-panel-login/split-panel-login.module';
 import {WebserviceModalModule} from './webservice-config-menu/webservice-modal.module';
+import {LineChartModalModule} from './projects/line-chart/line-chart-modal.module';
+import {AdminModule} from './admin/admin.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MainNavComponent,
-    HomeComponent,
-    CarouselComponent,
-    ProjectsComponent,
-    DetailComponent,
-    EditorComponent,
-    BreadcrumbComponent,
-    DebugComponent,
-    VisualComponent,
-    CollapsibleTreeComponent,
-    BarChartComponent,
-  ],
+    declarations: [
+        AppComponent,
+        MainNavComponent,
+        HomeComponent,
+        CarouselComponent,
+        ProjectsComponent,
+        DetailComponent,
+        EditorComponent,
+        BreadcrumbComponent,
+        DebugComponent,
+        VisualComponent,
+        CollapsibleTreeComponent,
+        BarChartComponent
+    ],
 
-  imports: [
-    ShareModule,
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule.forRoot(),
-    DemoAppModule,
-    AppRoutingModule,
-    SplitPanelLoginModule,
-    WebserviceModalModule,
-  ],
+
+    imports: [
+        ShareModule,
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbModule.forRoot(),
+        DemoAppModule,
+        AppRoutingModule,
+        SplitPanelLoginModule,
+        WebserviceModalModule,
+        LineChartModalModule,
+        AdminModule
+    ],
 
   providers: [
     UserService,
@@ -62,7 +70,7 @@ import {WebserviceModalModule} from './webservice-config-menu/webservice-modal.m
     {provide: LocationStrategy, useClass: HashLocationStrategy},
   ],
 
-  bootstrap: [AppComponent]
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }
