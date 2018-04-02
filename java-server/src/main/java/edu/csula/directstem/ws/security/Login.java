@@ -28,9 +28,9 @@ public class Login {
       String username = credentials.getUsername();
       String password = credentials.getPassword();
 
-      User user = getUser(username, password);
-      
-      if (user != null) {
+      User user = getUser(username);
+
+      if (user != null && user.isPasswordValid(password)) {
         return Response.ok((new Gson()).toJson(Collections.singletonMap("token", Token.issue(user)))).build();
       } else {
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -41,20 +41,20 @@ public class Login {
     }
   }
 
-  private User getUser(String username, String password) {    
+  private User getUser(String username) {    
     Connection conn = ConnectDB.getConnection();
     PreparedStatement p;
     ResultSet rs = null;
     try {
       p = conn.prepareStatement("SELECT * FROM users WHERE username=?;");
       p.closeOnCompletion();
-      
+
       p.setString(1, username);
-      
+
       rs = p.executeQuery();
-      
+
       rs.next();
-      
+
       return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
     } catch (SQLException e) {
       e.printStackTrace();
