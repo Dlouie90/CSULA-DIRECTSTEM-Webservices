@@ -8,3 +8,7 @@ label {
     font-weight: bolder;
     text-transform: uppercase;
 }
+body {
+    background-color: black;
+    color: white;
+}
