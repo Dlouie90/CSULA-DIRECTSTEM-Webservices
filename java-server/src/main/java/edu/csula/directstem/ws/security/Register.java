@@ -1,6 +1,7 @@
 package edu.csula.directstem.ws.security;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
@@ -23,12 +24,21 @@ public class Register {
     }
 
     Connection conn = ConnectDB.getConnection();
-    PreparedStatement p;
+    PreparedStatement p1;
+    PreparedStatement p2;
     try {
-      p = conn.prepareStatement("insert into users (username, passwordHash) values (?,?);");
-      p.setString(1, credentials.getUsername());
-      p.setString(2, User.hashPassword(credentials.getPassword()));
-      p.executeUpdate();
+      p1 = conn.prepareStatement("SELECT COUNT(*) FROM users WHERE username = (?);");
+      p1.setString(1, credentials.getUsername());
+      ResultSet results = p1.executeQuery();
+
+      if (results.next() && results.getInt(1) != 0) {
+        return Response.status(400).build();
+      }
+
+      p2 = conn.prepareStatement("insert into users (username, passwordHash) values (?,?);");
+      p2.setString(1, credentials.getUsername());
+      p2.setString(2, User.hashPassword(credentials.getPassword()));
+      p2.executeUpdate();
       return Response.ok().build();
     } catch (SQLException e) {
       e.printStackTrace();
