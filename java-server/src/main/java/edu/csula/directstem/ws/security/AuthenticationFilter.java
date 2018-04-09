@@ -10,6 +10,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import edu.csula.directstem.model.User;
+
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
@@ -32,8 +34,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     String token = authorizationHeader.substring(TOKEN_PREFIX.length()).trim();
 
     try {
-      if (!Token.verify(token)) {
+      User user = Token.verify(token);
+      if (user == null) {
         abortWithUnauthorized(requestContext);
+      } else {
+        requestContext.setProperty("user", user);
       }
     } catch (Exception e) {
       e.printStackTrace();

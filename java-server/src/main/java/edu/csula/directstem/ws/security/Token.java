@@ -20,9 +20,9 @@ public class Token {
   
   private static final long tokenExpireTimeMillis = 1000 * 60 * 60 * 24;
 
-  public static boolean verify(String token) {
+  public static User verify(String token) {
     if (token.length() < 14 || token.length() > 150) {
-      return false;
+      return null;
     }
     Connection conn = ConnectDB.getConnection();
     PreparedStatement p;
@@ -34,19 +34,23 @@ public class Token {
       p.setInt(1, Integer.parseInt(token.substring(12, token.indexOf('-'))));
 
       rs = p.executeQuery();
-      
-      rs.next();
 
-      return token.equals(rs.getString(7)) && (new SimpleDateFormat(dateFormat).parse(token.substring(0, 12)))
-          .after(new Date(System.currentTimeMillis()));
+      if (rs.next()
+          && token.equals(rs.getString(7))
+          && (new SimpleDateFormat(dateFormat).parse(token.substring(0, 12)))
+              .after(new Date(System.currentTimeMillis()))) {
+        return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
+      } else {
+        return null;
+      }
     } catch (SQLException e) {
       e.printStackTrace();
-      return false;
+      return null;
     } catch (NumberFormatException e) {
-      return false;
+      return null;
     } catch (Exception e) {
       e.printStackTrace();
-      return false;
+      return null;
     } finally {
       if (rs != null) {
         try {
