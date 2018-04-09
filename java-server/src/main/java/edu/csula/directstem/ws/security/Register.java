@@ -17,6 +17,11 @@ public class Register {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response registerUser(Credentials credentials) {
+    if (credentials.getUsername().length() < 1
+        || credentials.getPassword().length() < 1) {
+      return Response.status(400).build();
+    }
+
     Connection conn = ConnectDB.getConnection();
     PreparedStatement p;
     try {
