@@ -184,7 +184,7 @@ export class LineChartComponent implements OnInit, OnDestroy {
     ws.onmessage = function(event) {
       //console.log(event.data);
       var d = new Date();
-      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+      var date = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
       var res = JSON.parse(event.data);
       var time = res.time / 1000000;
 

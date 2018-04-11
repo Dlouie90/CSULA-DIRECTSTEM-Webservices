@@ -229,7 +229,7 @@ export class WebServiceBuilderComponent implements OnChanges, OnDestroy {
                     webform.node.time_text = time.toFixed(2) + "ms";
 
                     var d = new Date();
-                    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+                    var date = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
                     webform.node.stats.push({date: date, runtime: time});
                     webform.node.just_benchmarked = true;
                   }

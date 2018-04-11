@@ -415,7 +415,7 @@ export class EditorComponent implements OnInit {
 
     if(this.benchmark_count == this.currentProject.nodes.length) {
       var d = new Date();
-      var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+      var date = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
       this.currentProject.stats.push({date: date, runtime: this.benchmark_time});
       this.updateProjectToService(this.currentProject);
@@ -430,7 +430,7 @@ export class EditorComponent implements OnInit {
     var total_time = time_object.time;
     var p = app.projects[time_object.index];
     var d = new Date();
-    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+    var date = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
     console.log("Forward updating Project " + p.title);
 
