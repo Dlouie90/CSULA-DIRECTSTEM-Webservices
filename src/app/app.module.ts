@@ -19,6 +19,7 @@ import {HomeComponent} from './home/home.component';
 import {MainNavComponent} from './main-nav/main-nav.component';
 import {BarChartComponent} from './projects/bar-chart/bar-chart.component';
 import {LineChartComponent} from './projects/line-chart/line-chart.component';
+import {LineChartComparisonComponent} from './projects/line-chart-comparison/line-chart-comparison.component'
 import {CollapsibleTreeComponent} from './projects/collapsible-tree/collapsible-tree.component';
 import {DetailComponent} from './projects/detail/detail.component';
 import {BreadcrumbComponent} from './projects/editor/breadcrumb/breadcrumb.component';
@@ -46,7 +47,8 @@ import {AdminModule} from './admin/admin.module';
         DebugComponent,
         VisualComponent,
         CollapsibleTreeComponent,
-        BarChartComponent
+        BarChartComponent,
+        LineChartComparisonComponent
     ],
 
 
