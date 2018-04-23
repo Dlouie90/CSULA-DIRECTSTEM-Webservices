@@ -19,6 +19,11 @@ import {Chart} from 'chart.js';
   styleUrls: ['./line-chart-comparison.component.css']
 })
 export class LineChartComparisonComponent implements OnInit, OnDestroy {
+  // limits current display to 24 entries
+  // so once per hour should give you 24 hours!
+  // but you can totally set a higher limit!
+  DISPLAY_LIMIT = 24;
+
   @ViewChild('canvas')
   canvas: ElementRef;
 
@@ -82,6 +87,50 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // do something
+    Chart.pluginService.register({
+      afterUpdate: function(chart) {
+        for(var d=0; d<chart.config.data.datasets.length; d++) {
+          var dataset = chart.config.data.datasets[d];
+          var meta = dataset._meta;
+          var key = -1;
+
+          for(var i=0; i<10; i++)
+            if(meta[i])
+              key = i;
+
+          for(var i=0; i<dataset.data.length; i++) {
+            if(dataset.data[i] == 0) {
+              meta[key].data[i]._model.pointStyle = 'crossRot';
+              meta[key].data[i]._model.pointRadius = 8.0;
+              meta[key].data[i]._model.borderWidth = 4.0;
+              meta[key].data[i]._model.hitRadius = 16.0;
+              meta[key].data[i]._model.radius = 8.0;
+            }
+          }
+        }
+      },
+      afterEvent: function(chart) {
+        for(var d=0; d<chart.config.data.datasets.length; d++) {
+          var dataset = chart.config.data.datasets[d];
+          var meta = dataset._meta;
+          var key = -1;
+
+          for(var i=0; i<10; i++)
+            if(meta[i])
+              key = i;
+
+          for(var i=0; i<dataset.data.length; i++) {
+            if(dataset.data[i] == 0) {
+              meta[key].data[i]._model.pointStyle = 'crossRot';
+              meta[key].data[i]._model.pointRadius = 8.0;
+              meta[key].data[i]._model.borderWidth = 4.0;
+              meta[key].data[i]._model.hitRadius = 16.0;
+              meta[key].data[i]._model.radius = 8.0;
+            }
+          }
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -131,6 +180,18 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
         tooltips: {
           mode: 'index',
           intersect: false,
+          callbacks: {
+            title: function(tooltipItems, data) {
+              return tooltipItems[0].xLabel;
+            },
+            label: function(tooltipItem, data) {
+              if(tooltipItem.yLabel > 0) {
+                let rounded = Math.round(tooltipItem.yLabel * 100) / 100;
+                return "Response time: " + rounded + "ms";
+              }
+              else return "Connection failed!";
+            }
+          }
         },
         hover: {
           mode: 'nearest',
@@ -243,10 +304,7 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
       if (time > 0) {
         // update graph display
         context.addData(date, time, index);
-        // limits current display to 24 entries
-        // so once per hour should give you 24 hours!
-        // but you can totally set a higher limit!
-        if (context.data.length > 24) {
+        if (context.data.length > context.DISPLAY_LIMIT) {
           context.removeFirstData();
         }
 
@@ -255,6 +313,13 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
         node.time_text = time.toFixed(2) + 'ms';
         node.stats.push({date: date, runtime: time});
         node.just_benchmarked = true;
+      }
+      else {
+        // update graph display
+        context.addData(date, 0, index);
+        
+        if(context.data.length > context.DISPLAY_LIMIT)
+          context.removeFirstData();
       }
     };
   }
