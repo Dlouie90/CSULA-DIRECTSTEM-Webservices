@@ -23,8 +23,8 @@ export class CollapsibleTreeComponent implements OnInit {
 
   ngOnInit() {
     const margin = {top: 10, right: 120, bottom: 10, left: 120};
-    const width = 960 - margin.right - margin.left;
-    const height = 800 - margin.top - margin.bottom;
+    const width = 1200 - margin.right - margin.left;
+    const height = 740 - margin.top - margin.bottom;
     const nodeRadius = 10;
     const duration = 750;
     const data = this.makeGraphData(this.project);

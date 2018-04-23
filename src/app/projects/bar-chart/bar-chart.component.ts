@@ -34,7 +34,7 @@ export class BarChartComponent implements OnInit {
     red: 'rgb(255, 99, 132)',
     orange: 'rgb(255, 159, 64)',
     yellow: 'rgb(255, 205, 86)',
-    green: 'rgb(75, 192, 192)',
+    green: 'rgb(35, 255, 128)',
     blue: 'rgb(54, 162, 235)',
     purple: 'rgb(153, 102, 255)',
     grey: 'rgb(201, 203, 207)'
@@ -191,12 +191,14 @@ export class BarChartComponent implements OnInit {
     if(data.length > this.DISPLAY_LIMIT)
       data.splice(0, data.length - this.DISPLAY_LIMIT);
 
+    var chartColor = (this.chart.config.data.datasets.length < 2) ? this.chartColors.red : this.chartColors.green;
+
     this.chart.config.data.datasets.push(
       {
         id: this.nodes[index].id,
         label: this.nodes[index].title + "'s Performance",
-        backgroundColor: this.chartColors.red,
-        borderColor: this.chartColors.red,
+        backgroundColor: chartColor,
+        borderColor: chartColor,
         data: data,
         fill: false
       }

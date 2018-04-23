@@ -99,7 +99,7 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
               key = i;
 
           for(var i=0; i<dataset.data.length; i++) {
-            if(dataset.data[i] == 0) {
+            if(dataset.data[i].y == 0) {
               meta[key].data[i]._model.pointStyle = 'crossRot';
               meta[key].data[i]._model.pointRadius = 8.0;
               meta[key].data[i]._model.borderWidth = 4.0;
@@ -120,7 +120,7 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
               key = i;
 
           for(var i=0; i<dataset.data.length; i++) {
-            if(dataset.data[i] == 0) {
+            if(dataset.data[i].y == 0) {
               meta[key].data[i]._model.pointStyle = 'crossRot';
               meta[key].data[i]._model.pointRadius = 8.0;
               meta[key].data[i]._model.borderWidth = 4.0;
@@ -229,7 +229,7 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
 
   addData(label, data, index) {
     this.labels.push(label);
-    this.data[index].push(data);
+    this.data[index].push({x:label, y:data});
 
     if (this.chart) {
       this.chart.update();
