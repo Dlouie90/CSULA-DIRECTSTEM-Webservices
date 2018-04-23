@@ -1,0 +1,54 @@
+<div class="container">
+  <table class="table">
+    <thead>
+      <th>Title</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let node of nodes">
+        <td>{{node.title}}</td>
+        <td><button (click)="removeNode(node)" [disabled]="socketsRunning" class="btn btn-danger">Remove</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <select [(ngModel)]="newNode">
+    <option *ngFor="let node of project.nodes" [value]="node.title">
+      {{node.title}}
+    </option>
+  </select>
+  <button class="btn btn-success" (click)="addNode()" [disabled]="socketsRunning">Add Node</button>
+</div>
+
+<div class="container">
+  <div class="modal-header"
+       id="my-title">
+    <h4 class="modal-title">Real-Time Performance Comparison</h4>
+  </div>
+  <div class="modal-body text-center" style="height:500px">
+    <div class="lineChart" style="height:480px">
+      <canvas #canvas></canvas>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div ngbDropdown placement="top-right" class="d-inline-block" style="width:140px !important">
+      <button class="btn btn-outline-primary btn-block" id="dropdownInterval" ngbDropdownToggle>{{ intervalText }}</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownInterval">
+        <button class="dropdown-item"
+                *ngFor="let interval of intervals; let i = index"
+                (click)="selectedInterval(i)">
+          {{ interval.text }}
+        </button>
+      </div>
+    </div>
+    <div class="btn-group" style="float:none;">
+      <button type="button"
+              class="btn btn-success"
+              (click)="startMonitor()">Start
+      </button>
+      <button type="button"
+              class="btn btn-danger"
+              (click)="stopMonitor()">Stop
+      </button>
+    </div>
+  </div>
+</div>

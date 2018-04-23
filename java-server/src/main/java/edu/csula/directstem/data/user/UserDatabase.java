@@ -60,12 +60,12 @@ public class UserDatabase {
     String email = resultSet.getString(UserEntry.EMAIL);
     String password = resultSet.getString(UserEntry.PASSWORD);
     String description = resultSet.getString(UserEntry.USERNAME);
-    return new User(id, firstName, lastName, email, password, description);
+    return new User(id, firstName, lastName, email, password, description, null);
   }
 
   //Create user
   public static CreateUserResult createUser(User user) {
-    String sql = "INSERT INTO users (firstname, lastname, email, username, password)"
+    String sql = "INSERT INTO users (firstname, lastname, email, username, passwordHash)"
         + " VALUES(?, ?, ?, ?, ?);";
     int rowCount = 0;
     PreparedStatement statement;
@@ -75,7 +75,7 @@ public class UserDatabase {
       statement.setString(2, user.getLastName());
       statement.setString(3, user.getEmail());
       statement.setString(4, user.getUsername());
-      statement.setString(5, user.getPassword());
+      statement.setString(5, user.getPasswordHash());
       rowCount = statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -113,25 +113,5 @@ public class UserDatabase {
     }
 
     return new UpdateUserResult(id, user, rowsUpdated > 0);
-  }
-
-  public static LoginUserResult loginUser(User potentialUser) {
-    String sql = "SELECT * FROM users WHERE email=? AND password=? LIMIT 1";
-    User user = null;
-
-    try {
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setString(1, potentialUser.getEmail());
-      statement.setString(2, potentialUser.getPassword());
-      ResultSet resultSet = statement.executeQuery();
-
-      if (resultSet.next()) {
-        user = toUser(resultSet);
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return new LoginUserResult(potentialUser.getEmail(), potentialUser.getPassword(), user);
   }
 }

@@ -73,6 +73,18 @@
       Tree
     </label>
   </div>
+
+  <div class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input"
+             type="radio"
+             name="radio-options"
+             [(ngModel)]="radioOptions"
+             id="compare-radio"
+             value="compare">
+      Comparison
+    </label>
+  </div>
 </div>
 
 <!-- Editor View -->
@@ -97,6 +109,10 @@
 
 <div *ngIf="radioOptions === 'tree'">
   <app-collapsible-tree *ngIf="project" [project]="project"></app-collapsible-tree>
+</div>
+
+<div *ngIf="radioOptions === 'compare'">
+  <app-line-chart-comparison [project]="project"></app-line-chart-comparison>
 </div>
 <!---------------------------------------------------->
 <!------------------ Modals -------------------------->

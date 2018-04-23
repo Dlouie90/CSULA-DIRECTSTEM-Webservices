@@ -23,10 +23,6 @@ export class CarouselComponent implements OnInit {
         title: 'Web Services Image 2',
         url: 'https://www.forcepoint.com/sites/default/files/styles/' +
             'hero_image/public/product_landscapes/cropped-_0000s_0008_websense-webfilter.jpg?itok=KZaTBKMq'
-      },
-      {
-        title: 'Web Service Image 3',
-        url: 'http://csm.kennesaw.edu/datascience/images/overview-datascience-web-banner.jpg'
       }
     ];
   }
