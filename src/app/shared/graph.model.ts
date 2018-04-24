@@ -364,7 +364,7 @@ export class Graph {
     this.nodes[index].just_benchmarked = true;
 
     var d = new Date();
-    var date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+    var date = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
     if(this.nodes[index].stats == null)
       this.nodes[index].stats = [];
