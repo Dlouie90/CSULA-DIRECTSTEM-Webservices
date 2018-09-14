@@ -150,7 +150,6 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
     initializeChart() {
         /*
         let stats = this.node.stats;
-
         stats.forEach(s => {
           this.labels.push(s.date);
           this.data.push(s.runtime);
@@ -277,7 +276,6 @@ export class LineChartComparisonComponent implements OnInit, OnDestroy {
             const param_keys = [];
             const param_vals = [];
             const interv = context.intervals[context.interval].time * 1000; // convert from s to ms
-
             if (node.params) {
                 node.params.forEach((param, index) => {
                     param_keys[index] = param.key;
